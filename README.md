@@ -1,3 +1,3 @@
 
-![alterate](https://raw.github.com/acc15/alterate/images/logo.png)
+![alterate](https://raw.githubusercontent.com/acc15/alterate/master/images/logo.png)
 
