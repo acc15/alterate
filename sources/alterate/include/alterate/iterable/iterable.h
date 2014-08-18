@@ -1,7 +1,8 @@
 #pragma once
 
 #include <alterate/types.h>
-#include <alterate/iterable/scalar_iterator.h>
+#include <alterate/iterable/pointer.h>
+#include <alterate/iterable/scalar.h>
 #include <type_traits>
 
 namespace alterate {
@@ -10,57 +11,49 @@ namespace alterate {
         template <typename ContainerType, typename SizeType>
         struct base_iterable_provider {
 
-            typedef ContainerType                           iterable_type;
-            typedef SizeType                                size_type;
+            typedef ContainerType                                       container_type;
+            typedef SizeType                                            size_type;
 
         };
 
         template <typename ContainerType, typename SizeType>
         struct direct_iterable_provider : base_iterable_provider < ContainerType, SizeType > {
 
-            typedef typename ContainerType::const_iterator  const_iterator;
-            typedef iterable_type const&                    return_type;
+            typedef typename container_type::const_iterator             const_iterator;
+            typedef container_type                                      iterable_type;
+            typedef iterable_type const&                                return_type;
 
-            static return_type make_iterable(iterable_type const& value, SizeType const& dummy) {
+            static return_type make_iterable(container_type const& value, SizeType const& dummy) {
                 return value;
             }
         };
 
-        template <typename ScalarType, typename SizeType>
-        class scalar_iterable {
-        public:
-            typedef ScalarType scalar_type;
-            typedef SizeType size_type;
+        template <typename ArrayType, typename SizeType>
+        struct array_iterable_provider : base_iterable_provider < ArrayType, SizeType > {
+            enum {
+                ARRAY_SIZE = std::extent<container_type>::value
+            };
 
-        private:
-            scalar_type value;
-            size_type size;
+            typedef typename std::remove_extent<container_type>::type   value_type;
 
-        public:
-            typedef scalar_iterator<scalar_type, size_type> const_iterator;
+            typedef pointer_iterable<value_type, size_type>             iterable_type;
+            typedef typename iterable_type::const_iterator              const_iterator;
+            typedef iterable_type                                       return_type;
 
-            scalar_iterable(scalar_type const& value, size_type const& size) :
-                scalar_iterable::value(value),
-                scalar_iterable::size(size) {
-            }
-
-            const_iterator cbegin() const {
-                return scalar_iterator<scalar_type, size_type>(value);
-            }
-
-            const_iterator cend() const {
-                return scalar_iterator<scalar_type, size_type>(value, size);
+            static return_type make_iterable(container_type const& value, size_type const& size) {
+                return return_type(value, ARRAY_SIZE);
             }
         };
 
         template <typename ScalarType, typename SizeType>
-        struct scalar_iterable_provider : base_iterable_provider < ScalarType, SizeType > {
+        struct scalar_iterable_provider : base_iterable_provider<ScalarType, SizeType> {
 
-            typedef scalar_iterable<iterable_type, size_type>           return_type;
-            typedef typename return_type::const_iterator                const_iterator;
+            typedef scalar_iterable<container_type, size_type>          iterable_type;
+            typedef typename iterable_type::const_iterator              const_iterator;
+            typedef iterable_type                                       return_type;
 
-            static return_type make_iterable(iterable_type const& value, SizeType const& size) {
-                return return_type(value, size);
+            static return_type make_iterable(container_type const& value, size_type const& size) {
+                return iterable_type(value, size);
             }
 
         };
@@ -68,10 +61,16 @@ namespace alterate {
         template <typename ContainerType, typename SizeType = ::alterate::uint_t>
         struct iterable_traits {
 
-            typedef direct_iterable_provider<ContainerType, SizeType>   provider_type;
-            typedef typename provider_type::iterable_type   iterable_type;
-            typedef typename provider_type::return_type     return_type;
-            typedef typename provider_type::const_iterator  const_iterator;
+            typedef ContainerType                                       container_type;
+            typedef SizeType                                            size_type;
+
+            typedef typename std::conditional<std::is_array<container_type>::value, array_iterable_provider<container_type, size_type>,
+                    typename std::conditional<std::is_scalar<container_type>::value, scalar_iterable_provider<container_type, size_type>,
+                             direct_iterable_provider<container_type, size_type> >::type >::type provider_type;
+            
+            typedef typename provider_type::iterable_type               iterable_type;
+            typedef typename provider_type::return_type                 return_type;
+            typedef typename provider_type::const_iterator              const_iterator;
 
         };
 
