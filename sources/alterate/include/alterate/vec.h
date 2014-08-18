@@ -2,9 +2,9 @@
 
 #include "types.h"
 
-#include "../../src/alterate/iterators.h"
-#include "../../src/alterate/functors.h"
-#include "../../src/alterate/functional.h"
+#include <alterate/iterable/iterable.h>
+#include <alterate/functional/functors.h>
+#include <alterate/functional/functional.h>
 
 #include <array>
 
@@ -47,15 +47,15 @@ namespace alterate {
 
 		template <typename U, typename Func>
 		return_type& transform(U const& v, Func const& func) {
-			typedef detail::iterator_for<U> iter;
-			detail::transform_safe(begin(), end(), iter::begin(v), iter::end(v, size()), begin(), func);
+			typedef alterate::iterable::iterator_for<U> iter;
+			alterate::functional::transform_safe(begin(), end(), iter::begin(v), iter::end(v, size()), begin(), func);
 			return get_this();
 		}
 
 		template <typename Result, typename U, typename Func>
 		Result accumulate(U const& v, Func const& func, Result init) const {
-			typedef detail::iterator_for<U> iter;
-			return detail::accumulate_safe(begin(), end(), iter::begin(v), iter::end(v, size()), func, init);
+			typedef alterate::iterable::iterator_for<U> iter;
+            return alterate::functional::accumulate_safe(begin(), end(), iter::begin(v), iter::end(v, size()), func, init);
 		}
 
 		value_type const& comp(uint_t i) const {
@@ -69,18 +69,18 @@ namespace alterate {
 		}
 
 		return_type& negate() {
-			std::for_each(begin(), end(), detail::negate());
+            std::for_each(begin(), end(), alterate::functional::negate());
 			return get_this();
 		}
 
 		template <typename U>
 		value_type dot(U const& v) const {
-			return accumulate(v, detail::multiply(), value_type());
+            return accumulate(v, alterate::functional::multiply(), value_type());
 		}
 
 		template <typename U>
 		value_type dot(std::initializer_list<U> const& v) const {
-			return accumulate(v, detail::multiply(), value_type());
+            return accumulate(v, alterate::functional::multiply(), value_type());
 		}
 
 		value_type length_square() const {
@@ -102,27 +102,27 @@ namespace alterate {
 
 		template <typename U>
 		return_type& operator=(U const& v) {
-			return transform(v, detail::return_2nd());
+			return transform(v, alterate::functional::return_2nd());
 		}
 
 		template <typename U>
 		return_type& operator +=(U const& v) {
-			return transform(v, detail::sum());
+            return transform(v, alterate::functional::sum());
 		}
 
 		template <typename U>
 		return_type& operator -=(U const& v) {
-			return transform(v, detail::subtract());
+            return transform(v, alterate::functional::subtract());
 		}
 
 		template <typename U>
 		return_type& operator *=(U const& v) {
-			return transform(v, detail::multiply());
+            return transform(v, alterate::functional::multiply());
 		}
 
 		template <typename U>
 		return_type& operator /=(U const& v) {
-			return transform(v, detail::divide());
+            return transform(v, alterate::functional::divide());
 		}
 
 		template <typename U>
@@ -148,27 +148,27 @@ namespace alterate {
 
 		template <typename U>
 		return_type& operator=(std::initializer_list<U> const& v) {
-			return transform(v, detail::return_2nd());
+            return transform(v, alterate::functional::return_2nd());
 		}
 
 		template <typename U>
 		return_type& operator+=(std::initializer_list<U> const& v) {
-			return transform(v, detail::sum());
+            return transform(v, alterate::functional::sum());
 		}
 
 		template <typename U>
 		return_type& operator-=(std::initializer_list<U> const& v) {
-			return transform(v, detail::subtract());
+            return transform(v, alterate::functional::subtract());
 		}
 
 		template <typename U>
 		return_type& operator*=(std::initializer_list<U> const& v) {
-			return transform(v, detail::multiply());
+            return transform(v, alterate::functional::multiply());
 		}
 
 		template <typename U>
 		return_type& operator/=(std::initializer_list<U> const& v) {
-			return transform(v, detail::divide());
+            return transform(v, alterate::functional::divide());
 		}
 
 		template <typename U>
