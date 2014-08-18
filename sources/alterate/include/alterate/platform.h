@@ -51,7 +51,7 @@ namespace alterate {
 		MACOS = ALTERATE_MACOS
 	};
 
-#define ALTERATE_CURRENT_PLATFORM (static_cast<platform_t>(ALTERATE_PLATFORM));
+#define ALTERATE_CURRENT_PLATFORM (static_cast<platform_t>(ALTERATE_PLATFORM))
 
 	inline platform_t get_current_platform() {
 		return ALTERATE_CURRENT_PLATFORM;
