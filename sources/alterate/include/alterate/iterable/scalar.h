@@ -95,7 +95,7 @@ namespace alterate {
             }
 
             bool_t operator!=(scalar_iterator const& i) const {
-                return value != i.value || position != i.position;
+                return !operator==(i);
             }
 
             value_type& operator*() {
