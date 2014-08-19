@@ -5,11 +5,12 @@
 namespace alterate {
     namespace iterable {
 
-        template <typename ScalarType, typename SizeType = ::alterate::uint_t>
-        class scalar_iterator : public std::iterator < std::random_access_iterator_tag, ScalarType, SizeType > {
+        template <typename ScalarType, typename SizeType = ::alterate::uint_t, typename OffsetType = ::alterate::int_t>
+        class scalar_iterator : public std::iterator < std::random_access_iterator_tag, ScalarType, OffsetType > {
         public:
-            typedef ScalarType scalar_type;
-            typedef SizeType size_type;
+            typedef ScalarType  scalar_type;
+            typedef SizeType    size_type;
+            typedef OffsetType  offset_type;
 
         private:
             scalar_type value;
@@ -44,11 +45,11 @@ namespace alterate {
                 return *this;
             }
 
-            scalar_iterator operator+(size_type const& offset) {
+            scalar_iterator operator+(offset_type const& offset) {
                 return scalar_iterator(value, position + offset);
             }
 
-            scalar_iterator operator-(size_type const& offset) {
+            scalar_iterator operator-(offset_type const& offset) {
                 return scalar_iterator(value, position - offset);
             }
 
@@ -61,12 +62,12 @@ namespace alterate {
                 return *this;
             }
 
-            scalar_iterator& operator+=(size_type const& offset) {
+            scalar_iterator& operator+=(offset_type const& offset) {
                 position += offset;
                 return *this;
             }
 
-            scalar_iterator& operator-=(size_type const& offset) {
+            scalar_iterator& operator-=(offset_type const& offset) {
                 position -= offset;
                 return *this;
             }
@@ -106,6 +107,10 @@ namespace alterate {
 
             scalar_type const* operator->() {
                 return &value;
+            }
+            
+            scalar_type const& operator[](offset_type const& offset) {
+                return value;
             }
 
         };
