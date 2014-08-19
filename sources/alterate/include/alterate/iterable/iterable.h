@@ -36,12 +36,25 @@ namespace alterate {
 
             typedef typename std::remove_extent<container_type>::type   value_type;
 
-            typedef pointer_iterable<value_type, size_type>             iterable_type;
+            typedef pointer_iterable<const value_type, size_type>             iterable_type;
             typedef typename iterable_type::const_iterator              const_iterator;
             typedef iterable_type                                       return_type;
 
             static return_type make_iterable(container_type const& value, size_type const& size) {
-                return return_type(value, ARRAY_SIZE);
+                return iterable_type(value, ARRAY_SIZE);
+            }
+        };
+
+        template <typename PointerType, typename SizeType>
+        struct pointer_iterable_provider : base_iterable_provider < PointerType, SizeType > {
+
+            typedef typename std::remove_cv<typename std::remove_pointer<container_type>::type>::type  value_type;
+            typedef pointer_iterable<value_type, size_type>                         iterable_type;
+            typedef typename iterable_type::const_iterator                          const_iterator;
+            typedef iterable_type                                                   return_type;
+
+            static return_type make_iterable(container_type const& value, size_type const& size) {
+                return iterable_type(value, size);
             }
         };
 
@@ -65,8 +78,9 @@ namespace alterate {
             typedef SizeType                                            size_type;
 
             typedef typename std::conditional<std::is_array<container_type>::value, array_iterable_provider<container_type, size_type>,
+                    typename std::conditional<std::is_pointer<container_type>::value, pointer_iterable_provider<container_type, size_type>,
                     typename std::conditional<std::is_scalar<container_type>::value, scalar_iterable_provider<container_type, size_type>,
-                             direct_iterable_provider<container_type, size_type> >::type >::type provider_type;
+                             direct_iterable_provider<container_type, size_type> >::type >::type >::type provider_type;
             
             typedef typename provider_type::iterable_type               iterable_type;
             typedef typename provider_type::return_type                 return_type;

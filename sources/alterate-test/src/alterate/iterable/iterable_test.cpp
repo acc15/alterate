@@ -1,7 +1,32 @@
 #include "pch.h"
 
 #include <alterate/iterable/iterable.h>
+#include <alterate/platform.h>
 #include "../../test_utils.h"
+
+
+#if defined(_MSC_VER) && !defined(ALTERATE_RELEASE)
+
+#include <iterator>
+
+template <typename PointerType, typename SizeType>
+stdext::checked_array_iterator<PointerType> make_checked_iterator(PointerType const& ptr, SizeType const& size) {
+    return stdext::checked_array_iterator<PointerType>(ptr, static_cast<std::size_t>(size));
+}
+
+#else 
+
+#if defined(_MSG_VER)
+#   define _SCL_SECURE_NO_WARNINGS
+#endif
+
+template <typename PointerType, typename SizeType>
+PointerType make_checked_iterator(PointerType const& ptr, SizeType const& size) {
+    return ptr;
+}
+
+#endif
+
 
 namespace {
 
@@ -22,6 +47,7 @@ namespace {
         typedef DataSet                             dataset_type;
         typedef typename dataset_type::value_type   dataset_value_type;
         typedef typename dataset_type::size_type    size_type;
+        typedef typename dataset_type::const_iterator    dataset_iterator;
 
         container_type      container;
         dataset_type        dataset;
@@ -41,7 +67,7 @@ namespace {
             return static_cast<To>(from);
         }
 
-    }; 
+    };
 
     template <typename ContainerType, typename DataSetType>
     struct container_test_case : typed_test_case < ContainerType, DataSetType > {
@@ -58,6 +84,22 @@ namespace {
     struct scalar_test_case : typed_test_case < ScalarType, DataSetType > {
         scalar_test_case() {
             container = static_cast<container_type>(dataset.front());
+        }
+    };
+
+    template <typename PointerType, typename DataSetType>
+    struct pointer_test_case : typed_test_case < PointerType, DataSetType > {
+        
+        typedef typename std::remove_cv<typename std::remove_pointer<container_type>::type>::type value_type;
+
+        pointer_test_case() {
+            container = new value_type[dataset.size()];
+            std::transform(dataset.cbegin(), dataset.cend(), make_checked_iterator(container, dataset.size()), static_cast_fn<value_type>());
+        }
+
+        ~pointer_test_case() {
+            delete [] container;
+            container = nullptr;
         }
     };
 
@@ -78,6 +120,7 @@ namespace {
         container_test_case< std::vector<float>, vector_data_set_1>
       , scalar_test_case< double, vector_data_set_2>
       , array_test_case< int[3], vector_data_set_1 >
+      , pointer_test_case< int*, vector_data_set_1 >
     > iterable_test_types;
 
     TYPED_TEST_CASE(iterable_test, iterable_test_types);

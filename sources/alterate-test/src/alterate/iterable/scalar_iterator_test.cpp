@@ -11,6 +11,7 @@ namespace {
     }
 
     TEST(scalar_iterator_test, is_copy_constructible) {
+        int iterator_value = 150;
         scalar_iterator<int> copy_sample(iterator_value, 5);
         scalar_iterator<int> copy_constructible(copy_sample);
     }
@@ -85,7 +86,7 @@ namespace {
 
     TEST(scalar_iterator_test, supports_sub) {
         int iterator_value = 150;
-        const scalar_iterator<int> iter_original(iterator_value);
+        const scalar_iterator<int> iter_original(iterator_value, 5);
         scalar_iterator<int> iter(iter_original);
         scalar_iterator<int> iter_actual = iter - 3;
         scalar_iterator<int> iter_expected(iterator_value, 2);
@@ -149,7 +150,7 @@ namespace {
     
     TEST(scalar_iterator_test, supports_offset_dereference_operator) {
         int iterator_value = 150;
-        scalar_iterator<int> iter1(iterator_value, 7);
+        scalar_iterator<int> iter(iterator_value, 7);
         ASSERT_EQ(150, iter[5]);
         ASSERT_EQ(150, iter[-2]);
     }

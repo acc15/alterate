@@ -15,10 +15,10 @@ namespace alterate {
             value_type* value_ptr; // value ptr
 
         public:
-            scalar_iterator() : value_ptr(null_ptr), position(0) {
+            scalar_iterator() : value_ptr(nullptr), position(0) {
             }
             
-            scalar_iterator(scalar_type& value, size_type const& position = 0) :
+            scalar_iterator(value_type& value, size_type const& position = 0) :
                 scalar_iterator::value_ptr(&value),
                 scalar_iterator::position(position) {
             }
