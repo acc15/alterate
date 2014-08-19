@@ -12,12 +12,13 @@ namespace alterate {
 
         private:
             size_type position;
+            value_type& value; // value reference
 
         public:
             scalar_iterator() : value(), position(0) {
             }
             
-            scalar_iterator(scalar_type const& value, size_type const& position = 0) :
+            scalar_iterator(scalar_type& value, size_type const& position = 0) :
                 scalar_iterator::value(value),
                 scalar_iterator::position(position) {
             }
