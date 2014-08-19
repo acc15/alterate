@@ -134,4 +134,10 @@ namespace {
         ASSERT_FALSE(iter1 <= iter2);
 
     }
+    
+    TEST(scalar_iterator_test, supports_offset_dereference_operator) {
+        scalar_iterator<int> iter1(150, 7);
+        ASSERT_EQ(iter[5], 150);
+        ASSERT_EQ(iter[-2], 150);
+    }
 }
