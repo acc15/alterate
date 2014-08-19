@@ -92,7 +92,7 @@ namespace alterate {
             }
 
             bool_t operator==(scalar_iterator const& i) const {
-                return value == i.value && position == i.position;
+                return &value == &i.value && position == i.position;
             }
 
             bool_t operator!=(scalar_iterator const& i) const {
