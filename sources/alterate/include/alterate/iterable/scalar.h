@@ -133,11 +133,11 @@ namespace alterate {
             }
 
             const_iterator cbegin() const {
-                return const_iterator(&value);
+                return const_iterator(value);
             }
 
             const_iterator cend() const {
-                return const_iterator(&value, size);
+                return const_iterator(value, size);
             }
             
         };
