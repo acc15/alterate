@@ -42,11 +42,11 @@ namespace alterate {
                 return *this;
             }
 
-            scalar_iterator operator+(size_type const& offset) {
+            scalar_iterator operator+(difference_type const& offset) {
                 return scalar_iterator(value, position + offset);
             }
 
-            scalar_iterator operator-(size_type const& offset) {
+            scalar_iterator operator-(difference_type const& offset) {
                 return scalar_iterator(value, position - offset);
             }
 
@@ -59,12 +59,12 @@ namespace alterate {
                 return *this;
             }
 
-            scalar_iterator& operator+=(size_type const& offset) {
+            scalar_iterator& operator+=(difference_type const& offset) {
                 position += offset;
                 return *this;
             }
 
-            scalar_iterator& operator-=(size_type const& offset) {
+            scalar_iterator& operator-=(difference_type const& offset) {
                 position -= offset;
                 return *this;
             }
@@ -106,7 +106,7 @@ namespace alterate {
                 return &value;
             }
             
-            value_type& operator[](size_type const& offset) {
+            value_type& operator[](difference_type const& offset) {
                 return value;
             }
 
@@ -123,7 +123,7 @@ namespace alterate {
             size_type size;
 
         public:
-            typedef scalar_iterator<scalar_type, size_type> const_iterator;
+            typedef scalar_iterator<const scalar_type, size_type> const_iterator;
 
             scalar_iterable(scalar_type const& value, size_type const& size) :
                 scalar_iterable::value(value),
@@ -137,6 +137,7 @@ namespace alterate {
             const_iterator cend() const {
                 return scalar_iterator<scalar_type, size_type>(value, size);
             }
+            
         };
 
 
