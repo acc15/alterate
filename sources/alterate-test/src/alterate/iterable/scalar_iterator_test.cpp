@@ -42,7 +42,7 @@ namespace {
         };
 
         scalar_iterator<test_struct> iter2(test_struct(), 5);
-        ASSERT_EQ( iter2->x, 50);
+        ASSERT_EQ( 50, iter2->x );
     }
 
     TEST(scalar_iterator_test, can_be_incremented) {
@@ -86,8 +86,8 @@ namespace {
     TEST(scalar_iterator_test, supports_sub_from_another) {
         scalar_iterator<int> iter1(150, 10);
         scalar_iterator<int> iter2(150, 4);
-        ASSERT_EQ(iter1 - iter2, 6);
-        ASSERT_EQ(iter2 - iter1, -6);
+        ASSERT_EQ(6, iter1 - iter2);
+        ASSERT_EQ(-6, iter2 - iter1);
     }
 
     TEST(scalar_iterator_test, supports_assignment_add) {
@@ -134,7 +134,7 @@ namespace {
     
     TEST(scalar_iterator_test, supports_offset_dereference_operator) {
         scalar_iterator<int> iter1(150, 7);
-        ASSERT_EQ(iter[5], 150);
-        ASSERT_EQ(iter[2], 150);
+        ASSERT_EQ(150, iter[5]);
+        ASSERT_EQ(150, iter[-2]);
     }
 }
