@@ -84,13 +84,10 @@ namespace {
     }
 
     TEST(scalar_iterator_test, supports_sub_from_another) {
-        const scalar_iterator<int> iter_original(150, 10);
-        scalar_iterator<int> iter(iter_original);
-        scalar_iterator<int> iter_sub(150, 4);
-        scalar_iterator<int> iter_actual = iter - iter_sub;
-        scalar_iterator<int> iter_expected(150, 6);
-        ASSERT_EQ(iter_expected, iter_actual);
-        ASSERT_EQ(iter_original, iter);
+        scalar_iterator<int> iter1(150, 10);
+        scalar_iterator<int> iter2(150, 4);
+        ASSERT_EQ(iter1 - iter2, 6);
+        ASSERT_EQ(iter2 - iter1, -6);
     }
 
     TEST(scalar_iterator_test, supports_assignment_add) {
@@ -138,6 +135,6 @@ namespace {
     TEST(scalar_iterator_test, supports_offset_dereference_operator) {
         scalar_iterator<int> iter1(150, 7);
         ASSERT_EQ(iter[5], 150);
-        ASSERT_EQ(iter[-2], 150);
+        ASSERT_EQ(iter[2], 150);
     }
 }
