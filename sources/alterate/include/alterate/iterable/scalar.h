@@ -12,14 +12,14 @@ namespace alterate {
 
         private:
             size_type position;
-            value_type& value; // value reference
+            value_type* value_ptr; // value ptr
 
         public:
-            scalar_iterator() : value(), position(0) {
+            scalar_iterator() : value_ptr(null_ptr), position(0) {
             }
             
             scalar_iterator(scalar_type& value, size_type const& position = 0) :
-                scalar_iterator::value(value),
+                scalar_iterator::value_ptr(&value),
                 scalar_iterator::position(position) {
             }
 
@@ -44,11 +44,11 @@ namespace alterate {
             }
 
             scalar_iterator operator+(difference_type const& offset) {
-                return scalar_iterator(value, position + offset);
+                return scalar_iterator(*value_ptr, position + offset);
             }
 
             scalar_iterator operator-(difference_type const& offset) {
-                return scalar_iterator(value, position - offset);
+                return scalar_iterator(*value_ptr, position - offset);
             }
 
             difference_type operator-(scalar_iterator const& i) {
@@ -56,6 +56,7 @@ namespace alterate {
             }
 
             scalar_iterator& operator=(scalar_iterator const& i) {
+                value_ptr = i.value_ptr;
                 position = i.position;
                 return *this;
             }
@@ -92,7 +93,7 @@ namespace alterate {
             }
 
             bool_t operator==(scalar_iterator const& i) const {
-                return &value == &i.value && position == i.position;
+                return value_ptr == i.value_ptr && position == i.position;
             }
 
             bool_t operator!=(scalar_iterator const& i) const {
@@ -100,15 +101,15 @@ namespace alterate {
             }
 
             value_type& operator*() {
-                return value;
+                return *value_ptr;
             }
 
             value_type* operator->() {
-                return &value;
+                return value_ptr;
             }
             
             value_type& operator[](difference_type const& offset) {
-                return value;
+                return *value_ptr;
             }
 
         };
@@ -132,11 +133,11 @@ namespace alterate {
             }
 
             const_iterator cbegin() const {
-                return const_iterator(value);
+                return const_iterator(&value);
             }
 
             const_iterator cend() const {
-                return const_iterator(value, size);
+                return const_iterator(&value, size);
             }
             
         };
