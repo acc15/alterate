@@ -101,15 +101,15 @@ namespace alterate {
                 return value != i.value || position != i.position;
             }
 
-            scalar_type const& operator*() {
+            scalar_type& operator*() {
                 return value;
             }
 
-            scalar_type const* operator->() {
+            scalar_type* operator->() {
                 return &value;
             }
             
-            scalar_type const& operator[](size_type const& offset) {
+            scalar_type& operator[](size_type const& offset) {
                 return value;
             }
 
