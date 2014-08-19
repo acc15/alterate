@@ -132,11 +132,11 @@ namespace alterate {
             }
 
             const_iterator cbegin() const {
-                return scalar_iterator<scalar_type, size_type>(value);
+                return const_iterator(value);
             }
 
             const_iterator cend() const {
-                return scalar_iterator<scalar_type, size_type>(value, size);
+                return const_iterator(value, size);
             }
             
         };
