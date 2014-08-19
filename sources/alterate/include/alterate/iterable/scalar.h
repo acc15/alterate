@@ -5,12 +5,12 @@
 namespace alterate {
     namespace iterable {
 
-        template <typename ScalarType, typename SizeType = ::alterate::uint_t, typename OffsetType = ::alterate::int_t>
-        class scalar_iterator : public std::iterator < std::random_access_iterator_tag, ScalarType, OffsetType > {
+        template <typename ScalarType, typename SizeType = ::alterate::uint_t, typename DifferenceType = ::alterate::int_t>
+        class scalar_iterator : public std::iterator < std::random_access_iterator_tag, ScalarType, DifferenceType > {
         public:
-            typedef ScalarType  scalar_type;
-            typedef SizeType    size_type;
-            typedef OffsetType  offset_type;
+            typedef ScalarType      scalar_type;
+            typedef SizeType        size_type;
+            typedef DifferenceType  difference_type;
 
         private:
             scalar_type value;
@@ -53,7 +53,7 @@ namespace alterate {
                 return scalar_iterator(value, position - offset);
             }
 
-            offset_type operator-(scalar_iterator const& i) {
+            difference_type operator-(scalar_iterator const& i) {
                 return position - i.position;
             }
 
