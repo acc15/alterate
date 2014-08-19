@@ -83,11 +83,11 @@ namespace alterate {
             }
 
             bool_t operator<(scalar_iterator const& i) const {
-                return position < i.position;
+                return !operator>=(i);
             }
 
             bool_t operator<=(scalar_iterator const& i) const {
-                return position <= i.position;
+                return !operator>(i);
             }
 
             bool_t operator==(scalar_iterator const& i) const {
