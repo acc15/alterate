@@ -45,16 +45,16 @@ namespace alterate {
                 return *this;
             }
 
-            scalar_iterator operator+(offset_type const& offset) {
+            scalar_iterator operator+(size_type const& offset) {
                 return scalar_iterator(value, position + offset);
             }
 
-            scalar_iterator operator-(offset_type const& offset) {
+            scalar_iterator operator-(size_type const& offset) {
                 return scalar_iterator(value, position - offset);
             }
 
-            scalar_iterator operator-(scalar_iterator const& i) {
-                return scalar_iterator(value, position - i.position);
+            offset_type operator-(scalar_iterator const& i) {
+                return position - i.position;
             }
 
             scalar_iterator& operator=(scalar_iterator const& i) {
@@ -62,12 +62,12 @@ namespace alterate {
                 return *this;
             }
 
-            scalar_iterator& operator+=(offset_type const& offset) {
+            scalar_iterator& operator+=(size_type const& offset) {
                 position += offset;
                 return *this;
             }
 
-            scalar_iterator& operator-=(offset_type const& offset) {
+            scalar_iterator& operator-=(size_type const& offset) {
                 position -= offset;
                 return *this;
             }
@@ -109,7 +109,7 @@ namespace alterate {
                 return &value;
             }
             
-            scalar_type const& operator[](offset_type const& offset) {
+            scalar_type const& operator[](size_type const& offset) {
                 return value;
             }
 
