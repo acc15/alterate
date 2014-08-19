@@ -47,15 +47,17 @@ namespace alterate {
 
 		template <typename U, typename Func>
 		return_type& transform(U const& v, Func const& func) {
-			typedef alterate::iterable::iterator_for<U> iter;
-			alterate::functional::transform_safe(begin(), end(), iter::begin(v), iter::end(v, size()), begin(), func);
+			typedef alterate::iterable::iterable_traits<U, size_type> iterable;
+            iterable::return_type iterable_value = ::alterate::iterable::make_iterable<U, size_type>(v, size());
+			alterate::functional::transform_safe(begin(), end(), iterable_value.begin(), iterable_value.end(), begin(), func);
 			return get_this();
 		}
 
 		template <typename Result, typename U, typename Func>
 		Result accumulate(U const& v, Func const& func, Result init) const {
-			typedef alterate::iterable::iterator_for<U> iter;
-            return alterate::functional::accumulate_safe(begin(), end(), iter::begin(v), iter::end(v, size()), func, init);
+            typedef alterate::iterable::iterable_traits<U, size_type> iterable;
+            iterable::return_type iterable_value = ::alterate::iterable::make_iterable<U, size_type>(v, size());
+            return alterate::functional::accumulate_safe(begin(), end(), iterable_value.begin(), iterable_value.end(), func, init);
 		}
 
 		value_type const& comp(uint_t i) const {

@@ -19,11 +19,11 @@ namespace alterate {
             pointer_iterable(value_type* ptr, size_type size) : pointer_iterable::ptr(ptr), pointer_iterable::size(size) {
             }
 
-            const_iterator cbegin() const {
+            const_iterator begin() const {
                 return ptr;
             }
 
-            const_iterator cend() const {
+            const_iterator end() const {
                 return ptr + size;
             }
         };

@@ -132,11 +132,11 @@ namespace alterate {
                 scalar_iterable::size(size) {
             }
 
-            const_iterator cbegin() const {
+            const_iterator begin() const {
                 return const_iterator(value);
             }
 
-            const_iterator cend() const {
+            const_iterator end() const {
                 return const_iterator(value, size);
             }
             

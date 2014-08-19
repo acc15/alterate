@@ -75,7 +75,7 @@ namespace {
         typedef typename container_type::value_type value_type;
 
         container_test_case() {
-            std::transform(dataset.cbegin(), dataset.cend(), 
+            std::transform(dataset.begin(), dataset.end(), 
                 std::back_insert_iterator<container_type>(container), static_cast_fn<value_type>());
         }
     };
@@ -94,7 +94,7 @@ namespace {
 
         pointer_test_case() {
             container = new value_type[dataset.size()];
-            std::transform(dataset.cbegin(), dataset.cend(), make_checked_iterator(container, dataset.size()), static_cast_fn<value_type>());
+            std::transform(dataset.begin(), dataset.end(), make_checked_iterator(container, dataset.size()), static_cast_fn<value_type>());
         }
 
         ~pointer_test_case() {
@@ -107,7 +107,7 @@ namespace {
     struct array_test_case : typed_test_case < ArrayType, DataSetType > {
         typedef typename std::remove_extent<ArrayType>::type value_type;        
         array_test_case() {
-            std::transform(dataset.cbegin(), dataset.cend(), container, static_cast_fn<value_type>());
+            std::transform(dataset.begin(), dataset.end(), container, static_cast_fn<value_type>());
         }
     };
 
@@ -133,7 +133,7 @@ namespace {
         typedef iterable::const_iterator                                        const_iterator;
 
         return_type iterable_value = alterate::iterable::make_iterable<container_type, size_type>(this->test_case.container, this->test_case.dataset.size());
-        assert_equals(this->test_case.dataset.cbegin(), this->test_case.dataset.cend(), iterable_value.cbegin(), iterable_value.cend());
+        assert_equals(this->test_case.dataset.begin(), this->test_case.dataset.end(), iterable_value.begin(), iterable_value.end());
     }
 
 }
