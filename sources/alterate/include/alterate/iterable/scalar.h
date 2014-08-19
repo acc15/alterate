@@ -8,12 +8,9 @@ namespace alterate {
         template <typename ScalarType, typename SizeType = ::alterate::uint_t, typename DifferenceType = ::alterate::int_t>
         class scalar_iterator : public std::iterator < std::random_access_iterator_tag, ScalarType, DifferenceType > {
         public:
-            typedef ScalarType      scalar_type;
             typedef SizeType        size_type;
-            typedef DifferenceType  difference_type;
 
         private:
-            scalar_type value;
             size_type position;
 
         public:
@@ -101,15 +98,15 @@ namespace alterate {
                 return value != i.value || position != i.position;
             }
 
-            scalar_type& operator*() {
+            value_type& operator*() {
                 return value;
             }
 
-            scalar_type* operator->() {
+            value_type* operator->() {
                 return &value;
             }
             
-            scalar_type& operator[](size_type const& offset) {
+            value_type& operator[](size_type const& offset) {
                 return value;
             }
 
