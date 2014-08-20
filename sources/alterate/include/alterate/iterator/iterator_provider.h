@@ -1,7 +1,7 @@
 #pragma once
 
 #include <alterate/types.h>
-#include <alterate/iterator/scalar.h>
+#include <alterate/iterator/scalar_iterator.h>
 #include <type_traits>
 
 namespace alterate {
@@ -67,7 +67,7 @@ namespace alterate {
         template <typename ScalarType, typename SizeType>
         struct scalar_iterator_provider : base_iterator_provider<ScalarType, SizeType> {
 
-            typedef scalar_iterator<ScalarType> iterator;
+            typedef scalar_iterator< typename std::remove_const<ScalarType>::type, size_type > iterator;
 
             static iterator begin(container_type const& v) {
                 return iterator(v, 0);

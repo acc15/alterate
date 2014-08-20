@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <alterate/iterator/scalar.h>
+#include <alterate/iterator/scalar_iterator.h>
 
 namespace {
 
@@ -120,15 +120,17 @@ namespace {
         ASSERT_EQ(iter_expected, iter);
     }
 
-    TEST(scalar_iterator_test, supports_assignment_sub_another) {
-        int iterator_value = 150;
-        scalar_iterator<int> iter1(iterator_value, 7);
-        scalar_iterator<int> iter2(iterator_value, 4);
-        iter1 -= iter2;
-
-        scalar_iterator<int> iter_expected(iterator_value, 3);
-        ASSERT_EQ(iter_expected, iter1);
-    }
+// not supported by boost::iterator_facade
+//
+//     TEST(scalar_iterator_test, supports_assignment_sub_another) {
+//         int iterator_value = 150;
+//         scalar_iterator<int> iter1(iterator_value, 7);
+//         scalar_iterator<int> iter2(iterator_value, 4);
+//         iter1 -= iter2;
+// 
+//         scalar_iterator<int> iter_expected(iterator_value, 3);
+//         ASSERT_EQ(iter_expected, iter1);
+//     }
 
     TEST(scalar_iterator_test, can_be_compared_by_relational_operators) {
         int iterator_value = 150;
