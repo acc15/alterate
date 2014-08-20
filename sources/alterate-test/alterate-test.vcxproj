@@ -79,8 +79,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\alterate\iterable\iterable_test.cpp" />
-    <ClCompile Include="src\alterate\iterable\scalar_iterator_test.cpp" />
+    <ClCompile Include="src\alterate\iterator\iterator_provider_test.cpp" />
+    <ClCompile Include="src\alterate\iterator\scalar_iterator_test.cpp" />
     <ClCompile Include="src\alterate\vec_test.cpp" />
   </ItemGroup>
   <ItemGroup>

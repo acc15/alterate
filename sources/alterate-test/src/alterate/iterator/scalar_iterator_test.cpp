@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <alterate/iterable/scalar.h>
+#include <alterate/iterator/scalar.h>
 
 namespace {
 

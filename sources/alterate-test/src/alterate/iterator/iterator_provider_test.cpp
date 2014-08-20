@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <alterate/iterable/iterable.h>
+#include <alterate/iterator/iterator_provider.h>
 #include <alterate/platform.h>
 #include "../../test_utils.h"
 
@@ -112,7 +112,7 @@ namespace {
     };
 
     template <typename T>
-    struct iterable_test : public testing::Test {
+    struct iterator_provider_test : public testing::Test {
         T test_case;
     };
     
@@ -121,19 +121,19 @@ namespace {
       , scalar_test_case< double, vector_data_set_2>
       , array_test_case< int[3], vector_data_set_1 >
       , pointer_test_case< int*, vector_data_set_1 >
-    > iterable_test_types;
+    > iterator_provider_test_types;
 
-    TYPED_TEST_CASE(iterable_test, iterable_test_types);
-    TYPED_TEST(iterable_test, make_iterable) {
+    TYPED_TEST_CASE(iterator_provider_test, iterator_provider_test_types);
+    TYPED_TEST(iterator_provider_test, check_iterators) {
 
-        typedef typename TypeParam::container_type                              container_type;
-        typedef typename TypeParam::size_type                                   size_type;
-        typedef alterate::iterable::iterable_traits<container_type, size_type>  iterable;
-        typedef iterable::return_type                                           return_type;
-        typedef iterable::const_iterator                                        const_iterator;
+        typedef typename TypeParam::container_type                                  container_type;
+        typedef typename TypeParam::size_type                                       size_type;
+        typedef alterate::iterable::iterator_provider<container_type, size_type>    iterator_provider;
+        typedef iterator_provider::iterator                                         iterator;
 
-        return_type iterable_value = alterate::iterable::make_iterable<container_type, size_type>(this->test_case.container, this->test_case.dataset.size());
-        assert_equals(this->test_case.dataset.begin(), this->test_case.dataset.end(), iterable_value.begin(), iterable_value.end());
+        assert_equals(this->test_case.dataset.begin(), this->test_case.dataset.end(), 
+            iterator_provider::begin(this->test_case.container), 
+            iterator_provider::end(this->test_case.container, this->test_case.dataset.size()));
     }
 
 }

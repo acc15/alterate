@@ -11,15 +11,15 @@ namespace alterate {
             typedef SizeType        size_type;
 
         private:
-            size_type position;
-            value_type* value_ptr; // value ptr
+            size_type   position;
+            value_type  value;
 
         public:
-            scalar_iterator() : value_ptr(nullptr), position(0) {
+            scalar_iterator() : value(), position(0) {
             }
             
-            scalar_iterator(value_type& value, size_type const& position = 0) :
-                scalar_iterator::value_ptr(&value),
+            scalar_iterator(value_type const& value, size_type const& position = 0) :
+                scalar_iterator::value(value),
                 scalar_iterator::position(position) {
             }
 
@@ -44,11 +44,11 @@ namespace alterate {
             }
 
             scalar_iterator operator+(difference_type const& offset) {
-                return scalar_iterator(*value_ptr, position + offset);
+                return scalar_iterator(value, position + offset);
             }
 
             scalar_iterator operator-(difference_type const& offset) {
-                return scalar_iterator(*value_ptr, position - offset);
+                return scalar_iterator(value, position - offset);
             }
 
             difference_type operator-(scalar_iterator const& i) {
@@ -56,7 +56,7 @@ namespace alterate {
             }
 
             scalar_iterator& operator=(scalar_iterator const& i) {
-                value_ptr = i.value_ptr;
+                value = i.value;
                 position = i.position;
                 return *this;
             }
@@ -93,7 +93,7 @@ namespace alterate {
             }
 
             bool_t operator==(scalar_iterator const& i) const {
-                return value_ptr == i.value_ptr && position == i.position;
+                return value == i.value && position == i.position;
             }
 
             bool_t operator!=(scalar_iterator const& i) const {
@@ -101,47 +101,18 @@ namespace alterate {
             }
 
             value_type& operator*() {
-                return *value_ptr;
+                return value;
             }
 
             value_type* operator->() {
-                return value_ptr;
+                return &value;
             }
             
             value_type& operator[](difference_type const& offset) {
-                return *value_ptr;
+                return value;
             }
 
         };
-
-        template <typename ScalarType, typename SizeType>
-        class scalar_iterable {
-        public:
-            typedef ScalarType scalar_type;
-            typedef SizeType size_type;
-
-        private:
-            scalar_type value;
-            size_type size;
-
-        public:
-            typedef scalar_iterator<const scalar_type, size_type> const_iterator;
-
-            scalar_iterable(scalar_type const& value, size_type const& size) :
-                scalar_iterable::value(value),
-                scalar_iterable::size(size) {
-            }
-
-            const_iterator begin() const {
-                return const_iterator(value);
-            }
-
-            const_iterator end() const {
-                return const_iterator(value, size);
-            }
-            
-        };
-
 
     }
 }
