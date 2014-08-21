@@ -69,6 +69,7 @@
     <ClInclude Include="include\alterate\functional\functional.h" />
     <ClInclude Include="include\alterate\functional\functors.h" />
     <ClInclude Include="include\alterate\iterator\iterator_provider.h" />
+    <ClInclude Include="include\alterate\iterator\random_access_iterator_support.h" />
     <ClInclude Include="src\alterate\functional.h" />
     <ClInclude Include="src\alterate\functors.h" />
     <ClInclude Include="src\alterate\iterable.h" />

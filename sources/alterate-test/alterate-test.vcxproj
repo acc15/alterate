@@ -84,6 +84,7 @@
     <ClCompile Include="src\alterate\iterator\iterator_provider_test.cpp" />
     <ClCompile Include="src\alterate\iterator\scalar_iterator_test.cpp" />
     <ClCompile Include="src\alterate\vec_test.cpp" />
+    <ClCompile Include="src\sandbox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
