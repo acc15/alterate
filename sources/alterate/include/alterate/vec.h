@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-#include <alterate/patterns/crtp_support.h>
+#include <alterate/pattern/crtp_support.h>
 #include <alterate/iterator/iterator_provider.h>
 #include <alterate/functional/functors.h>
 #include <alterate/functional/functional.h>
