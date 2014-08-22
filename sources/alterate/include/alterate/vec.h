@@ -1,34 +1,37 @@
 #pragma once
 
-#include "types.h"
+#include <array>
 
+#include <alterate/types.h>
 #include <alterate/pattern/crtp_support.h>
 #include <alterate/iterator/iterator_provider.h>
 #include <alterate/functional/functors.h>
 #include <alterate/functional/functional.h>
 
-#include <array>
-
 namespace alterate {
     
     template <typename DerivedType, typename BaseType>
     struct basic_vec : BaseType, private alterate::pattern::crtp_support<DerivedType> {
+        
+        typedef typename BaseType::value_type value_type;
+        typedef typename BaseType::size_type size_type;
+        
         basic_vec() {
         }
         
         template <typename U>
         basic_vec(U const& v) {
-            derived() = v;
+            set(v);
         }
         
         template <typename U>
         basic_vec(std::initializer_list<U> const& l) {
-            derived() = l;
+            set(l);
         }
         
         template <typename U>
         derived_type& set(U const& value) {
-            derived() = value;
+            return transform(value, alterate::functional::return_2nd());
         }
         
         template <typename U>
@@ -79,7 +82,12 @@ namespace alterate {
         
         template <typename U>
         derived_type& operator=(U const& v) {
-            return transform(v, alterate::functional::return_2nd());
+            return set(v);
+        }
+
+        template <typename U>
+        derived_type& operator=(std::initializer_list<U> const& v) {
+            return set(v);
         }
         
         template <typename U>
@@ -104,29 +112,24 @@ namespace alterate {
         
         template <typename U>
         derived_type operator +(U const& v) const {
-            return make_copy() += v;
+            return derived_copy() += v;
         }
         
         template <typename U>
         derived_type operator -(U const& v) const {
-            return make_copy() -= v;
+            return derived_copy() -= v;
         }
         
         template <typename U>
         derived_type operator *(U const& v) const {
-            return make_copy() *= v;
+            return derived_copy() *= v;
         }
         
         template <typename U>
         derived_type operator /(U const& v) const {
-            return make_copy() /= v;
+            return derived_copy() /= v;
         }
-        
-        template <typename U>
-        derived_type& operator=(std::initializer_list<U> const& v) {
-            return transform(v, alterate::functional::return_2nd());
-        }
-        
+               
         template <typename U>
         derived_type& operator+=(std::initializer_list<U> const& v) {
             return transform(v, alterate::functional::sum());
@@ -201,10 +204,10 @@ namespace alterate {
         }
     };
     
-    template <uint_t Count, typename T = sp_t>
-    class vec : public basic_vec<std::array<T, Count>, vec<Count, T>> {
+    template <typename T, uint_t Count>
+    class vec : public basic_vec<vec<T, Count>, std::array<T, Count>> {
     public:
-        vec() : basic_vec() {
+        vec() {
         }
         
         template <typename U>

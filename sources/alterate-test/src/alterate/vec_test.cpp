@@ -4,7 +4,7 @@
 
 using namespace alterate;
 
-typedef vec<2, float> test_vec;
+typedef vec<float, 2> test_vec;
 //
 //
 template <typename T>
@@ -34,6 +34,13 @@ TEST(vec_test, ctor_scalar) {
     test_vec v1(a1);
     assert_vec(v1, { 7, 7 });
 }
+
+TEST(vec_test, set) {
+    test_vec v1;
+    v1.set(12.32f);
+    assert_vec(v1, { 12.32f, 12.32f });
+}
+
 
 TEST(vec_test, assign_initializer_list) {
     test_vec v1;

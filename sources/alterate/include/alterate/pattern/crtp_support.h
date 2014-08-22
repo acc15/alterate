@@ -13,14 +13,14 @@ namespace alterate {
             }
 
             derived_type const& derived() const {
-                return *static_cast<derived_type const *>(this);
+                return *static_cast<const derived_type *>(this);
             }
 
             derived_type derived_copy() const {
                 return derived_type(derived());
             }
             
-        }
+        };
         
     }
 }
