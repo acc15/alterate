@@ -42,6 +42,12 @@ namespace alterate {
             return derived();
         }
         
+        template <typename Func>
+        derived_type const& for_each(Func const& func) const {
+            std::for_each(begin(), end(), func);
+            return derived();
+        }
+        
         template <typename U, typename Func>
         derived_type& transform(U const& v, Func const& func) {
             typedef alterate::iterable::iterator_provider<U, size_type> iterator_provider;
