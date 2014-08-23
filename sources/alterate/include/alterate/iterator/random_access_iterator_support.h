@@ -2,8 +2,11 @@
 
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
+#include <boost/assert.hpp>
 
-#include <alterate/pattern/crtp_support.h>
+#include <alterate/types.h>
+#include <alterate/meta/crtp_support.h>
+#include <alterate/meta/copy_const.h>
 
 namespace alterate {
     namespace iterator {
@@ -17,11 +20,11 @@ namespace alterate {
         //
         
         template <typename ContainerType, typename DifferenceType = ::alterate::int_t>
-        class random_access_iterator: boost::iterator_facade<
-            random_access_iterator<ContainerType>,
-            typename ContainerType::value_type, 
+        class random_access_iterator: public boost::iterator_facade<
+            random_access_iterator<ContainerType, DifferenceType>,
+            typename alterate::meta::value_type_of<ContainerType>::type,
             boost::random_access_traversal_tag, 
-            typename ContainerType::value_type&,
+            typename alterate::meta::value_type_of<ContainerType>::type&,
             DifferenceType> 
         {
         public:
@@ -43,9 +46,12 @@ namespace alterate {
                 random_access_iterator::position(position) {
             }
             
+        private:
             friend class boost::iterator_core_access;
             
             reference dereference() const {
+                BOOST_ASSERT_MSG(container_ptr != nullptr, 
+                    "Attempt to dereference default constructed alterate::iterator::random_access_iterator");
                 return (*container_ptr)[position];
             }
             
@@ -65,32 +71,30 @@ namespace alterate {
                 position += n;
             }
             
-            difference_type distance_to(scalar_iterator const& other) const {
+            difference_type distance_to(random_access_iterator const& other) const {
                 return other.position - position;
             }
         };
         
         template <typename Derived, 
                   typename ValueType, 
-                  typename SizeType = alterate::uint_t, 
-                  typename Reference = ValueType&>
-        class random_access_iterator_support: private ::alterate::pattern::crtp_support<Derived> {
+                  typename SizeType = alterate::uint_t>
+        class random_access_iterator_support: private ::alterate::meta::crtp_support<Derived> {
         public:
             typedef ValueType value_type;
             typedef SizeType size_type;
-            typedef Reference reference;
             
-            typedef random_access_iterator<derived_type>        iterator;
-            typedef random_access_iterator<const derived_type>  const_iterator;
-            typedef boost::reverse_iterator<iterator>           reverse_iterator;
-            typedef boost::reverse_iterator<const_iterator>     const_reverse_iterator;
+            typedef random_access_iterator<derived_type>          iterator;
+            typedef random_access_iterator<const derived_type>    const_iterator;
+            typedef boost::reverse_iterator<iterator>             reverse_iterator;
+            typedef boost::reverse_iterator<const_iterator>       const_reverse_iterator;
             
             iterator begin() {
                 return iterator(derived());
             }
             
             iterator end() {
-                return iterator(derived(), size());
+                return iterator(derived(), derived().size());
             }
             
             const_iterator begin() const {
@@ -98,7 +102,7 @@ namespace alterate {
             }
             
             const_iterator end() const {
-                return const_iterator(derived(), size());
+                return const_iterator(derived(), derived().size());
             }
             
             const_iterator cbegin() const {
@@ -106,7 +110,7 @@ namespace alterate {
             }
             
             const_iterator cend() const {
-                return const_iterator(derived(), size());
+                return const_iterator(derived(), derived().size());
             }
             
             reverse_iterator rbegin() {

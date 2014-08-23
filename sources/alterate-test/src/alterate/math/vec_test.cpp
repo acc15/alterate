@@ -1,15 +1,15 @@
 #include "pch.h"
-#include <alterate/vec.h>
-#include "../test_utils.h"
+#include <alterate/math/vec.h>
+#include "../../test_utils.h"
 
-using namespace alterate;
+using namespace alterate::math;
 
 typedef vec<float, 2> test_vec;
 //
 //
 template <typename T>
 void assert_vec(test_vec const& v, std::initializer_list<T> const& expected) {
-    assert_equals_il<test_vec, T>(v, expected);
+    assert_equals(expected, v);
 }
 
 TEST(vec_test, ctor_initializer_list) {

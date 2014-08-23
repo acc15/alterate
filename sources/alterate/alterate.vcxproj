@@ -66,17 +66,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\alterate\math\vector_support.h" />
     <ClInclude Include="include\alterate\functional\functional.h" />
     <ClInclude Include="include\alterate\functional\functors.h" />
     <ClInclude Include="include\alterate\iterator\iterator_provider.h" />
     <ClInclude Include="include\alterate\iterator\random_access_iterator_support.h" />
-    <ClInclude Include="include\alterate\pattern\crtp_support.h" />
+    <ClInclude Include="include\alterate\meta\copy_const.h" />
+    <ClInclude Include="include\alterate\meta\crtp_support.h" />
     <ClInclude Include="src\alterate\functional.h" />
     <ClInclude Include="src\alterate\functors.h" />
     <ClInclude Include="src\alterate\iterable.h" />
     <ClInclude Include="include\alterate\platform.h" />
     <ClInclude Include="include\alterate\types.h" />
-    <ClInclude Include="include\alterate\vec.h" />
+    <ClInclude Include="include\alterate\math\vec.h" />
     <ClInclude Include="include\alterate\iterator\scalar_iterator.h" />
   </ItemGroup>
   <ItemGroup>

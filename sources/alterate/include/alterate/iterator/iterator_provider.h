@@ -1,8 +1,9 @@
 #pragma once
 
+#include <type_traits>
+
 #include <alterate/types.h>
 #include <alterate/iterator/scalar_iterator.h>
-#include <type_traits>
 
 namespace alterate {
     namespace iterable {
@@ -67,7 +68,7 @@ namespace alterate {
         template <typename ScalarType, typename SizeType>
         struct scalar_iterator_provider : base_iterator_provider<ScalarType, SizeType> {
 
-            typedef scalar_iterator< typename std::remove_const<ScalarType>::type, size_type > iterator;
+            typedef scalar_iterator<const ScalarType, size_type > iterator;
 
             static iterator begin(container_type const& v) {
                 return iterator(v, 0);
@@ -81,11 +82,11 @@ namespace alterate {
 
         template <typename ContainerType, typename SizeType>
         struct iterator_provider : public 
-            std::conditional < 
+            std::conditional <
                 std::is_array<ContainerType>::value, array_iterator_provider<ContainerType, SizeType>,
-            typename std::conditional < 
+            typename std::conditional <
                 std::is_pointer<ContainerType>::value, pointer_iterator_provider<ContainerType, SizeType>,
-            typename std::conditional < 
+            typename std::conditional <
                 std::is_scalar<ContainerType>::value, scalar_iterator_provider<ContainerType, SizeType>,
             container_iterator_provider<ContainerType, SizeType> > ::type > ::type > ::type {
 

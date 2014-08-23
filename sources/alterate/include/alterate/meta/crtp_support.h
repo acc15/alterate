@@ -1,7 +1,7 @@
 #pragma once
 
 namespace alterate {
-    namespace pattern {
+    namespace meta {
         
         template <typename Derived>
         struct crtp_support {
