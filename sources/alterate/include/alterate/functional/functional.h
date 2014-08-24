@@ -13,7 +13,9 @@ namespace alterate {
         }
 
         template <typename Result, typename InputIterator1, typename InputIterator2, typename Function>
-        Result accumulate_safe(InputIterator1 in_begin1, InputIterator1 in_end1, InputIterator2 in_begin2, InputIterator2 in_end2, Function func, Result init) {
+        Result accumulate_safe(InputIterator1 in_begin1, InputIterator1 in_end1, 
+                               InputIterator2 in_begin2, InputIterator2 in_end2, 
+                               const Function& func, Result init) {
             for (; in_begin1 != in_end1 && in_begin2 != in_end2; in_begin1++, in_begin2++) {
                 init += func(*in_begin1, *in_begin2);
             }

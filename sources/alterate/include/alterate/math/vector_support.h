@@ -32,34 +32,29 @@ namespace alterate {
             }
 
             template <typename U>
-            vector_support(U const& v) {
-                set(v);
+            vector_support(const U& v) {
+                *this = v;
             }
 
             template <typename U>
-            vector_support(std::initializer_list<U> const& l) {
-                set(l);
+            vector_support(const std::initializer_list<U>& l) {
+                *this = l;
             }
 
-            template <typename U>
-            vector_type& set(U const& value) {
-                return transform(value, alterate::functional::return_2nd());
-            }
-            
             template <typename Func>
-            vector_type& for_each(Func const& func) {
+            vector_type& for_each(const Func& func) {
                 std::for_each(begin(), end(), func);
                 return vector();
             }
 
             template <typename Func>
-            vector_type const& for_each(Func const& func) const {
+            vector_type const& for_each(const Func& func) const {
                 std::for_each(begin(), end(), func);
                 return vector();
             }
 
             template <typename U, typename Func>
-            vector_type& transform(U const& v, Func const& func) {
+            vector_type& transform(const U& v, const Func& func) {
                 typedef alterate::iterable::iterator_provider<U, size_type> iterator_provider;
                 alterate::functional::transform_safe(begin(), end(),
                     iterator_provider::begin(v), iterator_provider::end(v, size()), begin(), func);
@@ -67,7 +62,7 @@ namespace alterate {
             }
 
             template <typename Result, typename U, typename Func>
-            Result accumulate(U const& v, Func const& func, Result init) const {
+            Result accumulate(const U& v, const Func& func, const Result& init) const {
                 typedef alterate::iterable::iterator_provider<U, size_type> iterator_provider;
                 return alterate::functional::accumulate_safe(begin(), end(),
                     iterator_provider::begin(v), iterator_provider::end(v, size()), func, init);
@@ -77,103 +72,93 @@ namespace alterate {
                 return for_each(alterate::functional::negate());
             }
 
-            value_type const& comp(size_type const& i) const {
-                return (*this)[i];
+            template <typename U>
+            vector_type& operator=(const U& v) {
+                return transform(v, alterate::functional::return_2nd());
             }
 
             template <typename U>
-            vector_type& comp(size_type const& i, U const& v) {
-                (*this)[i] = static_cast<value_type>(v);
-                return vector();
+            vector_type& operator=(const std::initializer_list<U>& v) {
+                return transform(v, alterate::functional::return_2nd());
             }
 
             template <typename U>
-            vector_type& operator=(U const& v) {
-                return set(v);
-            }
-
-            template <typename U>
-            vector_type& operator=(std::initializer_list<U> const& v) {
-                return set(v);
-            }
-
-            template <typename U>
-            vector_type& operator +=(U const& v) {
+            vector_type& operator +=(const U& v) {
                 return transform(v, alterate::functional::sum());
             }
 
             template <typename U>
-            vector_type& operator -=(U const& v) {
+            vector_type& operator -=(const U& v) {
                 return transform(v, alterate::functional::subtract());
             }
 
             template <typename U>
-            vector_type& operator *=(U const& v) {
+            vector_type& operator *=(const U& v) {
                 return transform(v, alterate::functional::multiply());
             }
 
             template <typename U>
-            vector_type& operator /=(U const& v) {
+            vector_type& operator /=(const U& v) {
                 return transform(v, alterate::functional::divide());
             }
 
             template <typename U>
-            vector_type operator +(U const& v) const {
+            vector_type operator +(const U& v) const {
                 return copy_vector() += v;
             }
 
             template <typename U>
-            vector_type operator -(U const& v) const {
+            vector_type operator -(const U& v) const {
                 return copy_vector() -= v;
             }
 
             template <typename U>
-            vector_type operator *(U const& v) const {
+            vector_type operator *(const U& v) const {
                 return copy_vector() *= v;
             }
 
             template <typename U>
-            vector_type operator /(U const& v) const {
+            vector_type operator /(const U& v) const {
                 return copy_vector() /= v;
             }
 
             template <typename U>
-            vector_type& operator+=(std::initializer_list<U> const& v) {
+            vector_type& operator+=(const std::initializer_list<U>& v) {
                 return transform(v, alterate::functional::sum());
             }
 
             template <typename U>
-            vector_type& operator-=(std::initializer_list<U> const& v) {
+            vector_type& operator-=(const std::initializer_list<U>& v) {
                 return transform(v, alterate::functional::subtract());
             }
 
             template <typename U>
-            vector_type& operator*=(std::initializer_list<U> const& v) {
+            vector_type& operator*=(const std::initializer_list<U>& v) {
                 return transform(v, alterate::functional::multiply());
             }
 
             template <typename U>
-            vector_type& operator/=(std::initializer_list<U> const& v) {
+            vector_type& operator/=(const std::initializer_list<U>& v) {
                 return transform(v, alterate::functional::divide());
             }
 
             template <typename U>
-            vector_type operator+(std::initializer_list<U> const& v) const {
+            vector_type operator+(const std::initializer_list<U>& v) const {
                 return copy_vector() += v;
             }
 
             template <typename U>
-            vector_type operator-(std::initializer_list<U> const& v) const {
+            vector_type operator-(const std::initializer_list<U>& v) const {
                 return copy_vector() -= v;
             }
 
             template <typename U>
-            vector_type operator*(std::initializer_list<U> const& v) const {
+            vector_type operator*(const std::initializer_list<U>& v) const {
                 return copy_vector() *= v;
             }
 
             template <typename U>
-            vector_type operator/(std::initializer_list<U> const& v) const {
+            vector_type operator/(const std::initializer_list<U>& v) const {
                 return copy_vector() /= v;
             }
 

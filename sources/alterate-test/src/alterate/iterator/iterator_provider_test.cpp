@@ -2,7 +2,7 @@
 
 #include <alterate/iterator/iterator_provider.h>
 #include <alterate/platform.h>
-#include "../../test_utils.h"
+#include "../test/test_utils.h"
 
 
 #if defined(_MSC_VER) && !defined(ALTERATE_RELEASE)
@@ -30,6 +30,8 @@ PointerType make_checked_iterator(PointerType const& ptr, SizeType const& size) 
 
 namespace {
 
+    using namespace alterate::test;
+
     struct vector_data_set_1 : std::vector<int> {
         vector_data_set_1() : std::vector<int>({ 1, 2, 3 }) {
         }
@@ -51,21 +53,6 @@ namespace {
 
         container_type      container;
         dataset_type        dataset;
-
-    };
-
-    template <typename To>
-    struct static_cast_fn {
-        
-        template <typename From>
-        To operator()(From const& from) const {
-            return static_cast<To>(from);
-        }
-
-        template <typename From>
-        To operator()(From& from) const {
-            return static_cast<To>(from);
-        }
 
     };
 
@@ -131,7 +118,7 @@ namespace {
         typedef alterate::iterable::iterator_provider<container_type, size_type>    iterator_provider;
         typedef iterator_provider::iterator                                         iterator;
 
-        assert_equals(this->test_case.dataset.begin(), this->test_case.dataset.end(), 
+        assert_has_equal_elements(this->test_case.dataset.begin(), this->test_case.dataset.end(),
             iterator_provider::begin(this->test_case.container), 
             iterator_provider::end(this->test_case.container, this->test_case.dataset.size()));
     }
