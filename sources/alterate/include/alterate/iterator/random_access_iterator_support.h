@@ -5,7 +5,6 @@
 #include <boost/assert.hpp>
 
 #include <alterate/types.h>
-#include <alterate/meta/crtp_support.h>
 #include <alterate/meta/copy_const.h>
 
 namespace alterate {
@@ -19,12 +18,12 @@ namespace alterate {
         // const reference operator[](size_type const& index) const { return ...; }
         //
         
-        template <typename ContainerType, typename DifferenceType = ::alterate::int_t>
+        template <typename ContainerType, typename ValueType, typename DifferenceType = ::alterate::int_t>
         class random_access_iterator: public boost::iterator_facade<
-            random_access_iterator<ContainerType, DifferenceType>,
-            typename alterate::meta::value_type_of<ContainerType>::type,
+            random_access_iterator<ContainerType, ValueType, DifferenceType>,
+            ValueType,
             boost::random_access_traversal_tag, 
-            typename alterate::meta::value_type_of<ContainerType>::type&,
+            ValueType&,
             DifferenceType> 
         {
         public:
@@ -76,41 +75,52 @@ namespace alterate {
             }
         };
         
-        template <typename Derived, 
+        template <typename ContainerType, 
                   typename ValueType, 
                   typename SizeType = alterate::uint_t>
-        class random_access_iterator_support: private ::alterate::meta::crtp_support<Derived> {
+        class random_access_iterator_support {
+        private:
+            typedef ContainerType container_type;
+
+            container_type& container() {
+                return *static_cast<container_type*>(this);
+            }
+        
+            const container_type& container() const {
+                return *static_cast<const container_type*>(this);
+            }
+
         public:
             typedef ValueType value_type;
             typedef SizeType size_type;
-            
-            typedef random_access_iterator<derived_type>          iterator;
-            typedef random_access_iterator<const derived_type>    const_iterator;
-            typedef boost::reverse_iterator<iterator>             reverse_iterator;
-            typedef boost::reverse_iterator<const_iterator>       const_reverse_iterator;
+
+            typedef random_access_iterator<container_type, value_type>                iterator;
+            typedef random_access_iterator<const container_type, const value_type>    const_iterator;
+            typedef boost::reverse_iterator<iterator>                               reverse_iterator;
+            typedef boost::reverse_iterator<const_iterator>                         const_reverse_iterator;
             
             iterator begin() {
-                return iterator(derived());
+                return iterator(container());
             }
             
             iterator end() {
-                return iterator(derived(), derived().size());
+                return iterator(container(), container().size());
             }
             
             const_iterator begin() const {
-                return const_iterator(derived());
+                return const_iterator(container());
             }
             
             const_iterator end() const {
-                return const_iterator(derived(), derived().size());
+                return const_iterator(container(), container().size());
             }
             
             const_iterator cbegin() const {
-                return const_iterator(derived());
+                return const_iterator(container());
             }
             
             const_iterator cend() const {
-                return const_iterator(derived(), derived().size());
+                return const_iterator(container(), container().size());
             }
             
             reverse_iterator rbegin() {
@@ -136,6 +146,8 @@ namespace alterate {
             const_iterator crend() const {
                 return const_reverse_iterator(begin());
             }
+
+
         };
     }
 }

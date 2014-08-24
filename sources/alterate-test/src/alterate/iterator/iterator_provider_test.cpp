@@ -43,11 +43,11 @@ namespace {
     template <typename Container, typename DataSet>
     struct typed_test_case {
 
-        typedef Container                           container_type;
-        typedef DataSet                             dataset_type;
-        typedef typename dataset_type::value_type   dataset_value_type;
-        typedef typename dataset_type::size_type    size_type;
-        typedef typename dataset_type::const_iterator    dataset_iterator;
+        typedef Container                               container_type;
+        typedef DataSet                                 dataset_type;
+        typedef typename dataset_type::value_type       dataset_value_type;
+        typedef typename dataset_type::size_type        size_type;
+        typedef typename dataset_type::const_iterator   dataset_iterator;
 
         container_type      container;
         dataset_type        dataset;

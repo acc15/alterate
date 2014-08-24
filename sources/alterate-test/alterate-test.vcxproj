@@ -84,7 +84,8 @@
     <ClCompile Include="src\alterate\iterator\iterator_provider_test.cpp" />
     <ClCompile Include="src\alterate\iterator\random_access_iterator_support_test.cpp" />
     <ClCompile Include="src\alterate\iterator\scalar_iterator_test.cpp" />
-    <ClCompile Include="src\alterate\graphic\vec_test.cpp" />
+    <ClCompile Include="src\alterate\math\vector_support_test.cpp" />
+    <ClCompile Include="src\alterate\math\vec_test.cpp" />
     <ClCompile Include="src\sandbox.cpp" />
   </ItemGroup>
   <ItemGroup>
