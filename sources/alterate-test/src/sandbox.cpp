@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-#include "alterate/test/test_utils.h"
+#include "test_utils.h"
 
 #include <alterate/types.h>
 #include <alterate/iterator/random_access_iterator_support.h>

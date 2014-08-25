@@ -2,7 +2,7 @@
 
 #include <alterate/iterator/random_access_iterator_support.h>
 
-#include "../test/test_utils.h"
+#include "test_utils.h"
 
 namespace {
 

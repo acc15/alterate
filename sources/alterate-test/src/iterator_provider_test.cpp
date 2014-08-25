@@ -2,7 +2,7 @@
 
 #include <alterate/iterator/iterator_provider.h>
 #include <alterate/platform.h>
-#include "../test/test_utils.h"
+#include "test_utils.h"
 
 
 #if defined(_MSC_VER) && !defined(ALTERATE_RELEASE)
