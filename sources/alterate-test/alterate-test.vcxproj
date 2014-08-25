@@ -75,22 +75,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="src\iterator_provider_test.cpp" />
+    <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="src\alterate\iterator\iterator_provider_test.cpp" />
-    <ClCompile Include="src\alterate\iterator\random_access_iterator_support_test.cpp" />
-    <ClCompile Include="src\alterate\iterator\scalar_iterator_test.cpp" />
-    <ClCompile Include="src\alterate\math\vector_support_test.cpp" />
-    <ClCompile Include="src\alterate\math\vec_test.cpp" />
+    <ClCompile Include="src\random_access_iterator_support_test.cpp" />
     <ClCompile Include="src\sandbox.cpp" />
+    <ClCompile Include="src\scalar_iterator_test.cpp" />
+    <ClCompile Include="src\vector_support_test.cpp" />
+    <ClCompile Include="src\vec_test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="src\alterate\test\test_utils.h" />
+    <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\test_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

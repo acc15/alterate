@@ -1,6 +1,6 @@
 #include "pch.h"
 #include <alterate/math/vec.h>
-#include "../test/test_utils.h"
+#include "test_utils.h"
 
 namespace {
 

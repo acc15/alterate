@@ -6,7 +6,7 @@
 
 #include <alterate/math/vector_support.h>
 #include <alterate/math/vec.h>
-#include "../test/test_utils.h"
+#include "test_utils.h"
 
 namespace {
 
