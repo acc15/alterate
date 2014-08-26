@@ -10,7 +10,7 @@
 namespace alterate {
     namespace math {
    
-        template <typename ValueType, uint_t Size>
+        template <typename ValueType, size_t Size>
         struct vec_storage : std::array < ValueType, Size > {
         };
         
@@ -21,16 +21,16 @@ namespace alterate {
         struct vec_storage<ValueType, 1> : alterate::iterator::random_access_iterator_support< vec_storage<ValueType, 1> , ValueType> {
             value_type x;
 
-            size_type size() const { return 1; }
+            size_t size() const { return 1; }
             
-            value_type& operator[](const size_type& i) {
+            value_type& operator[](size_t i) {
                 switch (i) {
                 case 0: return x;
                 default: throw make_out_of_range_error();
                 }
             }
             
-            const value_type& operator[](const size_type& i) const {
+            const value_type& operator[](size_t i) const {
                 switch (i) {
                 case 0: return x;
                 default: throw make_out_of_range_error();
@@ -43,9 +43,9 @@ namespace alterate {
             value_type x;
             value_type y;
 
-            size_type size() const { return 2; }
+            size_t size() const { return 2; }
 
-            value_type& operator[](const size_type& i) {
+            value_type& operator[](size_t i) {
                 switch (i) {
                 case 0: return x;
                 case 1: return y;
@@ -53,7 +53,7 @@ namespace alterate {
                 }
             }
 
-            const value_type& operator[](const size_type& i) const {
+            const value_type& operator[](size_t i) const {
                 switch (i) {
                 case 0: return x;
                 case 1: return y;
@@ -68,9 +68,9 @@ namespace alterate {
             value_type y;
             value_type z;
 
-            size_type size() const { return 3; }
+            size_t size() const { return 3; }
 
-            value_type& operator[](const size_type& i) {
+            value_type& operator[](size_t i) {
                 switch (i) {
                 case 0: return x;
                 case 1: return y;
@@ -79,7 +79,7 @@ namespace alterate {
                 }
             }
 
-            const value_type& operator[](const size_type& i) const {
+            const value_type& operator[](size_t i) const {
                 switch (i) {
                 case 0: return x;
                 case 1: return y;
@@ -96,9 +96,9 @@ namespace alterate {
             value_type z;
             value_type w;
 
-            size_type size() const { return 4; }
+            size_t size() const { return 4; }
 
-            value_type& operator[](const size_type& i) {
+            value_type& operator[](size_t i) {
                 switch (i) {
                 case 0: return x;
                 case 1: return y;
@@ -108,7 +108,7 @@ namespace alterate {
                 }
             }
 
-            const value_type& operator[](const size_type& i) const {
+            const value_type& operator[](size_t i) const {
                 switch (i) {
                 case 0: return x;
                 case 1: return y;
@@ -119,7 +119,7 @@ namespace alterate {
             }
         };
 
-        template <typename T, uint_t Count>
+        template <typename T, size_t Count>
         class vec : public basic_vec<vec<T, Count>, vec_storage<T, Count>> {
         public:
             vec() {

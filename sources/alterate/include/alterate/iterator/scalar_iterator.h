@@ -5,25 +5,20 @@
 #include <alterate/types.h>
 
 namespace alterate {
-    namespace iterable {
+    namespace iterator {
 
-        template <typename ScalarType, typename SizeType = ::alterate::uint_t, typename DifferenceType = ::alterate::int_t>
+        template <typename ScalarType>
         class scalar_iterator : public boost::iterator_facade<
-                scalar_iterator<ScalarType, SizeType, DifferenceType>,
+                scalar_iterator<ScalarType>,
                 ScalarType, 
-                boost::random_access_traversal_tag, 
-                ScalarType&,
-                DifferenceType> 
+                boost::random_access_traversal_tag> 
         {
-        public:
-            typedef SizeType        size_type;
-
         private:
-            size_type   position;
+            size_t      position;
             value_type  value;
 
         public:
-            scalar_iterator(value_type const& value = value_type(), size_type const& position = 0) :
+            scalar_iterator(const value_type& value = value_type(), size_t position = 0) :
                 scalar_iterator::value(value),
                 scalar_iterator::position(position) {
             }

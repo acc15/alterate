@@ -70,7 +70,7 @@ namespace {
 
         vector_type vec = array_value;
 
-        alterate::uint_t min_size = std::min<alterate::uint_t>(vec.size(), boost::size(array_value));
+        size_t min_size = std::min(vec.size(), boost::size(array_value));
         assert_has_equal_elements<const value_type*, const_iterator>(
             array_value, array_value + min_size, 
             vec.cbegin(), vec.cbegin() + min_size);
@@ -82,7 +82,7 @@ namespace {
         
         vector_type vec = ptr;
 
-        alterate::uint_t min_size = std::min<alterate::uint_t>(vec.size(), v.size());
+        size_t min_size = std::min(vec.size(), v.size());
         assert_has_equal_elements<const value_type*, const_iterator>(
             ptr, ptr + min_size,
             vec.cbegin(), vec.cbegin() + min_size);

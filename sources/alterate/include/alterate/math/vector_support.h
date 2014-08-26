@@ -26,7 +26,6 @@ namespace alterate {
 
         public:
             typedef typename StorageType::value_type   value_type;
-            typedef typename StorageType::size_type    size_type;
             
             vector_support() {
             }
@@ -55,7 +54,7 @@ namespace alterate {
 
             template <typename U, typename Func>
             vector_type& transform(const U& v, const Func& func) {
-                typedef alterate::iterable::iterator_provider<U, size_type> iterator_provider;
+                typedef alterate::iterator::iterator_provider<U> iterator_provider;
                 alterate::functional::transform_safe(begin(), end(),
                     iterator_provider::begin(v), iterator_provider::end(v, size()), begin(), func);
                 return vector();
@@ -63,7 +62,7 @@ namespace alterate {
 
             template <typename Result, typename U, typename Func>
             Result accumulate(const U& v, const Func& func, const Result& init) const {
-                typedef alterate::iterable::iterator_provider<U, size_type> iterator_provider;
+                typedef alterate::iterator::iterator_provider<U> iterator_provider;
                 return alterate::functional::accumulate_safe(begin(), end(),
                     iterator_provider::begin(v), iterator_provider::end(v, size()), func, init);
             }

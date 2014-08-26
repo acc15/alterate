@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 namespace alterate {
 
     // signed integer (8 bit)
@@ -51,5 +53,8 @@ namespace alterate {
 #    endif
     typedef char                uch_t;
 #endif
+
+    typedef std::size_t         size_t;
+    typedef std::ptrdiff_t      ptrdiff_t;
 
 }

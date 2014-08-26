@@ -6,89 +6,80 @@
 #include <alterate/iterator/scalar_iterator.h>
 
 namespace alterate {
-    namespace iterable {
+    namespace iterator {
         
-        template <typename ContainerType, typename SizeType> 
-        struct base_iterator_provider {
-            typedef ContainerType container_type;
-            typedef SizeType size_type;
-        };
-
-        template <typename ArrayType, typename SizeType>
-        struct array_iterator_provider: base_iterator_provider<ArrayType, SizeType> {
+        template <typename ArrayType>
+        struct array_iterator_provider {
 
             enum {
                 ARRAY_SIZE = std::extent<ArrayType>::value
             };
 
             typedef typename std::add_pointer< 
-                typename std::add_const<typename std::remove_extent<container_type>::type>::type>::type iterator;
+                typename std::add_const<typename std::remove_extent<ArrayType>::type>::type>::type iterator;
 
-            static iterator begin(container_type const& v) {
+            static iterator begin(const ArrayType& v) {
                 return v;
             }
 
-            static iterator end(container_type const& v, 
-                                size_type const& unused) {
+            static iterator end(const ArrayType& v, size_t unused) {
                 return v + ARRAY_SIZE;
             }
         };
 
-        template <typename PointerType, typename SizeType>
-        struct pointer_iterator_provider: base_iterator_provider<PointerType, SizeType> {
+        template <typename PointerType>
+        struct pointer_iterator_provider {
 
             typedef typename std::add_pointer<
-                typename std::add_const<typename std::remove_pointer<container_type>::type>::type>::type iterator;
+                typename std::add_const<typename std::remove_pointer<PointerType>::type>::type>::type iterator;
 
-            static iterator begin(container_type const& v) {
+            static iterator begin(const PointerType& v) {
                 return v;
             }
 
-            static iterator end(container_type const& v, 
-                                size_type const& size) {
+            static iterator end(const PointerType& v, size_t size) {
                 return v + size;
             }
         };
 
 
-        template <typename ContainerType, typename SizeType>
-        struct container_iterator_provider: base_iterator_provider<ContainerType, SizeType> {
+        template <typename ContainerType>
+        struct container_iterator_provider {
 
-            typedef typename container_type::const_iterator iterator;
+            typedef typename ContainerType::const_iterator iterator;
 
-            static iterator begin(container_type const& v) {
+            static iterator begin(const ContainerType& v) {
                 return v.begin();
             }
 
-            static iterator end(container_type const& v, size_type const& size) {
+            static iterator end(const ContainerType& v, size_t size) {
                 return v.end();
             }
         };                                                                                                             
 
-        template <typename ScalarType, typename SizeType>
-        struct scalar_iterator_provider : base_iterator_provider<ScalarType, SizeType> {
+        template <typename ScalarType>
+        struct scalar_iterator_provider {
 
-            typedef scalar_iterator<const ScalarType, size_type > iterator;
+            typedef scalar_iterator<const ScalarType> iterator;
 
-            static iterator begin(container_type const& v) {
+            static iterator begin(const ScalarType& v) {
                 return iterator(v, 0);
             }
 
-            static iterator end(container_type const& v, size_type const& size) {
+            static iterator end(const ScalarType& v, size_t size) {
                 return iterator(v, size);
             }
 
         };
 
-        template <typename ContainerType, typename SizeType>
-        struct iterator_provider : public 
-            std::conditional <
-                std::is_array<ContainerType>::value, array_iterator_provider<ContainerType, SizeType>,
+        template <typename ContainerType>
+        struct iterator_provider : public std::conditional <
+                std::is_array<ContainerType>::value, array_iterator_provider<ContainerType>,
             typename std::conditional <
-                std::is_pointer<ContainerType>::value, pointer_iterator_provider<ContainerType, SizeType>,
+                std::is_pointer<ContainerType>::value, pointer_iterator_provider<ContainerType>,
             typename std::conditional <
-                std::is_scalar<ContainerType>::value, scalar_iterator_provider<ContainerType, SizeType>,
-            container_iterator_provider<ContainerType, SizeType> > ::type > ::type > ::type {
+                std::is_scalar<ContainerType>::value, scalar_iterator_provider<ContainerType>,
+            container_iterator_provider<ContainerType> > ::type > ::type > ::type {
 
         };
 

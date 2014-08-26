@@ -14,15 +14,15 @@ namespace {
         test_struct(int a, int b, int c) : fieldA(a), fieldB(b), fieldC(c) {
         }
 
-        size_type size() const {
+        size_t size() const {
             return 3;
         }
 
-        int& operator[](const size_type& i) {
+        int& operator[](size_t i) {
             return reinterpret_cast<int*>(this)[i];
         }
 
-        const int& operator[](const size_type& i) const {
+        const int& operator[](size_t i) const {
             return reinterpret_cast<const int*>(this)[i];
         }
     };

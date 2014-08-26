@@ -4,7 +4,7 @@
 
 namespace {
 
-    using alterate::iterable::scalar_iterator;
+    using alterate::iterator::scalar_iterator;
 
     TEST(scalar_iterator_test, is_default_constructible) {
         scalar_iterator<int> default_constructible;

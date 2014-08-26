@@ -57,9 +57,8 @@ namespace {
 
     }
 
-    template <typename ValueType, typename BaseType, alterate::uint_t Size>
+    template <typename ValueType, typename BaseType, size_t Size>
     struct vec_info : BaseType {
-        typedef typename BaseType::size_type size_type;
         typedef typename BaseType::value_type value_type;
 
     };
@@ -91,15 +90,15 @@ namespace {
         alterate::iterator::random_access_iterator_support<vec_data<ValueType, Size>, ValueType>,
         Size > {
 
-        size_type size() const {
+        size_t size() const {
             return Size;
         }
 
-        value_type& operator[](const size_type& i) {
+        value_type& operator[](size_t i) {
             return reinterpret_cast<value_type*>(this)[i];
         }
 
-        const value_type& operator[](const size_type& i) const {
+        const value_type& operator[](size_t i) const {
             return reinterpret_cast<const value_type*>(this)[i];
         }
 

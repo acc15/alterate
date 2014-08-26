@@ -114,8 +114,7 @@ namespace {
     TYPED_TEST(iterator_provider_test, check_iterators) {
 
         typedef typename TypeParam::container_type                                  container_type;
-        typedef typename TypeParam::size_type                                       size_type;
-        typedef alterate::iterable::iterator_provider<container_type, size_type>    iterator_provider;
+        typedef alterate::iterator::iterator_provider<container_type>               iterator_provider;
         typedef iterator_provider::iterator                                         iterator;
 
         assert_has_equal_elements(this->test_case.dataset.begin(), this->test_case.dataset.end(),

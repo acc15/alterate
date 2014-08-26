@@ -5,7 +5,6 @@
 #include <boost/assert.hpp>
 
 #include <alterate/types.h>
-#include <alterate/meta/copy_const.h>
 
 namespace alterate {
     namespace iterator {
@@ -18,29 +17,26 @@ namespace alterate {
         // const reference operator[](size_type const& index) const { return ...; }
         //
         
-        template <typename ContainerType, typename ValueType, typename DifferenceType = ::alterate::int_t>
+        template <typename ContainerType, typename ValueType>
         class random_access_iterator: public boost::iterator_facade<
-            random_access_iterator<ContainerType, ValueType, DifferenceType>,
+            random_access_iterator<ContainerType, ValueType>,
             ValueType,
-            boost::random_access_traversal_tag, 
-            ValueType&,
-            DifferenceType> 
+            boost::random_access_traversal_tag> 
         {
         public:
             typedef ContainerType                           container_type;
-            typedef typename container_type::size_type      size_type;
             
         private:
             container_type* container_ptr;
-            size_type position;
+            size_t position;
             
         public:
-            random_access_iterator(size_type position = size_type()) : 
+            random_access_iterator(size_t position = size_t()) :
                 random_access_iterator::container_ptr(nullptr),
                 random_access_iterator::position(position) {
             }
         
-            random_access_iterator(container_type& container, size_type position = size_type()) : 
+            random_access_iterator(container_type& container, size_t position = size_t()) :
                 random_access_iterator::container_ptr(&container),
                 random_access_iterator::position(position) {
             }
@@ -54,7 +50,7 @@ namespace alterate {
                 return (*container_ptr)[position];
             }
             
-            bool_t equal(random_access_iterator const& other) const {
+            bool_t equal(const random_access_iterator& other) const {
                 return container_ptr == other.container_ptr && position == other.position;
             }
             
@@ -75,9 +71,7 @@ namespace alterate {
             }
         };
         
-        template <typename ContainerType, 
-                  typename ValueType, 
-                  typename SizeType = alterate::uint_t>
+        template <typename ContainerType, typename ValueType>
         class random_access_iterator_support {
         private:
             typedef ContainerType container_type;
@@ -92,7 +86,6 @@ namespace alterate {
 
         public:
             typedef ValueType value_type;
-            typedef SizeType size_type;
 
             typedef random_access_iterator<container_type, value_type>                iterator;
             typedef random_access_iterator<const container_type, const value_type>    const_iterator;
