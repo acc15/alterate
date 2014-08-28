@@ -1,7 +1,7 @@
 [Dd]ebug/
 [Rr]elease/
 /sources/ipch/
-/sources/build/
+/build/
 *.aps
 *.vcxproj.*
 *.sdf

@@ -1,12 +1,14 @@
 project(alterate-test)
 cmake_minimum_required(VERSION 2.8)
+                        
+set(BOOST_DIR "" CACHE PATH "Boost library")
 
-set(BOOST_DIR "D:/MyProgs/Libs/C++/boost_1_56_0" CACHE PATH "Boost library")
-set(GTEST_DIR "D:/MyProgs/Libs/C++/gtest-1.7.0" CACHE PATH "Google Test")
+set(GTEST_ROOT "" CACHE PATH "Google Test library")
+find_package(GTest REQUIRED)
 
 set(ALTERATE_DIR "../alterate")
 
-include_directories("${BOOST_DIR}" "${GTEST_DIR}/include" "${ALTERATE_DIR}/include")
+include_directories("${BOOST_DIR}" "${ALTERATE_DIR}/include" "${GTEST_INCLUDE_DIRS}")
 
 aux_source_directory(src SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
