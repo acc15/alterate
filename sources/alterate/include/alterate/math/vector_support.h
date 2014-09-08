@@ -61,7 +61,7 @@ namespace alterate {
             }
 
             template <typename Result, typename U, typename Func>
-            Result accumulate(const U& v, const Func& func, const Result& init) const {
+            Result accumulate(const U& v, const Func& func, const Result& init = Result()) const {
                 typedef alterate::iterator::iterator_provider<U> iterator_provider;
                 return alterate::functional::accumulate_safe(begin(), end(),
                     iterator_provider::begin(v), iterator_provider::end(v, size()), func, init);

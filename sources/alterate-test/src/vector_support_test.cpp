@@ -144,6 +144,41 @@ namespace {
         assert_has_equal_elements(vec2, vec1);
     }
 
+    TYPED_TEST_P(vector_support_test, for_each_test) {
+        vector_type vec1 = make_test_vector_1<value_type>();
+        std::vector<value_type> values;
+        vec1.for_each([&values](value_type& v) {
+            values.push_back(v);
+        });
+        assert_has_equal_elements(vec1, values);
+    }
+
+    TYPED_TEST_P(vector_support_test, accumulate_test) {
+        vector_type vec1 = make_test_vector_1<value_type>();
+        value_type actual = vec1.accumulate<value_type>(
+            make_test_vector_1<value_type>(),
+            [](const value_type& v1, const value_type& v2) { return v1 + v2; });
+
+        value_type expected = value_type();
+        for (value_type& v : vec1) {
+            expected += v + v;
+        }
+
+        ASSERT_EQ(expected, actual);
+    }
+
+    TYPED_TEST_P(vector_support_test, transform_test) {
+        vector_type vec1 = make_test_vector_1<value_type>();
+        vec1.transform(2, [](const value_type& v1, const value_type& v2) {return v1 * v2; });
+
+        vector_type vec2 = make_test_vector_1<value_type>();
+        for (value_type& v : vec2) {
+            v *= 2;
+        }
+
+        assert_has_equal_elements(vec2, vec1);
+
+    }
 
     REGISTER_TYPED_TEST_CASE_P(vector_support_test, 
         constructor_default_test,
@@ -157,7 +192,10 @@ namespace {
         assign_array_test,
         assign_container_test,
         assign_initializer_list_test,
-        assign_copy_test);
+        assign_copy_test,
+        for_each_test,
+        accumulate_test,
+        transform_test);
 
     typedef ::testing::Types< 
         alterate::math::vec<int, 1>, 
