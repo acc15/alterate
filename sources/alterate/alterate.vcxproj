@@ -67,8 +67,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\alterate\error.h" />
-    <ClInclude Include="include\alterate\math\basic_vec.h" />
-    <ClInclude Include="include\alterate\math\vector_support.h" />
+    <ClInclude Include="include\alterate\geometry\basic_vec.h" />
+    <ClInclude Include="include\alterate\geometry\rect2d.h" />
+    <ClInclude Include="include\alterate\core\vector_support.h" />
     <ClInclude Include="include\alterate\functional\functional.h" />
     <ClInclude Include="include\alterate\functional\functors.h" />
     <ClInclude Include="include\alterate\iterator\iterator_provider.h" />
@@ -78,7 +79,7 @@
     <ClInclude Include="src\alterate\iterable.h" />
     <ClInclude Include="include\alterate\platform.h" />
     <ClInclude Include="include\alterate\types.h" />
-    <ClInclude Include="include\alterate\math\vec.h" />
+    <ClInclude Include="include\alterate\geometry\vec.h" />
     <ClInclude Include="include\alterate\iterator\scalar_iterator.h" />
   </ItemGroup>
   <ItemGroup>

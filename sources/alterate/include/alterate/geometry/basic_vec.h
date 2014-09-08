@@ -1,12 +1,12 @@
 #pragma once
 
-#include <alterate/math/vector_support.h>
+#include <alterate/core/vector_support.h>
 
 namespace alterate {
-    namespace math {
+    namespace geometry {
 
         template <typename VectorType, typename StorageType>
-        class basic_vec : public vector_support < VectorType, StorageType > {
+        class basic_vec : public alterate::core::vector_support < VectorType, StorageType > {
         public:
 
             basic_vec() {

@@ -5,7 +5,7 @@
 #include <alterate/functional/functional.h>
 
 namespace alterate {
-    namespace math {
+    namespace core {
 
         template <typename VectorType, typename StorageType>
         class vector_support : public StorageType {

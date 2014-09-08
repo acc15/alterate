@@ -4,8 +4,8 @@
 
 #include <boost/range.hpp>
 
-#include <alterate/math/vector_support.h>
-#include <alterate/math/vec.h>
+#include <alterate/core/vector_support.h>
+#include <alterate/geometry/vec.h>
 #include "test_utils.h"
 
 namespace {
@@ -198,9 +198,9 @@ namespace {
         transform_test);
 
     typedef ::testing::Types< 
-        alterate::math::vec<int, 1>, 
-        alterate::math::vec<float, 3>, 
-        alterate::math::vec<char, 7> 
+        alterate::geometry::vec<int, 1>, 
+        alterate::geometry::vec<float, 3>,
+        alterate::geometry::vec<char, 7>
     > core_vector_types;
     INSTANTIATE_TYPED_TEST_CASE_P(core, vector_support_test, core_vector_types);
 

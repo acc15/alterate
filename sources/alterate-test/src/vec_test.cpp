@@ -1,10 +1,10 @@
 #include "pch.h"
-#include <alterate/math/vec.h>
+#include <alterate/geometry/vec.h>
 #include "test_utils.h"
 
 namespace {
 
-    using namespace alterate::math;
+    using namespace alterate::geometry;
     using namespace alterate::test;
 
     typedef vec<float, 2> test_vec;

@@ -4,11 +4,11 @@
 
 #include <alterate/types.h>
 #include <alterate/error.h>
-#include <alterate/math/basic_vec.h>
+#include <alterate/geometry/basic_vec.h>
 #include <alterate/iterator/random_access_iterator_support.h>
 
 namespace alterate {
-    namespace math {
+    namespace geometry {
    
         template <typename ValueType, size_t Size>
         struct vec_storage : std::array < ValueType, Size > {
