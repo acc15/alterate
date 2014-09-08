@@ -72,6 +72,8 @@
     <ClInclude Include="include\alterate\core\vector_support.h" />
     <ClInclude Include="include\alterate\functional\functional.h" />
     <ClInclude Include="include\alterate\functional\functors.h" />
+    <ClInclude Include="include\alterate\geometry\rect2p.h" />
+    <ClInclude Include="include\alterate\geometry\rect2r.h" />
     <ClInclude Include="include\alterate\iterator\iterator_provider.h" />
     <ClInclude Include="include\alterate\iterator\random_access_iterator_support.h" />
     <ClInclude Include="src\alterate\functional.h" />

@@ -4,57 +4,51 @@ namespace alterate {
     namespace geometry {
 
         template <typename T>
-        class rect2d {
+        class rect2r {
 
         public:
             typedef T value_type;
 
-            T l, t, w, h;
-
-            rect2d& offset(const T& xoff, const T& yoff) {
-                l += xoff;
-                t += yoff;
-                return *this;
-            }
+            T cx, cy, hw, hh;
 
             value_type center_x() const {
-                return l + half_width();
+                return cx;
             }
 
             value_type center_y() const {
-                return t + half_height();
+                return cy;
             }
 
             value_type half_width() const {
-                return w / 2;
+                return hw;
             }
 
             value_type half_height() const {
-                return h / 2;
+                return hh;
             }
 
             value_type left() const {
-                return l;
+                return cx - hw;
             }
 
             value_type top() const {
-                return t;
+                return cy - hh;
             }
 
             value_type right() const {
-                return l + w;
+                return cx + hw;
             }
 
             value_type bottom() const {
-                return t + h;
+                return cy + hh;
             }
 
             value_type width() const {
-                return w;
+                return hw + hw;
             }
 
             value_type height() const {
-                return h;
+                return hh + hh;
             }
 
         };
