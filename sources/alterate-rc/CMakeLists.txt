@@ -1,7 +1,7 @@
 project(alterate-rc)
 cmake_minimum_required(VERSION 2.8)
 
-set(ALTERATE_ROOT "../alterate-lib")
+set(ALTERATE_ROOT "../alterate-core")
 set(BOOST_ROOT "" CACHE PATH "Boost library")
 
 find_package(Boost REQUIRED COMPONENTS system filesystem)

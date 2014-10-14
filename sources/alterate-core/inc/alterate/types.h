@@ -18,6 +18,8 @@ namespace alterate
     typedef char            sch_t;
     typedef wchar_t         wch_t;
 
+    typedef bool            bool_t;
+
 #if !defined(UNICODE) && !defined(_UNICODE)
     typedef sch_t   ch_t;
 #else
