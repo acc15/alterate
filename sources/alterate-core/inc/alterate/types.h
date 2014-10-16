@@ -15,24 +15,24 @@ namespace alterate
     typedef signed char     byte_t;
     typedef signed long     long_t;
 
-    typedef char            sch_t;
+    typedef char            ch_t;
     typedef wchar_t         wch_t;
 
     typedef bool            bool_t;
 
-#if !defined(UNICODE) && !defined(_UNICODE)
-    typedef sch_t   ch_t;
+#if defined(ALTERATE_UNICODE) or defined(UNICODE) or defined(_UNICODE)
+    typedef wch_t           tch_t;
 #else
-    typedef wch_t   ch_t;
+    typedef ch_t            tch_t;
 #endif
 
     typedef float           sp_t;
     typedef double          dp_t;
 
-#ifndef ALTERATE_DOUBLE
-    typedef sp_t            fp_t;
-#else
+#ifdef ALTERATE_DOUBLE
     typedef dp_t            fp_t;
+#else
+    typedef sp_t            fp_t;
 #endif
 
 #ifdef BOOST_NO_CXX11_NULLPTR

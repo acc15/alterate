@@ -1,12 +1,13 @@
 #include <iostream>
+#include <ios>
 #include <fstream>
-#include <sstream>
 #include <vector>
 #include <cstring>
 #include <cctype>
-
 #include <algorithm>
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/unordered_set.hpp>
 //#define BOOST_FILESYSTEM_NO_DEPRECATED
 //#include <boost/filesystem.hpp>
 
@@ -16,56 +17,61 @@
 #include <alterate/string.h>
 
 using namespace alterate;
+using namespace std;
 
 struct rc_args {
-    typedef std::vector<const char*> input_vector;
-    const char* res_dir;
-    const char* out_dir;
+    typedef vector<const char*> input_vector;
+    const char* hpp_path;
+    const char* cpp_path;
     const char* res_ns;
     input_vector inputs;
 };
 
 int parse_args(int argc, const char* argv[], rc_args& args) {
 
-    args.res_dir = "";
-    args.out_dir = "";
+    args.hpp_path = nullptr;
+    args.cpp_path = nullptr;
     args.res_ns = nullptr;
 
-    int nextArgType = 0;
+    char optionChar = 0;
 
-    std::vector<const char*> input_list;
+    vector<const char*> input_list;
     for (unsigned int i=1; i<argc; i++) {
 
         const char* arg = argv[i];
-        switch (nextArgType) {
-        case 1:
-            args.res_dir = arg;
-            break;
+        if (optionChar != 0) {
+            switch (optionChar) {
+            case 'h':
+                args.hpp_path = arg;
+                break;
 
-        case 2:
-            args.out_dir = arg;
-            break;
+            case 'c':
+                args.cpp_path = arg;
+                break;
 
-        case 3:
-            args.res_ns = arg;
-            break;
+            case 'n':
+                args.res_ns = arg;
+                break;
 
-        default:
-            if (strcmp(arg, "-d") == 0) {
-                nextArgType = 1;
-            } else if (strcmp(arg, "-o") == 0) {
-                nextArgType = 2;
-            } else if (strcmp(arg, "-n") == 0) {
-                nextArgType = 3;
-            } else {
-                args.inputs.push_back(arg);
             }
-            continue;
+            optionChar = 0;
+        } else if (strlen(arg) == 2 && arg[0] == '-') {
+            optionChar = arg[1];
+        } else {
+            args.inputs.push_back(arg);
         }
-        nextArgType = 0;
     }
 
-    return 0;
+    uint_t err_count = 0;
+    if (args.hpp_path == nullptr) {
+        cerr << "Header path not specified (-h option)" << endl;
+        ++err_count;
+    }
+    if (args.cpp_path == nullptr) {
+        cerr << "CPP path not specified (-c option)" << endl;
+        ++err_count;
+    }
+    return err_count == 0 ? 0 : -1;
 }
 
 char get_path_separator() {
@@ -81,86 +87,188 @@ bool is_path_separator(char ch) {
 }
 
 char replace_path_char(char ch) {
-    if (is_path_separator(ch) || isspace(ch) || ch == '.') {
+    if (isspace(ch) || ispunct(ch)) {
         return '_';
     }
     return ch;
 }
 
-char to_upper(char ch) {
-    if (ch >= 'a' && ch <= 'z') {
-        return 'A' + (ch - 'a');
+string concat_path(const string& left, const string& right) {
+    if (left.length() > 0 && !is_path_separator(*left.rbegin()) && !is_path_separator(*right.begin())) {
+        return left + get_path_separator() + right;
     }
-    return ch;
+    return left + right;
 }
 
-std::string concat_path(const std::string& dir, const std::string& suffix) {
-    if (dir.length() > 0 && !is_path_separator(*dir.rbegin()) && !is_path_separator(*suffix.begin())) {
-        return dir + get_path_separator() + suffix;
+void print_close_braces(ostream& stream, uint_t count) {
+    while (count > 0) {
+        --count;
+        stream << "}" << endl;
     }
-    return dir + suffix;
 }
 
-template <typename What, typename Char>
-struct repeat_manip {
-    What what;
-    uint_t count;
-
-    repeat_manip(What what, uint_t count) : what(what), count(count) {}
-
-};
-
-template <typename What, typename Char>
-std::basic_ostream<Char>& operator<<(std::basic_ostream<Char>& stream, const repeat_manip<What, Char>& manip) {
-    for (uint_t i=0; i<manip.count; i++) {
-        stream << manip.what;
+uint_t print_namespace_decl(ostream& stream, const char* ns_ptr) {
+    if (ns_ptr == nullptr) {
+        return 0;
     }
-    return stream;
-}
-
-template <typename T>
-repeat_manip<const T*, T> repeat(const T* what, uint_t count) {
-    return repeat_manip<const T*, T>(what, count);
-}
-
-int process_inputs(const rc_args& args) {
-
-    std::string header_path = concat_path(args.out_dir, "resources.h");
-    std::ofstream header_stream(header_path.c_str());
-
-    const char* indent = "    ";
-
-    header_stream << "#pragma once" << std::endl;
-
     uint_t ns_level = 0;
-    if (args.res_ns != nullptr) {
+    string ns(ns_ptr);
+    string::size_type last_idx = 0, idx = 0;
+    while (last_idx != string::npos) {
+        idx = ns.find("::", last_idx);
+        stream << "namespace " << ns.substr(last_idx, idx) << " {" << endl;
+        ++ns_level;
+        last_idx = idx != string::npos ? idx + 2 : idx;
+    }
+    return ns_level;
+}
 
-        std::string ns(args.res_ns);
+bool_t is_uptodate(const char* path, const rc_args& args) {
+    ifstream input_stream(path);
+    if (!input_stream) { // whether file doesnt exists, no permission or invalid path .. doesnt matter i'll try to write
+        return false;
+    }
 
-        std::string::size_type last_idx = 0, idx = 0;
-        while (last_idx != std::string::npos) {
-            idx = ns.find("::", last_idx);
-            header_stream << repeat(indent, ns_level) << "namespace " << ns.substr(last_idx, idx) << " {" << std::endl;
-            ++ns_level;
-            last_idx = idx != std::string::npos ? idx + 2 : idx;
+    boost::unordered_set<string> found_args;
+
+    bool_t mark_found = false;
+    string line;
+    while (getline(input_stream, line)) {
+        bool_t has_mark = boost::starts_with(line, "// ###");
+        if (!mark_found) {
+            mark_found = has_mark;
+            continue;
+        }
+        if (!has_mark) {
+            found_args.insert(line.substr(3));
+        } else {
+            break;
         }
     }
+    input_stream.close();
 
-    uint_t id = 0;
+    boost::unordered_set<string> required_args;
+    std::copy(args.inputs.begin(), args.inputs.end(), std::inserter(required_args, required_args.begin()));
+    if (required_args == found_args) {
+        return true;
+    }
+    return false;
+}
+
+void print_header(ostream& out, const rc_args& args) {
+    out << "// " << endl;
+    out << "// DO NOT EDIT. This file is generated automatically and will be rewritten" << endl;
+    out << "// " << endl;
+    out << "// ### Following values to detect whether this file should be updated or not" << endl;
     for (rc_args::input_vector::const_iterator iter = args.inputs.begin(); iter != args.inputs.end(); iter++) {
-        std::string input_string(*iter);
-        std::transform(input_string.begin(), input_string.end(), input_string.begin(), &replace_path_char);
-        header_stream << repeat(indent, ns_level) << "#define " << input_string << " " << id << std::endl;
-        std::transform(input_string.begin(), input_string.end(), input_string.begin(), &to_upper);
+        out << "// " << (*iter) << endl;
+    }
+    out << "// ###" << endl;
+    out << "// " << endl << endl;
+}
 
-        ++id;
+enum generate_status {
+    UPTODATE,
+    ERROR,
+    SUCCESS
+};
+
+std::ostream& operator<<(std::ostream& stream, const generate_status& status) {
+    switch (status) {
+    case UPTODATE:
+        stream << "up-to-date";
+        break;
+
+    case ERROR:
+        stream << "error";
+        break;
+
+    case SUCCESS:
+        stream << "success";
+        break;
+
+    default:
+        stream << "unknown";
+        break;
+    }
+}
+
+char to_upper(char ch) {
+    return toupper(ch);
+}
+
+generate_status generate_hpp(const rc_args& args) {
+    if (is_uptodate(args.hpp_path, args)) {
+        return UPTODATE;
     }
 
-    while (ns_level > 0) {
-        --ns_level;
-        header_stream << repeat(indent, ns_level) << "}" << std::endl;
+    ofstream header_stream(args.hpp_path);
+    if (!header_stream) {
+        return ERROR;
     }
-    return 0;
+
+    print_header(header_stream, args);
+    header_stream << "#pragma once" << endl << endl << "#include <alterate/resource.h>" << endl << endl;
+
+    uint_t ns_level = print_namespace_decl(header_stream, args.res_ns);
+    header_stream << endl;
+    for (rc_args::input_vector::const_iterator iter = args.inputs.begin(); iter != args.inputs.end(); iter++) {
+        string input_string(*iter);
+        transform(input_string.begin(), input_string.end(), input_string.begin(), &replace_path_char);
+        transform(input_string.begin(), input_string.end(), input_string.begin(), &to_upper);
+        header_stream << "extern const alterate::resource " << input_string << ";" << endl;
+    }
+    header_stream << endl;
+    print_close_braces(header_stream, ns_level);
+    return SUCCESS;
+}
+
+generate_status generate_cpp(const rc_args& args) {
+
+    if (is_uptodate(args.cpp_path, args)) {
+        return UPTODATE;
+    }
+
+    ofstream cpp_stream(args.cpp_path);
+    if (!cpp_stream) {
+        return ERROR;
+    }
+
+    cpp_stream << "// DO NOT EDIT. This file is generated automatically and will be rewritten" << endl;
+    cpp_stream << "// " << endl;
+    cpp_stream << "// ### Following values to detect whether this file should be updated or not" << endl;
+    for (rc_args::input_vector::const_iterator iter = args.inputs.begin(); iter != args.inputs.end(); iter++) {
+        cpp_stream << "// " << (*iter) << endl;
+    }
+    cpp_stream << "// ###" << endl;
+    cpp_stream << "#include \"" << args.hpp_path << "\"" << endl << endl << "using namespace alterate;" << endl << endl;
+
+    for (rc_args::input_vector::const_iterator iter = args.inputs.begin(); iter != args.inputs.end(); iter++) {
+        string input_string(*iter);
+        transform(input_string.begin(), input_string.end(), input_string.begin(), &replace_path_char);
+        cpp_stream << "extern ubyte_t _binary_" << input_string << "_start;" << endl;
+        cpp_stream << "extern ubyte_t _binary_" << input_string << "_end;" << endl;
+        cpp_stream << "extern size_t  _binary_" << input_string << "_size;" << endl;
+        cpp_stream << endl;
+    }
+
+    uint_t ns_level = print_namespace_decl(cpp_stream, args.res_ns);
+    cpp_stream << endl;
+    for (rc_args::input_vector::const_iterator iter = args.inputs.begin(); iter != args.inputs.end(); iter++) {
+        string input_string(*iter);
+        transform(input_string.begin(), input_string.end(), input_string.begin(), &replace_path_char);
+
+        string variable_string(input_string);
+        transform(variable_string.begin(), variable_string.end(), variable_string.begin(), &to_upper);
+
+        cpp_stream << "const alterate::resource " << variable_string << "(" << endl <<
+                      "    _binary_" << input_string << "_start, " << endl <<
+                      "    _binary_" << input_string << "_end, " << endl <<
+                      "    _binary_" << input_string << "_size);" << endl;
+    }
+    cpp_stream << endl;
+    print_close_braces(cpp_stream, ns_level);
+    return !cpp_stream ? ERROR : SUCCESS;
 }
 
 int main(int argc, const char* argv[])
@@ -170,5 +278,19 @@ int main(int argc, const char* argv[])
     if (code != 0) {
         return code;
     }
-    return process_inputs(args);
+
+    cout << "Generating header file to: " << args.hpp_path << "... ";
+    const generate_status hpp_status = generate_hpp(args);
+    cout << hpp_status << endl;
+    if (hpp_status == ERROR) {
+        return -2;
+    }
+
+    cout << "Generating cpp file to: " << args.cpp_path << "... ";
+    const generate_status cpp_status = generate_cpp(args);
+    cout << cpp_status << endl;
+    if (cpp_status == ERROR) {
+        return -2;
+    }
+    return 0;
 }

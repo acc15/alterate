@@ -11,13 +11,15 @@ using namespace alterate;
 
 int main()
 {
-    std::string app_name = resources::load_string(alterate2048::resources::APP_STRINGS);
-    std::string vert_shader = resources::load_string(alterate2048::resources::SHADERS_POSITION_VERT);
-    std::string frag_shader = resources::load_string(alterate2048::resources::SHADERS_POSITION_FRAG);
+    std::string app_name = load_string(alterate2048::resources::APP_STRINGS);
+    std::string vert_shader = load_string(alterate2048::resources::SHADERS_POSITION_VERT);
+    std::string frag_shader = load_string(alterate2048::resources::SHADERS_POSITION_FRAG);
+    std::string super_string = load_string(alterate2048::resources::SUPER_FILE_TXT);
 
     std::cout << app_name << std::endl;
     std::cout << vert_shader << std::endl;
     std::cout << frag_shader << std::endl;
+    std::cout << super_string << std::endl;
 
 //    char* begin = &_binary_app_strings_start;
 //    char* end = &_binary_app_strings_end;
