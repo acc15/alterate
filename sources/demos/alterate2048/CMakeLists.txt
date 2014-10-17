@@ -1,15 +1,8 @@
 project(alterate2048)
 cmake_minimum_required(VERSION 2.8)
 
-set(ALTERATE_ROOT "../../alterate-core")
 set(GLFW_ROOT "" CACHE PATH "GLFW library root directory")
-
 add_subdirectory(${GLFW_ROOT} glfw)
-
-set(BOOST_ROOT "" CACHE PATH "Boost library")
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIR})
-include_directories(${ALTERATE_ROOT}/inc)
 include_directories(${GLFW_ROOT}/include)
 
 set(SRC_DIR src)

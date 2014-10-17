@@ -2,9 +2,6 @@ project(alterate-core)
 cmake_minimum_required(VERSION 2.8)
 
 set(RAPIDJSON_ROOT "" CACHE PATH "RapidJSON library")
-set(BOOST_ROOT "" CACHE PATH "Boost library")
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIR})
 include_directories(${RAPIDJSON_ROOT}/include)
 
 set(INC_DIR inc)
