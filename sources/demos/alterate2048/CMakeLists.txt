@@ -30,22 +30,19 @@ set(RES_OBJ ${CMAKE_CURRENT_BINARY_DIR}/resources.o)
 set(RES_CPP ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp)
 set(RES_H ${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR}/resources.h)
 
-
-add_custom_command(OUTPUT ${RES_OBJ}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${RES_DIR}
-    COMMAND ld -r -b binary -o ${RES_OBJ} ${RES_REL_LIST})
+# TODO move to alterate-rc
+add_custom_command(OUTPUT ${RES_CPP} ${RES_H} ${RES_OBJ}
+    COMMAND alterate-rc -n alterate2048::resources -h ${RES_H} -c ${RES_CPP} -o ${RES_OBJ} ${RES_REL_LIST}
+    DEPENDS ${RES_LIST}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${RES_DIR})
 
 set(SRC_DIR src)
 add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp
     ${RES_H}
     ${RES_CPP}
-    ${RES_OBJ})
-
-add_custom_target(${PROJECT_NAME}-rc
-    COMMAND alterate-rc -n alterate2048::resources -h ${RES_H} -c ${RES_CPP} ${RES_REL_LIST}
-    SOURCES ${RES_LIST})
-add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-rc)
+    ${RES_OBJ}
+    ${RES_LIST})
 
 target_link_libraries(${PROJECT_NAME} alterate-core glfw ${GLFW_LIBRARIES})
 

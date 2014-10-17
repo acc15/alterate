@@ -3,6 +3,7 @@
 #include <string>
 
 #include <alterate/types.h>
+#include <alterate/bundle.h>
 
 namespace alterate {
 
@@ -19,8 +20,9 @@ namespace alterate {
         resource(const ubyte_t& start, const ubyte_t& end, const size_t& size);
     };
 
-
+    //std::istream load_stream(const resource& resource);
+    bundle      load_bundle(const resource& resource);
     std::string load_string(const resource& resource);
-    size_t get_resource_size(const resource& resource);
+    size_t      get_resource_size(const resource& resource);
 
 }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ios>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <cstring>
 #include <cctype>
@@ -23,6 +24,7 @@ struct rc_args {
     typedef vector<const char*> input_vector;
     const char* hpp_path;
     const char* cpp_path;
+    const char* obj_path;
     const char* res_ns;
     input_vector inputs;
 };
@@ -31,6 +33,7 @@ int parse_args(int argc, const char* argv[], rc_args& args) {
 
     args.hpp_path = nullptr;
     args.cpp_path = nullptr;
+    args.obj_path = nullptr;
     args.res_ns = nullptr;
 
     char optionChar = 0;
@@ -47,6 +50,10 @@ int parse_args(int argc, const char* argv[], rc_args& args) {
 
             case 'c':
                 args.cpp_path = arg;
+                break;
+
+            case 'o':
+                args.obj_path = arg;
                 break;
 
             case 'n':
@@ -69,6 +76,10 @@ int parse_args(int argc, const char* argv[], rc_args& args) {
     }
     if (args.cpp_path == nullptr) {
         cerr << "CPP path not specified (-c option)" << endl;
+        ++err_count;
+    }
+    if (args.obj_path == nullptr) {
+        cerr << "OBJ path not specified (-o option)" << endl;
         ++err_count;
     }
     return err_count == 0 ? 0 : -1;
@@ -220,7 +231,7 @@ generate_status generate_hpp(const rc_args& args) {
     }
     header_stream << endl;
     print_close_braces(header_stream, ns_level);
-    return SUCCESS;
+    return !header_stream ? ERROR : SUCCESS;
 }
 
 generate_status generate_cpp(const rc_args& args) {
@@ -271,6 +282,15 @@ generate_status generate_cpp(const rc_args& args) {
     return !cpp_stream ? ERROR : SUCCESS;
 }
 
+generate_status generate_obj(const rc_args& args) {
+    std::stringstream command_line_stream;
+    command_line_stream << "ld -r -b binary -o " << args.obj_path;
+    for (rc_args::input_vector::const_iterator iter = args.inputs.begin(); iter != args.inputs.end(); iter++) {
+        command_line_stream << " " << (*iter);
+    }
+    return system(command_line_stream.str().c_str()) == 0 ? SUCCESS : ERROR;
+}
+
 int main(int argc, const char* argv[])
 {
     rc_args args;
@@ -290,6 +310,13 @@ int main(int argc, const char* argv[])
     const generate_status cpp_status = generate_cpp(args);
     cout << cpp_status << endl;
     if (cpp_status == ERROR) {
+        return -2;
+    }
+
+    cout << "Generating obj file to: " << args.obj_path << "... ";
+    const generate_status obj_status = generate_obj(args);
+    cout << obj_status << endl;
+    if (obj_status == ERROR) {
         return -2;
     }
     return 0;

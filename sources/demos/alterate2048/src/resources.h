@@ -1,5 +1,6 @@
 // 
 // DO NOT EDIT. This file is generated automatically and will be rewritten
+// 
 // ### Following values to detect whether this file should be updated or not
 // app.strings
 // version.txt
