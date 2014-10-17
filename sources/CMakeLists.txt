@@ -9,5 +9,5 @@ set(ALTERATE_ROOT "alterate-core")
 include_directories(${ALTERATE_ROOT}/inc)
 
 add_subdirectory(alterate-core)
-add_subdirectory(alterate-rc)
+add_subdirectory(alterate-gen)
 add_subdirectory(demos/alterate2048)

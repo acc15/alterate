@@ -1,4 +1,4 @@
-project(alterate-rc)
+project(alterate-gen)
 cmake_minimum_required(VERSION 2.8)
 
 include_directories(${ALTERATE_ROOT}/inc)

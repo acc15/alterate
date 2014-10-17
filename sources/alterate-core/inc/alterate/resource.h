@@ -7,6 +7,20 @@
 
 namespace alterate {
 
+#ifdef ALTERATE_WINDOWS
+
+    class resource {
+    private:
+        const uint_t _id;
+
+    public:
+        const uint_t& id() const;
+        resource(const uint_t& id);
+    };
+
+#else 
+
+
     class resource {
     private:
         const ubyte_t&  _start;
@@ -19,6 +33,9 @@ namespace alterate {
         size_t size() const;
         resource(const ubyte_t& start, const ubyte_t& end, const size_t& size);
     };
+
+#endif
+
 
     //std::istream load_stream(const resource& resource);
     bundle      load_bundle(const resource& resource);
