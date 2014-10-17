@@ -12,7 +12,6 @@ set(SRC_LIST
     ${INC_DIR}/alterate/types.h
     ${INC_DIR}/alterate/debug.h
     ${INC_DIR}/alterate/platform.h
-    ${INC_DIR}/alterate/string.h
     ${INC_DIR}/alterate/resource.h
     ${INC_DIR}/alterate/bundle.h
     ${SRC_DIR}/resource.cpp

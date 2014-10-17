@@ -20,7 +20,7 @@ namespace alterate
 
     typedef bool            bool_t;
 
-#if defined(ALTERATE_UNICODE) or defined(UNICODE) or defined(_UNICODE)
+#if defined(ALTERATE_UNICODE) || defined(UNICODE) || defined(_UNICODE)
     typedef wch_t           tch_t;
 #else
     typedef ch_t            tch_t;

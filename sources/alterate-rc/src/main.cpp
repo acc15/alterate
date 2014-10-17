@@ -15,7 +15,6 @@
 
 #include <alterate/types.h>
 #include <alterate/platform.h>
-#include <alterate/string.h>
 
 using namespace alterate;
 using namespace std;
@@ -39,7 +38,7 @@ int parse_args(int argc, const char* argv[], rc_args& args) {
     char optionChar = 0;
 
     vector<const char*> input_list;
-    for (unsigned int i=1; i<argc; i++) {
+    for (int i=1; i<argc; i++) {
 
         const char* arg = argv[i];
         if (optionChar != 0) {
@@ -202,6 +201,7 @@ std::ostream& operator<<(std::ostream& stream, const generate_status& status) {
         stream << "unknown";
         break;
     }
+    return stream;
 }
 
 char to_upper(char ch) {

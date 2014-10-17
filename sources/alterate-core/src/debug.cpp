@@ -1,6 +1,7 @@
 #include <alterate/debug.h>
 
 #ifndef _NDEBUG
+#define _CRT_SECURE_NO_WARNINGS
 #include <ctime>
 
 namespace alterate {
