@@ -23,9 +23,8 @@ set(RES_OBJ ${CMAKE_CURRENT_BINARY_DIR}/resources.o)
 set(RES_CPP ${CMAKE_CURRENT_BINARY_DIR}/resources.cpp)
 set(RES_H ${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR}/resources.h)
 
-# TODO move to alterate-rc
 add_custom_command(OUTPUT ${RES_CPP} ${RES_H} ${RES_OBJ}
-    COMMAND alterate-rc -n alterate2048::resources -h ${RES_H} -c ${RES_CPP} -o ${RES_OBJ} ${RES_REL_LIST}
+    COMMAND alterate-gen -n alterate2048::resources -h ${RES_H} -c ${RES_CPP} -o ${RES_OBJ} ${RES_REL_LIST}
     DEPENDS ${RES_LIST}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${RES_DIR})
 
