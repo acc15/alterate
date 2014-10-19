@@ -1,5 +1,4 @@
 #include <alterate/resource.h>
-#include <rapidjson/document.h>
 
 namespace alterate {
 
@@ -39,21 +38,7 @@ namespace alterate {
 
 bundle load_bundle(const resource &resource) {
     std::string value = load_string(resource);
-
-    boost::unordered_map<std::string, std::string> values;
-
-    rapidjson::Document json;
-    json.Parse(value.c_str());
-
-    for (rapidjson::Document::MemberIterator iter = json.MemberBegin(); iter != json.MemberEnd(); iter++) {
-
-        const char* name = iter->name.GetString();
-        const char* value = iter->value.GetString();
-        values[name] = value;
-
-    }
-
-    return bundle(values);
+    return bundle::parse_json_string(value);
 }
 
 

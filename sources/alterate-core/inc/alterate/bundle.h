@@ -16,6 +16,10 @@ namespace alterate {
         bundle(const boost::unordered_map<std::string, std::string>& map);
 
         std::string operator[](const std::string& key);
+
+
+        static bundle parse_json_string(const std::string& json);
+
     };
 
 }

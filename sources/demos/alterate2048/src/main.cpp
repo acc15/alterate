@@ -22,8 +22,6 @@ using namespace alterate;
 
 int main()
 {
-    ALTERATE_DEBUG("Rotating ship on " << 90 << " degrees");
-
     bundle app_strings = load_bundle(alterate2048::resources::APP_STRINGS);
 
     GLFWwindow* window;
