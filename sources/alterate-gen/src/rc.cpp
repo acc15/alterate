@@ -1,11 +1,14 @@
 #include <iostream>
 #include <ios>
+#include <iterator>
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
+
+
 #include <cstring>
 #include <cctype>
-#include <algorithm>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/unordered_set.hpp>
@@ -282,7 +285,7 @@ generate_status generate_cpp(const rc_args& args) {
 }
 
 generate_status generate_obj(const rc_args& args) {
-    std::stringstream command_line_stream;
+    stringstream command_line_stream;
     command_line_stream << "ld -r -b binary -o " << args.obj_path;
     for (rc_args::input_vector::const_iterator iter = args.inputs.begin(); iter != args.inputs.end(); iter++) {
         command_line_stream << " " << (*iter);
