@@ -1,6 +1,8 @@
 project(alterate2048)
 cmake_minimum_required(VERSION 2.8)
 
+message("Building for ${CMAKE_SYSTEM_NAME}")
+
 set(GLFW_ROOT "" CACHE PATH "GLFW library root directory")
 add_subdirectory(${GLFW_ROOT} glfw)
 include_directories(${GLFW_ROOT}/include)
@@ -35,6 +37,7 @@ add_executable(${PROJECT_NAME}
     ${RES_CPP}
     ${RES_OBJ}
     ${RES_LIST})
+
 
 target_link_libraries(${PROJECT_NAME} alterate-core glfw ${GLFW_LIBRARIES})
 

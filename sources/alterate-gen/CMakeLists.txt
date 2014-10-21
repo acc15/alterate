@@ -7,6 +7,10 @@ set(SRC_DIR src)
 set(SRC_LIST
     ${SRC_DIR}/main.cpp
     ${SRC_DIR}/rc.cpp
+    ${SRC_DIR}/path.h
+    ${SRC_DIR}/path.cpp
+    ${SRC_DIR}/rc_args.h
+    ${SRC_DIR}/rc_args.cpp
     ${SRC_DIR}/rc.h)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 

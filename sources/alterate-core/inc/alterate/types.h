@@ -1,39 +1,33 @@
 #pragma once
 
+// Handle non c++0x compliant compilers
 #include <boost/config.hpp>
+
+// To make size_t and ptrdiff_t defined
+#include <cstddef>
 
 namespace alterate
 {
 
-    typedef unsigned int    uint_t;
-    typedef unsigned short  ushort_t;
-    typedef unsigned char   ubyte_t;
-    typedef unsigned long   ulong_t;
+    typedef unsigned char   byte_t;
 
-    typedef signed int      int_t;
-    typedef signed short    short_t;
-    typedef signed char     byte_t;
-    typedef signed long     long_t;
+// Use size_t to represent counts, unsigned indexes and so on
+// Use standardized (in C99) bool primitive
 
-    typedef char            ch_t;
-    typedef wchar_t         wch_t;
+//    typedef unsigned int    uint_t;
+//    typedef unsigned short  ushort_t;
+//    typedef unsigned long   ulong_t;
 
-    typedef bool            bool_t;
+//    typedef signed int      int_t;
+//    typedef signed short    short_t;
+//    typedef signed char     byte_t;
+//    typedef signed long     long_t;
 
-#if defined(ALTERATE_UNICODE) || defined(UNICODE) || defined(_UNICODE)
-    typedef wch_t           tch_t;
-#else
-    typedef ch_t            tch_t;
-#endif
-
-    typedef float           sp_t;
-    typedef double          dp_t;
-
-#ifdef ALTERATE_DOUBLE
-    typedef dp_t            fp_t;
-#else
-    typedef sp_t            fp_t;
-#endif
+//#ifdef ALTERATE_DOUBLE
+//    typedef double          fp_t;
+//#else
+//    typedef double          fp_t;
+//#endif
 
 #ifdef BOOST_NO_CXX11_NULLPTR
     class nullptr_t

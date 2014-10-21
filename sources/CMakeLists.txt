@@ -1,7 +1,8 @@
 project(alterate)
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_LEGACY_CYGWIN_WIN32 0)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror -Wno-error=pedantic -Wno-c++11-compat")
+
 set(BOOST_ROOT "" CACHE PATH "Boost library")
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})

@@ -69,18 +69,21 @@
 #endif
 
 namespace alterate {
+namespace platform {
 
-    enum platform_t {
-        WINDOWS = ALTERATE_PLATFORM_WINDOWS,
-        ANDROID = ALTERATE_PLATFORM_ANDROID,
-        LINUX = ALTERATE_PLATFORM_LINUX,
-        IOS = ALTERATE_PLATFORM_IOS,
-        MACOS = ALTERATE_PLATFORM_MACOS
-    };
+enum platform_t {
+    WINDOWS = ALTERATE_PLATFORM_WINDOWS,
+    ANDROID = ALTERATE_PLATFORM_ANDROID,
+    LINUX = ALTERATE_PLATFORM_LINUX,
+    IOS = ALTERATE_PLATFORM_IOS,
+    MACOS = ALTERATE_PLATFORM_MACOS
+};
 
-#define ALTERATE_CURRENT_PLATFORM (static_cast< ::alterate::platform_t >(ALTERATE_PLATFORM))
+#define ALTERATE_CURRENT_PLATFORM (static_cast< ::alterate::platform::platform_t >(ALTERATE_PLATFORM))
 
-    inline platform_t get_current_platform() {
-        return ALTERATE_CURRENT_PLATFORM;
-    }
+inline platform_t get_current_platform() {
+    return ALTERATE_CURRENT_PLATFORM;
+}
+
+}
 }

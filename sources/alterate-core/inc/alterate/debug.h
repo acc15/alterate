@@ -12,13 +12,15 @@
     } while (false)
 #   define ALTERATE_DEBUG(message) \
     do { \
-        std::cout << "DEBUG[" << debug_time() << "][" << __FILE__ << "(" << __LINE__ << ")]: " << message << std::endl; \
+        std::cout << "DEBUG[" << ::alterate::debug::debug_time() << "][" << __FILE__ << "(" << __LINE__ << ")]: " << message << std::endl; \
     } while (false)
 
     namespace alterate {
+    namespace debug {
 
         std::string debug_time();
 
+    }
     }
 
 #else

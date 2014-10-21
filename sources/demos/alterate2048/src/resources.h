@@ -17,11 +17,11 @@
 namespace alterate2048 {
 namespace resources {
 
-extern const alterate::resource APP_STRINGS;
-extern const alterate::resource VERSION_TXT;
-extern const alterate::resource SUPER_FILE_TXT;
-extern const alterate::resource SHADERS_POSITION_VERT;
-extern const alterate::resource SHADERS_POSITION_FRAG;
+extern const alterate::resource::locator APP_STRINGS;
+extern const alterate::resource::locator VERSION_TXT;
+extern const alterate::resource::locator SUPER_FILE_TXT;
+extern const alterate::resource::locator SHADERS_POSITION_VERT;
+extern const alterate::resource::locator SHADERS_POSITION_FRAG;
 
 }
 }

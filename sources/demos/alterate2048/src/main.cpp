@@ -8,6 +8,7 @@
 
 using namespace std;
 using namespace alterate;
+using namespace alterate::resource;
 
 //void app_init(alterate::engine& engine) {
 

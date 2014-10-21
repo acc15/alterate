@@ -5,7 +5,7 @@
 #include "rc.h"
 
 int main(int argc, const char* argv[]) {
-    using namespace alterate;
+    using namespace alterate::gen;
 
     std::list<const char*> args;
     std::copy(argv+1, argv+argc, std::back_inserter(args));
@@ -19,7 +19,7 @@ int main(int argc, const char* argv[]) {
     args.pop_front();
 
     if (strcmp(cmd, "rc") == 0) {
-        return alterate::generate_resources(args);
+        return generate_resources(args);
     } else {
         std::cerr << "Unknown command: " << cmd << std::endl;
     }

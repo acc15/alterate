@@ -5,7 +5,9 @@
 #include <alterate/types.h>
 
 namespace alterate {
+namespace gen {
 
-     int_t generate_resources(const std::list<const char*>& args);
+int generate_resources(const std::list<const char*>& args);
 
+}
 }
