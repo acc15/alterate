@@ -7,29 +7,11 @@
 #include <alterate/types.h>
 #include <alterate/debug.h>
 
-
-
-#include "resources.h"
-
 using namespace std;
 using namespace alterate;
-using namespace alterate::resource;
-
-//void app_init(alterate::engine& engine) {
-
-
-//}
-
-//void app_destroy(alterate::engine& engine) {
-
-
-//}
-
 
 int main()
 {
-    bundle app_strings = load_bundle(alterate2048::resources::APP_STRINGS);
-
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -37,9 +19,8 @@ int main()
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, app_strings["window.title"].c_str(), NULL, NULL);
-    if (!window)
-    {
+    window = glfwCreateWindow(640, 480, "alterate2048", NULL, NULL);
+    if (!window) {
         glfwTerminate();
         return -1;
     }
@@ -48,8 +29,7 @@ int main()
     glfwMakeContextCurrent(window);
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         /* Render here */
         float ratio;
         int width, height;
