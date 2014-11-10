@@ -7,8 +7,35 @@
 #include <alterate/types.h>
 #include <alterate/debug.h>
 
+#include <alterate/gl/color.h>
+
 using namespace std;
 using namespace alterate;
+
+class gl_shader {
+
+
+
+};
+
+class draw_context {
+
+public:
+    draw_context& clear_color(const gl_color& color);
+    draw_context& clear();
+
+};
+
+draw_context& draw_context::clear_color(const gl_color &color) {
+    glClearColor(color.red, color.green, color.blue, color.alpha);
+    return *this;
+}
+
+draw_context& draw_context::clear() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    return *this;
+}
+
 
 int main()
 {
@@ -28,6 +55,8 @@ int main()
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    draw_context dc;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
@@ -35,8 +64,10 @@ int main()
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float) height;
+
         glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
+        dc.clear_color(gl_color::RED).clear();
+
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);

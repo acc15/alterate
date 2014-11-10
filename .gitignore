@@ -8,3 +8,5 @@
 *.opensdf
 *.suo
 CMakeLists.txt.user
+.idea/
+

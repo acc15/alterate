@@ -12,8 +12,12 @@ set(SRC_LIST
     ${INC_DIR}/alterate/types.h
     ${INC_DIR}/alterate/debug.h
     ${INC_DIR}/alterate/platform.h
+    ${INC_DIR}/alterate/iterator/scalar_iterator.h
+    ${INC_DIR}/alterate/math/basic_vec.h
+    ${INC_DIR}/alterate/math/vec.h
     ${INC_DIR}/alterate/resource.h
     ${INC_DIR}/alterate/bundle.h
+    ${INC_DIR}/alterate/gl/color.h
     ${SRC_DIR}/resource.cpp
     ${SRC_DIR}/bundle.cpp
     ${SRC_DIR}/debug.cpp)

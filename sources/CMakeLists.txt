@@ -1,7 +1,9 @@
-project(alterate)
+project(alterate CXX)
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror -Wno-error=pedantic -Wno-c++11-compat")
+if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAG} -std=c++11 -Wall -Wextra -Werror -Wno-error=unused-parameter")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 set(BOOST_ROOT "" CACHE PATH "Boost library")
 find_package(Boost REQUIRED)
@@ -11,5 +13,6 @@ set(ALTERATE_ROOT "alterate-core")
 include_directories(${ALTERATE_ROOT}/inc)
 
 add_subdirectory(alterate-core)
+add_subdirectory(alterate-test)
 add_subdirectory(alterate-gen)
 add_subdirectory(demos/alterate2048)
