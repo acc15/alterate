@@ -1,0 +1,23 @@
+project(alterate-test)
+cmake_minimum_required(VERSION 2.8)
+
+enable_testing()
+
+set(GTEST_ROOT "" CACHE PATH "Google Test library")
+add_subdirectory(${GTEST_ROOT} gtest)
+include_directories(${GTEST_ROOT}/include)
+
+
+include_directories(${ALTERATE_ROOT}/inc)
+
+set(SRC_DIR src)
+set(SRC_LIST
+    ${SRC_DIR}/test_utils.h
+    ${SRC_DIR}/iterator_factory_test.cpp
+    ${SRC_DIR}/scalar_iterator_test.cpp)
+add_executable(${PROJECT_NAME} ${SRC_LIST})
+
+target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+#target_link_libraries(${PROJECT_NAME} alterate-core)
+
+add_test(AllTests ${PROJECT_NAME})
