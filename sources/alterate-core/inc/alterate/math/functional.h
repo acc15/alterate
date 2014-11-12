@@ -39,7 +39,7 @@ Result accumulate_safe(InputIterator1 in_begin1, InputIterator1 in_end1,
 
 struct return_2nd {
     template <typename T>
-    T operator()(const T& i1, const T& i2) const {
+    T operator()(const T& /*i1*/, const T& i2) const {
         return i2;
     }
 };

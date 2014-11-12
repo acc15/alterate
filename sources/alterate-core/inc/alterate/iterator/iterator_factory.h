@@ -22,8 +22,7 @@ struct array_iterator_factory {
         return v;
     }
 
-    static iterator end(const ArrayType& v, size_t unused) {
-        ALTERATE_UNUSED(unused);
+    static iterator end(const ArrayType& v, size_t /*unused*/) {
         return v + ARRAY_SIZE;
     }
 };
@@ -53,8 +52,7 @@ struct container_iterator_factory {
         return v.begin();
     }
 
-    static iterator end(const ContainerType& v, size_t size) {
-        ALTERATE_UNUSED(size);
+    static iterator end(const ContainerType& v, size_t /*size*/) {
         return v.end();
     }
 };

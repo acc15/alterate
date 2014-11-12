@@ -6,11 +6,13 @@
 namespace alterate {
 namespace math {
 
-template <typename VectorType>
-class vector_support {
-protected:
-    typedef VectorType vector_type;
+template <typename VectorType, typename ContainerType>
+class vector_support: public ContainerType {
+private:
+    typedef VectorType                              vector_type;
+    typedef ContainerType                           container_type;
 
+protected:
     vector_type& vector() {
         return *static_cast<vector_type*>(this);
     }
@@ -24,46 +26,46 @@ protected:
     }
 
 public:
-    typedef typename VectorType::value_type   value_type;
+    typedef typename container_type::value_type     value_type;
 
-    vector_support() {
+    vector_support() : container_type() {
     }
 
     template <typename U>
-    vector_support(const U& v) {
+    vector_support(const U& v) : container_type() {
         *this = v;
     }
 
     template <typename U>
-    vector_support(const std::initializer_list<U>& l) {
+    vector_support(const std::initializer_list<U>& l) : container_type() {
         *this = l;
     }
 
     template <typename Func>
     vector_type& for_each(const Func& func) {
-        std::for_each(begin(), end(), func);
+        std::for_each(vector().begin(), vector().end(), func);
         return vector();
     }
 
     template <typename Func>
     vector_type const& for_each(const Func& func) const {
-        std::for_each(begin(), end(), func);
+        std::for_each(vector().begin(), vector().end(), func);
         return vector();
     }
 
     template <typename U, typename Func>
     vector_type& transform(const U& v, const Func& func) {
         typedef alterate::iterator::iterator_factory<U> iterator_factory;
-        alterate::math::transform_safe(begin(), end(),
-            iterator_factory::begin(v), iterator_factory::end(v, size()), begin(), func);
+        alterate::math::transform_safe(vector().begin(), vector().end(),
+            iterator_factory::begin(v), iterator_factory::end(v, vector().size()), vector().begin(), func);
         return vector();
     }
 
-    template <typename Result, typename U, typename Func>
-    Result accumulate(const U& v, const Func& func, const Result& init = Result()) const {
+    template <typename U, typename Func>
+    value_type accumulate(const U& v, const Func& func, const value_type& initial = value_type()) const {
         typedef alterate::iterator::iterator_factory<U> iterator_factory;
-        return alterate::math::accumulate_safe(begin(), end(),
-            iterator_factory::begin(v), iterator_factory::end(v, size()), func, init);
+        return alterate::math::accumulate_safe(vector().begin(), vector().end(),
+            iterator_factory::begin(v), iterator_factory::end(v, vector().size()), func, initial);
     }
 
     vector_type& negate() {

@@ -14,6 +14,7 @@ set(SRC_DIR src)
 set(SRC_LIST
     ${SRC_DIR}/test_utils.h
     ${SRC_DIR}/iterator_factory_test.cpp
+    ${SRC_DIR}/vector_support_test.cpp
     ${SRC_DIR}/scalar_iterator_test.cpp)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 

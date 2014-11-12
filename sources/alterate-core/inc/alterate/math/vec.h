@@ -6,16 +6,20 @@ namespace alterate {
 namespace math {
 
 template <size_t Count, typename T>
-class vec: public std::array<T, Count>, public basic_vec< vec<Count,T> > {
+class vec: public basic_vec< vec<Count,T>, std::array<T, Count> > {
 public:
 
-    typedef std::array<T,Count> array_type;
+    typedef basic_vec< vec<Count,T>, std::array<T,Count> >   basic_vec_type;
 
-    vec(): array_type() {
+    vec() : basic_vec_type() {
     }
 
     template <typename U>
-    vec(const U& p) {
+    vec(const U& p) : basic_vec_type(p) {
+    }
+
+    template <typename U>
+    vec(std::initializer_list<U> const& l) : basic_vec_type(l) {
     }
 
 

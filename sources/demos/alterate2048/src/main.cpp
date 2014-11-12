@@ -4,8 +4,7 @@
 
 #include <GL/gl.h>
 
-#include <alterate/types.h>
-#include <alterate/debug.h>
+#include <alterate/defs.h>
 
 #include <alterate/gl/color.h>
 

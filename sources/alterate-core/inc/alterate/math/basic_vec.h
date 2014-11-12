@@ -1,57 +1,44 @@
 #pragma once
 
-#include <alterate/types.h>
+#include <alterate/defs.h>
 #include <alterate/math/vector_support.h>
 
 namespace alterate {
 namespace math {
 
-//template <typename T>
-//struct const_iterator_factory {
-
-//    typedef typename T::const_iterator iterator;
-
-//    static iterator begin(const T& container) {
-//        return container.begin();
-//    }
-
-//    static iterator end(const T& container, size_t limit) {
-//        return container.end();
-//    }
-
-//};
-
-template <typename VectorType>
-class basic_vec: public vector_support<VectorType> {
-protected:
-
-    typedef typename vector_support<VectorType>::vector_type vector_type;
+template <typename VectorType, typename ContainerType>
+class basic_vec: public vector_support<VectorType, ContainerType> {
+private:
+    typedef vector_support<VectorType, ContainerType>   support_type;
+    typedef VectorType                                  vector_type;
+    typedef ContainerType                               container_type;
 
 public:
+    typedef typename container_type::value_type         value_type;
 
-    basic_vec() {
+    basic_vec() : support_type() {
     }
 
     template <typename U>
-    basic_vec(U const& v) : vector_support(v) {
+    basic_vec(U const& v) : support_type(v) {
     }
 
     template <typename U>
-    basic_vec(std::initializer_list<U> const& l) : vector_support(l) {
+    basic_vec(std::initializer_list<U> const& l) : support_type(l) {
     }
 
     template <typename U>
     value_type dot(U const& v) const {
-        return accumulate(v, alterate::functional::multiply(), value_type());
+        return accumulate(v, alterate::math::multiply(), value_type());
     }
 
     template <typename U>
     value_type dot(std::initializer_list<U> const& v) const {
-        return accumulate(v, alterate::functional::multiply(), value_type());
+        return accumulate(v, alterate::math::multiply(), value_type());
     }
 
     value_type length_square() const {
-        return dot(vector());
+        return dot(support_type::vector());
     }
 
     value_type length() const {
@@ -59,12 +46,12 @@ public:
     }
 
     vector_type& normalize() {
-        return vector() /= length();
+        return support_type::vector() /= length();
     }
 
     template <typename U>
     vector_type& resize(U const& to_length) {
-        return vector() *= (to_length / length());
+        return support_type::vector() *= (to_length / length());
     }
 
 };

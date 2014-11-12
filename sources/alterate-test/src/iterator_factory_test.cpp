@@ -17,8 +17,7 @@ stdext::checked_array_iterator<PointerType> make_checked_iterator(const PointerT
 #else
 
 template <typename PointerType>
-PointerType make_checked_iterator(const PointerType& ptr, size_t size) {
-    ALTERATE_UNUSED(size);
+PointerType make_checked_iterator(const PointerType& ptr, size_t /*size*/) {
     return ptr;
 }
 

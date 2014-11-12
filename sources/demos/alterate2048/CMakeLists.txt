@@ -9,5 +9,6 @@ set(SRC_DIR src)
 add_executable(${PROJECT_NAME}
     ${SRC_DIR}/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} alterate-core glfw ${GLFW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} glfw ${GLFW_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} alterate-core)
 

@@ -6,8 +6,6 @@
 // To make size_t and ptrdiff_t defined
 #include <cstddef>
 
-#define ALTERATE_UNUSED(x) ((void)x)
-
 namespace alterate
 {
 
