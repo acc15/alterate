@@ -1,5 +1,10 @@
 #pragma once
 
+#if __cplusplus < 201103L
+#   error "Only C++11 compilers supported"
+#endif
+
+
 // Handle non c++0x compliant compilers
 #include <boost/config.hpp>
 
@@ -29,21 +34,5 @@ namespace alterate
 //    typedef double          fp_t;
 //#endif
 
-#ifdef BOOST_NO_CXX11_NULLPTR
-    class nullptr_t
-    {
-    public:
-        template<class T> inline operator T*() const { return 0; }
-        template<class C, class T> inline operator T C::*() const { return 0; }
-
-    private:
-        void operator&() const;  // Can't take address of nullptr
-    };
-#endif
-
 }
-
-#ifdef BOOST_NO_CXX11_NULLPTR
-const alterate::nullptr_t nullptr = {};
-#endif
 

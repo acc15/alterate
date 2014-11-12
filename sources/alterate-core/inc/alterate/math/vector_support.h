@@ -1,169 +1,55 @@
 #pragma once
 
-#include <alterate/iterator/iterator_factory.h>
-#include <alterate/math/functional.h>
+#include <alterate/math/generic_vector_support.h>
 
 namespace alterate {
 namespace math {
 
-template <typename VectorType, typename ContainerType>
-class vector_support: public ContainerType {
+template <typename VectorType, typename ValueType>
+class vector_support: public generic_vector_support<VectorType, ValueType> {
 private:
-    typedef VectorType                              vector_type;
-    typedef ContainerType                           container_type;
-
-protected:
-    vector_type& vector() {
-        return *static_cast<vector_type*>(this);
-    }
-
-    const vector_type& vector() const {
-        return *static_cast<const vector_type*>(this);
-    }
-
-    vector_type copy_vector() const {
-        return vector_type(vector());
-    }
+    typedef generic_vector_support<VectorType, ValueType>   generic_vector_support_type;
 
 public:
-    typedef typename container_type::value_type     value_type;
+    typedef VectorType                                      vector_type;
+    typedef ValueType                                       value_type;
 
-    vector_support() : container_type() {
+    vector_support() {
     }
 
     template <typename U>
-    vector_support(const U& v) : container_type() {
-        *this = v;
+    vector_support(U const& v) : generic_vector_support_type(v) {
     }
 
     template <typename U>
-    vector_support(const std::initializer_list<U>& l) : container_type() {
-        *this = l;
-    }
-
-    template <typename Func>
-    vector_type& for_each(const Func& func) {
-        std::for_each(vector().begin(), vector().end(), func);
-        return vector();
-    }
-
-    template <typename Func>
-    vector_type const& for_each(const Func& func) const {
-        std::for_each(vector().begin(), vector().end(), func);
-        return vector();
-    }
-
-    template <typename U, typename Func>
-    vector_type& transform(const U& v, const Func& func) {
-        typedef alterate::iterator::iterator_factory<U> iterator_factory;
-        alterate::math::transform_safe(vector().begin(), vector().end(),
-            iterator_factory::begin(v), iterator_factory::end(v, vector().size()), vector().begin(), func);
-        return vector();
-    }
-
-    template <typename U, typename Func>
-    value_type accumulate(const U& v, const Func& func, const value_type& initial = value_type()) const {
-        typedef alterate::iterator::iterator_factory<U> iterator_factory;
-        return alterate::math::accumulate_safe(vector().begin(), vector().end(),
-            iterator_factory::begin(v), iterator_factory::end(v, vector().size()), func, initial);
-    }
-
-    vector_type& negate() {
-        return for_each(alterate::math::negate());
+    vector_support(std::initializer_list<U> const& l) : generic_vector_support_type(l) {
     }
 
     template <typename U>
-    vector_type& operator=(const U& v) {
-        return transform(v, alterate::math::return_2nd());
+    value_type dot(U const& v) const {
+        return accumulate(v, alterate::math::multiply(), value_type());
     }
 
     template <typename U>
-    vector_type& operator=(const std::initializer_list<U>& v) {
-        return transform(v, alterate::math::return_2nd());
+    value_type dot(std::initializer_list<U> const& v) const {
+        return accumulate(v, alterate::math::multiply(), value_type());
+    }
+
+    value_type length_square() const {
+        return dot(generic_vector_support_type::vector());
+    }
+
+    value_type length() const {
+        return sqrt(length_square());
+    }
+
+    vector_type& normalize() {
+        return generic_vector_support_type::vector() /= length();
     }
 
     template <typename U>
-    vector_type& operator +=(const U& v) {
-        return transform(v, alterate::math::sum());
-    }
-
-    template <typename U>
-    vector_type& operator -=(const U& v) {
-        return transform(v, alterate::math::subtract());
-    }
-
-    template <typename U>
-    vector_type& operator *=(const U& v) {
-        return transform(v, alterate::math::multiply());
-    }
-
-    template <typename U>
-    vector_type& operator /=(const U& v) {
-        return transform(v, alterate::math::divide());
-    }
-
-    template <typename U>
-    vector_type operator +(const U& v) const {
-        return copy_vector() += v;
-    }
-
-    template <typename U>
-    vector_type operator -(const U& v) const {
-        return copy_vector() -= v;
-    }
-
-    template <typename U>
-    vector_type operator *(const U& v) const {
-        return copy_vector() *= v;
-    }
-
-    template <typename U>
-    vector_type operator /(const U& v) const {
-        return copy_vector() /= v;
-    }
-
-    template <typename U>
-    vector_type& operator+=(const std::initializer_list<U>& v) {
-        return transform(v, alterate::math::sum());
-    }
-
-    template <typename U>
-    vector_type& operator-=(const std::initializer_list<U>& v) {
-        return transform(v, alterate::math::subtract());
-    }
-
-    template <typename U>
-    vector_type& operator*=(const std::initializer_list<U>& v) {
-        return transform(v, alterate::math::multiply());
-    }
-
-    template <typename U>
-    vector_type& operator/=(const std::initializer_list<U>& v) {
-        return transform(v, alterate::math::divide());
-    }
-
-    template <typename U>
-    vector_type operator+(const std::initializer_list<U>& v) const {
-        return copy_vector() += v;
-    }
-
-    template <typename U>
-    vector_type operator-(const std::initializer_list<U>& v) const {
-        return copy_vector() -= v;
-    }
-
-    template <typename U>
-    vector_type operator*(const std::initializer_list<U>& v) const {
-        return copy_vector() *= v;
-    }
-
-    template <typename U>
-    vector_type operator/(const std::initializer_list<U>& v) const {
-        return copy_vector() /= v;
-    }
-
-    vector_type operator-() const {
-        return copy_vector().negate();
+    vector_type& resize(U const& to_length) {
+        return generic_vector_support_type::vector() *= (to_length / length());
     }
 
 };

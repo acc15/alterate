@@ -2,14 +2,13 @@
 
 #include <boost/range.hpp>
 
-#include <alterate/math/vector_support.h>
 #include <alterate/math/vec.h>
 #include "test_utils.h"
 
 using namespace alterate::test;
 
 template <typename T>
-struct vector_support_test : public ::testing::Test {
+struct generic_vector_support_test : public ::testing::Test {
     typedef T                           vector_type;
     typedef typename T::const_iterator  const_iterator;
     typedef typename T::value_type      value_type;
@@ -46,19 +45,22 @@ std::vector<T> make_test_vector_1() {
 }
 
 
-TYPED_TEST_CASE_P(vector_support_test);
+TYPED_TEST_CASE_P(generic_vector_support_test);
 
-TYPED_TEST_P(vector_support_test, constructor_default_test) {
+TYPED_TEST_P(generic_vector_support_test, constructor_default_test) {
 
     typedef typename TestFixture::vector_type vector_type;
-    typedef typename TestFixture::value_type  value_type;
+    //typedef typename TestFixture::value_type  value_type;
 
-    vector_type vec;
-    value_type default_value = value_type();
-    assert_all_elements_equal(default_value, vec);
+    // Default constructor shouldn't initialize parameters with default values.
+    // So it's simple compilation check that default ctor is available
+
+    vector_type /*vec*/();
+    //value_type default_value = value_type();
+    //assert_all_elements_equal(default_value, vec);
 }
 
-TYPED_TEST_P(vector_support_test, constructor_scalar_test) {
+TYPED_TEST_P(generic_vector_support_test, constructor_scalar_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -68,7 +70,7 @@ TYPED_TEST_P(vector_support_test, constructor_scalar_test) {
     assert_all_elements_equal(scalar_value, vec);
 }
 
-TYPED_TEST_P(vector_support_test, constructor_array_test) {
+TYPED_TEST_P(generic_vector_support_test, constructor_array_test) {
 
     typedef typename TestFixture::vector_type     vector_type;
     typedef typename TestFixture::value_type      value_type;
@@ -85,7 +87,7 @@ TYPED_TEST_P(vector_support_test, constructor_array_test) {
         vec.cbegin(), vec.cbegin() + min_size);
 }
 
-TYPED_TEST_P(vector_support_test, constructor_pointer_test) {
+TYPED_TEST_P(generic_vector_support_test, constructor_pointer_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -102,7 +104,7 @@ TYPED_TEST_P(vector_support_test, constructor_pointer_test) {
         vec.cbegin(), vec.cbegin() + min_size);
 }
 
-TYPED_TEST_P(vector_support_test, constructor_container_test) {
+TYPED_TEST_P(generic_vector_support_test, constructor_container_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -112,7 +114,7 @@ TYPED_TEST_P(vector_support_test, constructor_container_test) {
     assert_has_equal_elements_between(l, vec);
 }
 
-TYPED_TEST_P(vector_support_test, constructor_initializer_list_test) {
+TYPED_TEST_P(generic_vector_support_test, constructor_initializer_list_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -122,7 +124,7 @@ TYPED_TEST_P(vector_support_test, constructor_initializer_list_test) {
     assert_has_equal_elements_between(l, vec);
 }
 
-TYPED_TEST_P(vector_support_test, constructor_copy_test) {
+TYPED_TEST_P(generic_vector_support_test, constructor_copy_test) {
 
     typedef typename TestFixture::vector_type vector_type;
 
@@ -131,7 +133,7 @@ TYPED_TEST_P(vector_support_test, constructor_copy_test) {
     assert_has_equal_elements(vec1, vec2);
 }
 
-TYPED_TEST_P(vector_support_test, assign_scalar_test) {
+TYPED_TEST_P(generic_vector_support_test, assign_scalar_test) {
 
     typedef typename TestFixture::vector_type vector_type;
 
@@ -141,7 +143,7 @@ TYPED_TEST_P(vector_support_test, assign_scalar_test) {
     assert_all_elements_equal(1, vec1);
 }
 
-TYPED_TEST_P(vector_support_test, assign_initializer_list_test) {
+TYPED_TEST_P(generic_vector_support_test, assign_initializer_list_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -152,7 +154,7 @@ TYPED_TEST_P(vector_support_test, assign_initializer_list_test) {
         vec1);
 }
 
-TYPED_TEST_P(vector_support_test, assign_container_test) {
+TYPED_TEST_P(generic_vector_support_test, assign_container_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -163,7 +165,7 @@ TYPED_TEST_P(vector_support_test, assign_container_test) {
     assert_has_equal_elements_between(test_vec1, vec1);
 }
 
-TYPED_TEST_P(vector_support_test, assign_array_test) {
+TYPED_TEST_P(generic_vector_support_test, assign_array_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -177,7 +179,7 @@ TYPED_TEST_P(vector_support_test, assign_array_test) {
     assert_has_equal_elements_between(test_vec1, vec1);
 }
 
-TYPED_TEST_P(vector_support_test, assign_copy_test) {
+TYPED_TEST_P(generic_vector_support_test, assign_copy_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -188,7 +190,7 @@ TYPED_TEST_P(vector_support_test, assign_copy_test) {
     assert_has_equal_elements(vec2, vec1);
 }
 
-TYPED_TEST_P(vector_support_test, for_each_test) {
+TYPED_TEST_P(generic_vector_support_test, for_each_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -201,7 +203,7 @@ TYPED_TEST_P(vector_support_test, for_each_test) {
     assert_has_equal_elements(vec1, values);
 }
 
-TYPED_TEST_P(vector_support_test, accumulate_test) {
+TYPED_TEST_P(generic_vector_support_test, accumulate_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -219,7 +221,7 @@ TYPED_TEST_P(vector_support_test, accumulate_test) {
     ASSERT_EQ(expected, actual);
 }
 
-TYPED_TEST_P(vector_support_test, transform_test) {
+TYPED_TEST_P(generic_vector_support_test, transform_test) {
 
     typedef typename TestFixture::vector_type vector_type;
     typedef typename TestFixture::value_type  value_type;
@@ -236,7 +238,7 @@ TYPED_TEST_P(vector_support_test, transform_test) {
 
 }
 
-REGISTER_TYPED_TEST_CASE_P(vector_support_test,
+REGISTER_TYPED_TEST_CASE_P(generic_vector_support_test,
     constructor_default_test,
     constructor_scalar_test,
     constructor_array_test,
@@ -255,7 +257,9 @@ REGISTER_TYPED_TEST_CASE_P(vector_support_test,
 
 typedef ::testing::Types<
     alterate::math::vec<1, int>,
+    alterate::math::vec<2, int>,
     alterate::math::vec<3, float>,
+    alterate::math::vec<4, float>,
     alterate::math::vec<7, char>
 > core_vector_types;
-INSTANTIATE_TYPED_TEST_CASE_P(core, vector_support_test, core_vector_types);
+INSTANTIATE_TYPED_TEST_CASE_P(core, generic_vector_support_test, core_vector_types);

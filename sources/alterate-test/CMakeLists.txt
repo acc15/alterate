@@ -13,9 +13,11 @@ include_directories(${ALTERATE_ROOT}/inc)
 set(SRC_DIR src)
 set(SRC_LIST
     ${SRC_DIR}/test_utils.h
+    ${SRC_DIR}/sandbox.cpp
     ${SRC_DIR}/iterator_factory_test.cpp
-    ${SRC_DIR}/vector_support_test.cpp
-    ${SRC_DIR}/scalar_iterator_test.cpp)
+    ${SRC_DIR}/generic_vector_support_test.cpp
+    ${SRC_DIR}/scalar_iterator_test.cpp
+    ${SRC_DIR}/random_access_iterator_support_test.cpp)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 target_link_libraries(${PROJECT_NAME} gtest gtest_main)

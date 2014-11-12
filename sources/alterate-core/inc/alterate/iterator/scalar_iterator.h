@@ -14,48 +14,47 @@ class scalar_iterator : public boost::iterator_facade<
         boost::random_access_traversal_tag>
 {
 private:
-    typedef boost::iterator_facade< scalar_iterator<ScalarType>, ScalarType, boost::random_access_traversal_tag > iterator_type;
+    typedef boost::iterator_facade< scalar_iterator<ScalarType>, ScalarType, boost::random_access_traversal_tag > iterator_facade_type;
 
 public:
-    typedef typename iterator_type::value_type          value_type;
-    typedef typename iterator_type::difference_type     difference_type;
-    typedef typename iterator_type::reference           reference;
+
+    typedef ScalarType                                         value_type;
+    typedef typename iterator_facade_type::difference_type     difference_type;
+    typedef typename iterator_facade_type::reference           reference;
 
 private:
-    value_type  value;
-    size_t      position;
+    value_type  _value;
+    size_t      _position;
 
 public:
-    scalar_iterator(const value_type& value = value_type(), size_t position = 0) :
-        value(value),
-        position(position) {
+    scalar_iterator(const value_type& value = value_type(), size_t position = 0) : _value(value), _position(position) {
     }
 
 private:
     friend class boost::iterator_core_access;
 
     reference dereference() const {
-        return const_cast<reference>(value);
+        return const_cast<reference>(_value);
     }
 
     bool equal(scalar_iterator const& other) const {
-        return value == other.value && position == other.position;
+        return _value == other._value && _position == other._position;
     }
 
     void increment() {
-        ++position;
+        ++_position;
     }
 
     void decrement() {
-        --position;
+        --_position;
     }
 
     void advance(difference_type n) {
-        position += n;
+        _position += n;
     }
 
     difference_type distance_to(scalar_iterator const& other) const {
-        return other.position - position;
+        return other._position - _position;
     }
 };
 
