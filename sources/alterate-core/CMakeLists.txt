@@ -7,7 +7,6 @@ include_directories(${INC_DIR})
 
 set(SRC_LIST
     ${INC_DIR}/alterate/defs.h
-    ${INC_DIR}/alterate/platform.h
     ${INC_DIR}/alterate/iterator/scalar_iterator.h
     ${INC_DIR}/alterate/iterator/iterator_factory.h
     ${INC_DIR}/alterate/math/functional.h
