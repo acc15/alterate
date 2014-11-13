@@ -12,7 +12,7 @@ void clock::get_instant(instant& value) {
     QueryPerformanceCounter(&value);
 }
 
-float clock::compute_diff(const instant& i1, const instant& i2);
+float clock::compute_diff(const instant& i1, const instant& i2) {
     return static_cast<float>(i1.QuadPart - i2.QuadPart) / _freq.QuadPart;
 }
 

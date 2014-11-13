@@ -17,7 +17,16 @@ alterate::dimension get_window_size(GLFWwindow* wnd) {
     return alterate::dimension(x,y);
 }
 
+#if BOOST_OS_WINDOWS
+int CALLBACK WinMain(
+	_In_  HINSTANCE hInstance,
+	_In_  HINSTANCE hPrevInstance,
+	_In_  LPSTR lpCmdLine,
+	_In_  int nCmdShow
+	)
+#else
 int main()
+#endif
 {
     GLFWwindow* window;
 

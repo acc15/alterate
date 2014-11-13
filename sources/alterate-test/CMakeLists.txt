@@ -6,9 +6,13 @@ enable_testing()
 set(GTEST_ROOT "" CACHE PATH "Google Test library")
 add_subdirectory(${GTEST_ROOT} gtest)
 include_directories(${GTEST_ROOT}/include)
-
-
 include_directories(${ALTERATE_ROOT}/inc)
+
+### To link using static runtime libraries
+if(MSVC)
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif()
 
 set(SRC_DIR src)
 set(SRC_LIST

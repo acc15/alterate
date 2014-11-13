@@ -1,8 +1,8 @@
 #pragma once
 
-#if __cplusplus < 201103L
-#   error "Only C++11 compilers supported"
-#endif
+//#if __cplusplus < 201103L
+//#   error "Only C++11 compilers supported"
+//#endif
 
 // To make size_t and ptrdiff_t defined
 #include <cstddef>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/gl.h>
+#include <alterate/gl/gl_inc.h>
 
 namespace alterate {
 namespace gl {

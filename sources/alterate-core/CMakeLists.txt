@@ -6,6 +6,8 @@ set(SRC_DIR src)
 include_directories(${INC_DIR})
 
 set(SRC_LIST
+    ${INC_DIR}/alterate/gl/gl_inc.h
+
     ${INC_DIR}/alterate/dimension.h
     ${SRC_DIR}/alterate/dimension.cpp
 
