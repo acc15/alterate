@@ -4,17 +4,11 @@
 #   error "Only C++11 compilers supported"
 #endif
 
-
-// Handle non c++0x compliant compilers
-#include <boost/config.hpp>
-
 // To make size_t and ptrdiff_t defined
 #include <cstddef>
 
-namespace alterate
-{
-
-    typedef unsigned char   byte_t;
+//namespace alterate
+//{
 
 // Use size_t to represent counts, unsigned indexes and so on
 // Use standardized (in C99) bool primitive
@@ -34,5 +28,5 @@ namespace alterate
 //    typedef double          fp_t;
 //#endif
 
-}
+//}
 

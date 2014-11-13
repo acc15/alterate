@@ -3,25 +3,25 @@
 #include <GL/gl.h>
 
 namespace alterate {
+namespace gl {
 
-template <typename T>
 class color {
-
 public:
-    T red;
-    T green;
-    T blue;
-    T alpha;
+    GLclampf r;
+    GLclampf g;
+    GLclampf b;
+    GLclampf a;
 
-    color(const T& red, const T& green, const T& blue, const T& alpha) : red(red), green(green), blue(blue), alpha(alpha) {}
+    color(const GLclampf& r, const GLclampf& g, const GLclampf& b, const GLclampf& a) : r(r), g(g), b(b), a(a) {}
+    color(const GLclampf& r, const GLclampf& g, const GLclampf& b) : r(r), g(g), b(b), a(1.f) {}
 
     static const color RED;
+    static const color GREEN;
+    static const color BLUE;
+    static const color BLACK;
+    static const color WHITE;
+
 };
 
-template <typename T> const color<T> color<T>::RED(1.f, 0.f, 0.f, 1.f);
-
-
-typedef color<GLclampf> gl_color;
-
 }
-
+}

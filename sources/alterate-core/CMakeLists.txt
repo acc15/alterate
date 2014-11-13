@@ -6,6 +6,24 @@ set(SRC_DIR src)
 include_directories(${INC_DIR})
 
 set(SRC_LIST
+    ${INC_DIR}/alterate/dimension.h
+    ${SRC_DIR}/alterate/dimension.cpp
+
+    ${INC_DIR}/alterate/gl/color.h
+    ${SRC_DIR}/alterate/gl/color.cpp
+
+    ${INC_DIR}/alterate/gl/context.h
+    ${SRC_DIR}/alterate/gl/context.cpp
+
+    ${INC_DIR}/alterate/timing/clock.h
+    ${SRC_DIR}/alterate/timing/clock.cpp
+
+    ${INC_DIR}/alterate/timing/timer.h
+    ${SRC_DIR}/alterate/timing/timer.cpp
+
+    ${INC_DIR}/alterate/engine.h
+    ${SRC_DIR}/alterate/engine.cpp
+
     ${INC_DIR}/alterate/defs.h
     ${INC_DIR}/alterate/error.h
     ${INC_DIR}/alterate/print.h
@@ -16,7 +34,5 @@ set(SRC_LIST
     ${INC_DIR}/alterate/math/functional.h
     ${INC_DIR}/alterate/math/generic_vector_support.h
     ${INC_DIR}/alterate/math/vector_support.h
-    ${INC_DIR}/alterate/math/vec.h
-    ${INC_DIR}/alterate/gl/color.h)
-#add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
-add_custom_target(${PROJECT_NAME} SOURCES ${SRC_LIST})
+    ${INC_DIR}/alterate/math/vec.h)
+add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
