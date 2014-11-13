@@ -1,8 +1,6 @@
 project(alterate-test)
 cmake_minimum_required(VERSION 2.8)
 
-enable_testing()
-
 set(GTEST_ROOT "" CACHE PATH "Google Test library")
 add_subdirectory(${GTEST_ROOT} gtest)
 include_directories(${GTEST_ROOT}/include)
@@ -25,6 +23,6 @@ set(SRC_LIST
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 
 target_link_libraries(${PROJECT_NAME} gtest gtest_main)
-#target_link_libraries(${PROJECT_NAME} alterate-core)
+target_link_libraries(${PROJECT_NAME} alterate-core)
 
 add_test(AllTests ${PROJECT_NAME})
