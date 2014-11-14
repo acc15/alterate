@@ -5,7 +5,9 @@
 #include <GL/gl.h>
 
 #include <alterate/engine.h>
-using namespace std;
+
+extern alterate::engine_object* alterate_init(alterate::engine& e);
+
 
 void on_size_callback(GLFWwindow*, int w, int h) {
     alterate::engine::get().on_size(alterate::dimension(w,h));
@@ -19,11 +21,11 @@ alterate::dimension get_window_size(GLFWwindow* wnd) {
 
 #if BOOST_OS_WINDOWS
 int CALLBACK WinMain(
-	_In_  HINSTANCE hInstance,
-	_In_  HINSTANCE hPrevInstance,
-	_In_  LPSTR lpCmdLine,
-	_In_  int nCmdShow
-	)
+    _In_  HINSTANCE hInstance,
+    _In_  HINSTANCE hPrevInstance,
+    _In_  LPSTR lpCmdLine,
+    _In_  int nCmdShow
+    )
 #else
 int main()
 #endif
@@ -46,6 +48,13 @@ int main()
     glfwSetWindowSizeCallback(window, &on_size_callback);
     glfwMakeContextCurrent(window);
 
+    alterate::engine_object* root = alterate_init(alterate::engine::get());
+    if (root == nullptr) {
+        glfwTerminate();
+        return -1;
+    }
+
+    alterate::engine::get().set_root(*root);
     while (!glfwWindowShouldClose(window)) {
         alterate::engine::get().on_frame();
         glfwSwapBuffers(window);

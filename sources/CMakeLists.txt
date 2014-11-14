@@ -16,4 +16,6 @@ include_directories(${ALTERATE_ROOT}/inc)
 
 add_subdirectory(alterate-core)
 add_subdirectory(alterate-test)
-add_subdirectory(demos/alterate2048)
+add_subdirectory(alterate-main)
+add_subdirectory(demos/alterate-2048)
+add_subdirectory(demos/alterate-pong)
