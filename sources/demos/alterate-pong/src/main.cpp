@@ -71,38 +71,37 @@ public:
         }
 
         for (shader* shader: _shaders) {
-            //context.create_if_needed(shader);
+            context.create_if_needed(shader);
             glAttachShader(programId, shader->get_id());
         }
 
+        // bind attributes..
 
-         glAttachShader(programObject, fragmentShader);
-         // Bind vPosition to attribute 0
-         glBindAttribLocation(programObject, 0, "vPosition");
-         // Link the program
-         glLinkProgram(programObject);
-         // Check the link status
-         glGetProgramiv(programObject, GL_LINK_STATUS, &linked);
-         if(!linked)
-         {
-         GLint infoLen = 0;
-         glGetProgramiv(programObject, GL_INFO_LOG_LENGTH, &infoLen);
+        //glBindAttribLocation(programObject, 0, "vPosition");
+        // Link the program
+        glLinkProgram(programObject);
+        // Check the link status
+        glGetProgramiv(programObject, GL_LINK_STATUS, &linked);
+        if(!linked)
+        {
+        GLint infoLen = 0;
+        glGetProgramiv(programObject, GL_INFO_LOG_LENGTH, &infoLen);
 
-         if(infoLen > 1)
-         {
-         char* infoLog = malloc(sizeof(char) * infoLen);
-         glGetProgramInfoLog(programObject, infoLen, NULL, infoLog);
-         esLogMessage("Error linking program:\n%s\n", infoLog);
+        if(infoLen > 1)
+        {
+        char* infoLog = malloc(sizeof(char) * infoLen);
+        glGetProgramInfoLog(programObject, infoLen, NULL, infoLog);
+        esLogMessage("Error linking program:\n%s\n", infoLog);
 
-         free(infoLog);
-         }
-         glDeleteProgram(programObject);
-         return FALSE;
-         }
-         // Store the program object
-         userData->programObject = programObject;
-         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-         return TRUE;
+        free(infoLog);
+        }
+        glDeleteProgram(programObject);
+        return FALSE;
+        }
+        // Store the program object
+        userData->programObject = programObject;
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        return TRUE;
 
 
     }
