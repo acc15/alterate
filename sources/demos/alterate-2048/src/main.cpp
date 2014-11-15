@@ -5,50 +5,33 @@
 
 #include <alterate/engine.h>
 
+class alterate2048: public alterate::engine_object {
+
+public:
+    virtual void on_update(float seconds) {
+        glRotatef(seconds * 50.f, 0.f, 0.f, 1.f);
+    }
+
+    virtual void on_draw(alterate::gl::context &context) {
+        context.clear_color(alterate::gl::color::BLACK).clear();
+        glBegin(GL_TRIANGLES);
+        glColor3f(1.f, 0.f, 0.f);
+        glVertex3f(-0.6f, -0.4f, 0.f);
+        glColor3f(0.f, 1.f, 0.f);
+        glVertex3f(0.6f, -0.4f, 0.f);
+        glColor3f(0.f, 0.f, 1.f);
+        glVertex3f(0.f, 0.6f, 0.f);
+        glEnd();
+    }
+
+};
+
+
 alterate::engine_object* alterate_init(alterate::engine& e) {
 
     std::cout << "in alterate-2048" << std::endl;
 
-    return new alterate::engine_object();
+    return new alterate2048();
 }
 
-
-
-//#if BOOST_OS_WINDOWS
-//int CALLBACK WinMain(
-//    _In_  HINSTANCE hInstance,
-//    _In_  HINSTANCE hPrevInstance,
-//    _In_  LPSTR lpCmdLine,
-//    _In_  int nCmdShow
-//    )
-//#else
-//int main()
-//#endif
-//{
-//    GLFWwindow* window;
-
-//    /* Initialize the library */
-//    if (!glfwInit()) {
-//        return -1;
-//    }
-
-//    /* Create a windowed mode window and its OpenGL context */
-//    window = glfwCreateWindow(640, 480, "alterate2048", NULL, NULL);
-//    if (!window) {
-//        glfwTerminate();
-//        return -1;
-//    }
-
-//    alterate::engine::get().on_size(get_window_size(window));
-//    glfwSetWindowSizeCallback(window, &on_size_callback);
-//    glfwMakeContextCurrent(window);
-
-//    while (!glfwWindowShouldClose(window)) {
-//        alterate::engine::get().on_frame();
-//        glfwSwapBuffers(window);
-//        glfwPollEvents();
-//    }
-//    glfwTerminate();
-//    return 0;
-//}
 

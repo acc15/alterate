@@ -5,6 +5,7 @@
 #include <GL/gl.h>
 
 #include <alterate/engine.h>
+#include <alterate/system.h>
 
 extern alterate::engine_object* alterate_init(alterate::engine& e);
 
@@ -38,7 +39,7 @@ int main()
     }
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "alterate2048", NULL, NULL);
+    window = glfwCreateWindow(640, 480, alterate::get_executable_name().c_str(), NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
