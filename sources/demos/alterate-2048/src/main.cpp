@@ -27,11 +27,13 @@ public:
 };
 
 
-alterate::engine_object* alterate_init(alterate::engine& e) {
+std::unique_ptr<alterate::engine_object> alterate_init(alterate::engine& e) {
+
+    std::unique_ptr<alterate::engine_object> root(new alterate2048());
 
     std::cout << "in alterate-2048" << std::endl;
 
-    return new alterate2048();
+    return root;
 }
 
 

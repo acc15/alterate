@@ -7,7 +7,7 @@
 #include <alterate/engine.h>
 #include <alterate/system.h>
 
-extern alterate::engine_object* alterate_init(alterate::engine& e);
+extern std::unique_ptr<alterate::engine_object>  alterate_init(alterate::engine& e);
 
 
 void on_size_callback(GLFWwindow*, int w, int h) {
@@ -45,17 +45,17 @@ int main()
         return -1;
     }
 
-    alterate::engine::get().on_size(get_window_size(window));
+    alterate::engine::get().on_initial_size(get_window_size(window));
     glfwSetWindowSizeCallback(window, &on_size_callback);
     glfwMakeContextCurrent(window);
 
-    alterate::engine_object* root = alterate_init(alterate::engine::get());
-    if (root == nullptr) {
+    std::unique_ptr<alterate::engine_object> root = alterate_init(alterate::engine::get());
+    if (!root) {
         glfwTerminate();
         return -1;
     }
 
-    alterate::engine::get().set_root(*root);
+    alterate::engine::get().set_root(root);
     while (!glfwWindowShouldClose(window)) {
         alterate::engine::get().on_frame();
         glfwSwapBuffers(window);

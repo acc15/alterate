@@ -40,4 +40,7 @@ set(SRC_LIST
     ${INC_DIR}/alterate/math/generic_vector_support.h
     ${INC_DIR}/alterate/math/vector_support.h
     ${INC_DIR}/alterate/math/vec.h)
+
+
 add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
+target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARY})

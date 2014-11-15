@@ -1,52 +1,72 @@
 #include <iostream>
 #include <string>
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include <alterate/engine.h>
 
-alterate::engine_object* alterate_init(alterate::engine& e) {
+class shader {
+private:
+    const char* _source;
+    const int _type;
+
+public:
+    shader(int type, const char* source) : _source(source), _type(type) {}
+
+    GLuint create() {
+
+//        GLuint shaderId;
+
+//        // Create the shader object
+//        shaderId = glCreateShader(type);
+//        if(shaderId == 0) {
+//            return 0;
+//        }
+
+//        // Load the shader source
+//        glShaderSource(shaderId, 1, &shaderSrc, NULL);
+
+//        // Compile the shader
+//        glCompileShader(shaderId);
+//        // Check the compile status
+
+//        GLint compiled;
+//        glGetShaderiv(shaderId, GL_COMPILE_STATUS, &compiled);
+//        if(!compiled) {
+//            GLint infoLen = 0;
+//            glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLen);
+//            if(infoLen > 1) {
+//                char* infoLog = malloc(sizeof(char) * infoLen);
+//                glGetShaderInfoLog(shaderId, infoLen, NULL, infoLog);
+//                //esLogMessage("Error compiling shader:\n%s\n", infoLog);
+//                free(infoLog);
+//            }
+//            glDeleteShader(shaderId);
+//            return 0;
+//        }
+//        return shaderId;
+        return 0;
+    }
+
+};
+
+class pong: public alterate::engine_object {
+
+public:
+    virtual void on_draw(alterate::gl::context& context) {
+
+
+        //gl
+        //glDrawArrays(GL_TRIANGLES, );
+
+    }
+
+};
+
+std::unique_ptr<alterate::engine_object> alterate_init(alterate::engine& e) {
+
+    const GLubyte* version = glGetString(GL_VERSION);
+    std::cout << version << std::endl;
     std::cout << "in alterate pong" << std::endl;
-    return new alterate::engine_object();
+    return std::unique_ptr<alterate::engine_object>(new alterate::engine_object());
 }
-
-
-
-//#if BOOST_OS_WINDOWS
-//int CALLBACK WinMain(
-//    _In_  HINSTANCE hInstance,
-//    _In_  HINSTANCE hPrevInstance,
-//    _In_  LPSTR lpCmdLine,
-//    _In_  int nCmdShow
-//    )
-//#else
-//int main()
-//#endif
-//{
-//    GLFWwindow* window;
-
-//    /* Initialize the library */
-//    if (!glfwInit()) {
-//        return -1;
-//    }
-
-//    /* Create a windowed mode window and its OpenGL context */
-//    window = glfwCreateWindow(640, 480, "alterate2048", NULL, NULL);
-//    if (!window) {
-//        glfwTerminate();
-//        return -1;
-//    }
-
-//    alterate::engine::get().on_size(get_window_size(window));
-//    glfwSetWindowSizeCallback(window, &on_size_callback);
-//    glfwMakeContextCurrent(window);
-
-//    while (!glfwWindowShouldClose(window)) {
-//        alterate::engine::get().on_frame();
-//        glfwSwapBuffers(window);
-//        glfwPollEvents();
-//    }
-//    glfwTerminate();
-//    return 0;
-//}
-

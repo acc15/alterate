@@ -11,6 +11,9 @@ set(BOOST_ROOT "" CACHE PATH "Boost library")
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 
+find_package(GLEW REQUIRED)
+include_directories(${GLEW_INCLUDE_DIRS})
+
 set(ALTERATE_ROOT "alterate-core")
 include_directories(${ALTERATE_ROOT}/inc)
 

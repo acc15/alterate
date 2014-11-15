@@ -6,7 +6,7 @@
 #### Ubuntu
 
 ##### Required libraries
-1. sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev libxi-dev
+1. sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev libxi-dev libglew-dev
 
 
 
