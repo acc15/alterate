@@ -1,11 +1,10 @@
 #include <iostream>
 #include <string>
-#include <GLFW/glfw3.h>
-
-#include <GL/gl.h>
 
 #include <alterate/engine.h>
 #include <alterate/system.h>
+
+#include <GLFW/glfw3.h>
 
 extern std::unique_ptr<alterate::engine_object>  alterate_init(alterate::engine& e);
 
@@ -20,6 +19,14 @@ alterate::dimension get_window_size(GLFWwindow* wnd) {
     return alterate::dimension(x,y);
 }
 
+std::string last_error_description;
+int last_error_code;
+
+void error_callback(int error_code, const char* error_message) {
+    last_error_code = error_code;
+    last_error_description = error_message;
+}
+
 #if BOOST_OS_WINDOWS
 int CALLBACK WinMain(
     _In_  HINSTANCE hInstance,
@@ -31,23 +38,32 @@ int CALLBACK WinMain(
 int main()
 #endif
 {
-    GLFWwindow* window;
+    glfwSetErrorCallback(&error_callback);
 
     /* Initialize the library */
     if (!glfwInit()) {
+        std::cerr << "Can't initialize GLFW (" << last_error_code << "): " << last_error_description << std::endl;
         return -1;
     }
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, alterate::get_executable_name().c_str(), NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(640, 480, alterate::get_executable_name().c_str(), NULL, NULL);
     if (!window) {
+        std::cerr << "Can't create GLFW window (" << last_error_code << "): " << last_error_description << std::endl;
         glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    GLenum glewStatus = glewInit();
+    if (glewStatus != GLEW_OK) {
+        std::cerr << "Can't initialize GLEW: " << glewGetErrorString(glewStatus) << std::endl;
         return -1;
     }
 
     alterate::engine::get().on_initial_size(get_window_size(window));
     glfwSetWindowSizeCallback(window, &on_size_callback);
-    glfwMakeContextCurrent(window);
 
     std::unique_ptr<alterate::engine_object> root = alterate_init(alterate::engine::get());
     if (!root) {

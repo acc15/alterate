@@ -1,8 +1,6 @@
 #include <iostream>
 #include <string>
 
-#include <GL/gl.h>
-
 #include <alterate/engine.h>
 
 class alterate2048: public alterate::engine_object {

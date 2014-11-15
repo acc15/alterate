@@ -11,6 +11,9 @@ set(SRC_LIST
 
     ${INC_DIR}/alterate/gl/gl_inc.h
 
+    ${INC_DIR}/alterate/gl/util.h
+    ${SRC_DIR}/alterate/gl/util.cpp
+
     ${INC_DIR}/alterate/dimension.h
     ${SRC_DIR}/alterate/dimension.cpp
 
