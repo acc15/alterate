@@ -61,6 +61,10 @@ void engine::on_frame() {
     on_draw();
 }
 
+gl::context& engine::get_context() {
+    return _context;
+}
+
 void engine::set_root(std::unique_ptr<engine_object>& obj) {
     if (_root) {
         _root->on_detach(*this); // even if on_detach throws exception engine dctor will be called and it will delete an object

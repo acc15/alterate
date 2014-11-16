@@ -18,5 +18,36 @@ const char* get_gl_error_as_string() {
     }
 }
 
+std::string get_shader_info_log(GLuint shader_id) {
+    GLint info_length = 0;
+    glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &info_length);
+    if (info_length <= 1) {
+        return "";
+    }
+
+    std::string message(info_length, char());
+    glGetShaderInfoLog(shader_id, info_length, NULL, &message[0]);
+
+    // remove zero-terminator char
+    message.resize(info_length-1);
+
+    return message;
+}
+
+std::string get_program_info_log(GLuint program_id) {
+    GLint info_length = 0;
+    glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &info_length);
+    if (info_length <= 1) {
+        return "";
+    }
+
+    std::string message(0, info_length);
+    glGetProgramInfoLog(program_id, info_length, NULL, &message[0]);
+
+    message.resize(message.length()-1);
+    return message;
+}
+
+
 }
 }

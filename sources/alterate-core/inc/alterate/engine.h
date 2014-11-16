@@ -44,6 +44,8 @@ public:
     void on_size(const dimension& size);
     void on_frame();
 
+    gl::context& get_context();
+
     static engine& get();
 };
 

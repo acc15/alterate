@@ -18,5 +18,19 @@ void context::on_size(const dimension& size) {
     glViewport(0, 0, _size.cx, _size.cy);
 }
 
+
+bool context::is_live(void* obj) {
+    return _live_objects.find(obj) != _live_objects.end();
+}
+
+void context::mark_live(void* obj) {
+    _live_objects.insert(obj);
+}
+
+void context::mark_dead(void* obj) {
+    _live_objects.erase(obj);
+}
+
+
 }
 }

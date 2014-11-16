@@ -11,40 +11,37 @@ class shader {
 private:
     const char* _source;
     const int   _type;
-    GLuint      _id;
+    GLuint      _id = 0;
 
 public:
     shader(int type, const char* source) : _source(source), _type(type) {}
 
-    GLuint create() {
+    GLuint create(alterate::gl::context& context) {
 
-        const GLuint shaderId = glCreateShader(_type);
-        if(shaderId == 0) {
+        if (context.is_live(this)) {
+            return _id;
+        }
+
+        _id = glCreateShader(_type);
+        if(_id == 0) {
             std::cerr << "Unable to create shader: " << alterate::gl::get_gl_error_as_string() << std::endl;
             return 0;
         }
 
-        // Load the shader source
-        glShaderSource(shaderId, 1, &_source, NULL);
-
-        // Compile the shader
-        glCompileShader(shaderId);
-        // Check the compile status
+        glShaderSource(_id, 1, &_source, NULL);
+        glCompileShader(_id);
 
         GLint compiled;
-        glGetShaderiv(shaderId, GL_COMPILE_STATUS, &compiled);
+        glGetShaderiv(_id, GL_COMPILE_STATUS, &compiled);
         if(!compiled) {
-            GLint infoLen = 0;
-            glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLen);
-            if(infoLen > 1) {
-                std::string message(0, infoLen);
-                glGetShaderInfoLog(shaderId, infoLen, NULL, &message[0]);
-                std::cerr << "Unable to compile shader: " << message << ". Shader source: " << _source << std::endl;
-            }
-            glDeleteShader(shaderId);
-            return 0;
+            std::cerr << "Unable to compile shader: " << alterate::gl::get_shader_info_log(_id) << ". Shader source: " << _source << std::endl;
+            glDeleteShader(_id);
+            _id = 0;
+            return false;
         }
-        return shaderId;
+
+        context.mark_live(this);
+        return true;
     }
 
 };
@@ -62,79 +59,68 @@ public:
         return *this;
     }
 
+    // 1. Mark as deleted notification -> Needed some virtual interface
+    // 2. Keep set of live objects (use object address = void*) -> No requirement for interface
+    //    Check map before creating object
+    //    Clean this map if EGL context was re-created
+
     GLuint create(alterate::gl::context& context) {
 
-        const GLuint programId = glCreateProgram();
-        if (programId == 0) {
+        if (context.is_live(this)) {
+            return _id;
+        }
+
+        _id = glCreateProgram();
+        if (_id == 0) {
             std::cerr << "Unable to create program: " << alterate::gl::get_gl_error_as_string() << std::endl;
             return 0;
         }
 
         for (shader* shader: _shaders) {
-            context.create_if_needed(shader);
-            glAttachShader(programId, shader->get_id());
+            const GLuint shader_id = shader->create(context);
+            glAttachShader(_id, shader_id);
         }
 
         // bind attributes..
+        //glBindAttribLocation(program_id, 0, "vPosition");
 
-        //glBindAttribLocation(programObject, 0, "vPosition");
         // Link the program
-        glLinkProgram(programObject);
-        // Check the link status
-        glGetProgramiv(programObject, GL_LINK_STATUS, &linked);
-        if(!linked)
-        {
-        GLint infoLen = 0;
-        glGetProgramiv(programObject, GL_INFO_LOG_LENGTH, &infoLen);
+        glLinkProgram(_id);
 
-        if(infoLen > 1)
-        {
-        char* infoLog = malloc(sizeof(char) * infoLen);
-        glGetProgramInfoLog(programObject, infoLen, NULL, infoLog);
-        esLogMessage("Error linking program:\n%s\n", infoLog);
-
-        free(infoLog);
+        GLint linked;
+        glGetProgramiv(_id, GL_LINK_STATUS, &linked);
+        if (!linked) {
+            std::cerr << "Unable to link program: " << alterate::gl::get_program_info_log(_id) << std::endl;
+            glDeleteProgram(_id);
+            _id = 0;
+            return false;
         }
-        glDeleteProgram(programObject);
-        return FALSE;
-        }
-        // Store the program object
-        userData->programObject = programObject;
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        return TRUE;
 
-
+        context.mark_live(this);
+        return true;
     }
 
 
 };
 
 class pong: public alterate::engine_object {
-
 public:
+
+    static shader VERTEX_SHADER;
+    static shader FRAGMENT_SHADER; /*(GL_FRAGMENT_SHADER,
+                                  "precision mediump float;"
+                                  "varying vec4 v_color;"
+                                  "void main(void) {"
+                                      "gl_FragColor = v_color;"
+                                  "}");*/
+
+    static program PROGRAM;
 
     virtual void on_attach(alterate::engine &engine) {
 
-        GLuint vertexId = shader(GL_VERTEX_SHADER,
-                "uniform mat4 u_mvpMatrix;"
-                "attribute vec4 a_position;"
-                "attribute vec4 a_color;"
-                "varying vec4 v_color;"
-                "void main() {"
-                "v_color = a_color;"
-                "gl_Position = u_mvpMatrix * a_position;"
-                "}").create();
+        GLuint program_id = PROGRAM.create(engine.get_context());
 
-        GLuint fragmentId = shader(GL_FRAGMENT_SHADER,
-               "precision mediump float;"
-               "varying vec4 v_color;"
-               "void main(void)"
-               "{"
-                   "gl_FragColor = v_color;"
-               "}").create();
-
-        std::cout << "compiled vertex shader: " << vertexId << std::endl <<
-                     "compiled fragment shader: " << fragmentId << std::endl;
+        std::cout << "linked program id: " << program_id << std::endl;
 
 
 
@@ -150,10 +136,43 @@ public:
 
 };
 
+class object_factory {
+
+public:
+    shader* create_shader() {
+        return nullptr;
+    }
+
+};
+
+shader* new_shader = object_factory().create_shader();
+
+shader pong::VERTEX_SHADER(GL_VERTEX_SHADER, "uniform mat4 u_mvpMatrix;"
+                                                  "attribute vec4 a_position;"
+                                                  "attribute vec4 a_color;"
+                                                  "varying vec4 v_color;"
+                                                  "void main() {"
+                                                      "v_color = a_color;"
+                                                      "gl_Position = u_mvpMatrix * a_position;"
+                                                  "}");
+
+
+shader pong::FRAGMENT_SHADER(GL_FRAGMENT_SHADER,
+                              "varying vec4 v_color;"
+                              "void main(void) {"
+                                  "gl_FragColor = v_color;"
+                              "}");
+program pong::PROGRAM = program().add_shader(pong::VERTEX_SHADER).add_shader(pong::FRAGMENT_SHADER);
+
+
 std::unique_ptr<alterate::engine_object> alterate_init(alterate::engine& e) {
+
+    pong* p = new pong();
+
+    //e.set_root(std::unique_ptr<pong>(new pong()));
 
     const GLubyte* version = glGetString(GL_VERSION);
     std::cout << version << std::endl;
     std::cout << "in alterate pong" << std::endl;
-    return std::unique_ptr<alterate::engine_object>(new pong());
+    return std::unique_ptr<alterate::engine_object>(p);
 }
