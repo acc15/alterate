@@ -3,9 +3,8 @@
 namespace alterate {
 namespace gl {
 
-const char* get_gl_error_as_string() {
-    GLenum error = glGetError();
-    switch (error) {
+const char* get_gl_error_as_string(GLenum error_code) {
+    switch (error_code) {
     case GL_NO_ERROR: return "GL_NO_ERROR";
     case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
     case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
@@ -16,6 +15,10 @@ const char* get_gl_error_as_string() {
     case GL_STACK_OVERFLOW: return "GL_STACK_OVERFLOW";
     default: return "GL_UNKNOWN_ERROR";
     }
+}
+
+const char* get_gl_error_as_string() {
+    return get_gl_error_as_string(glGetError());
 }
 
 std::string get_shader_info_log(GLuint shader_id) {

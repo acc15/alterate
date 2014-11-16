@@ -13,6 +13,7 @@ private:
 
 public:
     shader(int type, const char* source);
+    void remove();
     GLuint create();
 };
 
