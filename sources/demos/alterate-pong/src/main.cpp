@@ -143,9 +143,21 @@ public:
         return nullptr;
     }
 
+    program* create_program() {
+        return nullptr;
+    }
+
+    static object_factory* get() {
+        return nullptr;
+    }
+
 };
 
-shader* new_shader = object_factory().create_shader();
+shader* new_shader = object_factory::get()->create_shader();
+
+program* new_program = object_factory()::get()->create_program()->
+        add_shader(object_factory::get()->create_shader())->
+        add_shader(object_factory::get()->create_shader());
 
 shader pong::VERTEX_SHADER(GL_VERTEX_SHADER, "uniform mat4 u_mvpMatrix;"
                                                   "attribute vec4 a_position;"
