@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iomanip>
+
 namespace alterate {
 
     template <typename Stream, typename Container>
@@ -14,6 +16,19 @@ namespace alterate {
             needComma = true;
         }
         stream << ']';
+        return stream;
+    }
+
+    template <typename Stream, typename Matrix>
+    Stream& print_matrix(const Matrix& matrix, Stream& stream) {
+        for (size_t i=0; i<Matrix::row_count; i++) {
+            for (size_t j=0; j<Matrix::col_count; j++) {
+                stream << '[' << matrix.cell(i, j) << ']';
+            }
+            stream << std::endl;
+        }
+
+
         return stream;
     }
 

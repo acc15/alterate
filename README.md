@@ -8,8 +8,6 @@
 ##### Required libraries
 1. sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev libxi-dev libglew-dev
 
-
-
 Pure C++ OpenGL game engine
 
 ### What to use
@@ -46,3 +44,11 @@ Macro `BOOST_ASSERT` or `BOOST_ASSERT_MSG`
 
 #### For logging:
 Boost Log [http://www.boost.org/doc/libs/master/libs/log/doc/html/index.html]
+
+#### TODO
+
+1. Matrix
+1. Vertex Buffer and Vertex Buffer Object
+1. Texture loading & binding
+
+1. Frame Buffer and Frame Buffer Object

@@ -256,10 +256,10 @@ REGISTER_TYPED_TEST_CASE_P(generic_vector_support_test,
     transform_test);
 
 typedef ::testing::Types<
-    alterate::math::vec<1, int>,
-    alterate::math::vec<2, int>,
-    alterate::math::vec<3, float>,
-    alterate::math::vec<4, float>,
-    alterate::math::vec<7, char>
+    alterate::math::vec<int,1>,
+    alterate::math::vec<int,2>,
+    alterate::math::vec<float,3>,
+    alterate::math::vec<float,4>,
+    alterate::math::vec<char,7>
 > core_vector_types;
 INSTANTIATE_TYPED_TEST_CASE_P(core, generic_vector_support_test, core_vector_types);

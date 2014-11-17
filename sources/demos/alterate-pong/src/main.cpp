@@ -19,8 +19,6 @@ public:
     virtual void on_attach(alterate::engine& engine) {
 
         PROGRAM.create();
-        std::cout << "linked program id: " << program_id << std::endl;
-
 
 
 

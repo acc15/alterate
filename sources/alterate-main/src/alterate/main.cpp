@@ -46,13 +46,19 @@ int main()
         return -1;
     }
 
+    const GLFWvidmode* vid_mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    const int width = 640, height = 480;
+
     /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow* window = glfwCreateWindow(640, 480, alterate::get_executable_name().c_str(), NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width, height, alterate::get_executable_name().c_str(), NULL, NULL);
     if (!window) {
         std::cerr << "Can't create GLFW window (" << last_error_code << "): " << last_error_description << std::endl;
         glfwTerminate();
         return -1;
     }
+
+    glfwSetWindowPos(window, (vid_mode->width - width) / 2, (vid_mode->height - height)/2);
 
     glfwMakeContextCurrent(window);
 

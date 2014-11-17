@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/predef.h>
+#include <stdint.h>
 
 #if BOOST_OS_WINDOWS
 
@@ -18,7 +19,8 @@ public:
     clock();
 
     void get_instant(instant& value);
-    float compute_diff(const instant& i1, const instant& i2);
+    float compute_diff_in_seconds(const instant& i1, const instant& i2);
+    int64_t compute_diff_in_nanos(const instant& i1, const instant& i2);
 };
 }
 }
@@ -39,7 +41,8 @@ public:
     clock();
 
     void get_instant(instant& value);
-    float compute_diff(const instant& i1, const instant& i2);
+    float compute_diff_in_seconds(const instant& i1, const instant& i2);
+    int64_t compute_diff_in_nanos(const instant& i1, const instant& i2);
 };
 }
 }
@@ -53,8 +56,9 @@ namespace timing {
 class clock {
 public:
     typedef timespec instant;
-    void get_instant(instant& value);
-    float compute_diff(const instant& i1, const instant& i2);
+    void get_instant(instant& value) const;
+    float compute_diff_in_seconds(const instant& i1, const instant& i2) const;
+    int64_t compute_diff_in_nanos(const instant& i1, const instant& i2) const;
 };
 }
 }

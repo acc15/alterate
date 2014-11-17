@@ -8,11 +8,11 @@
 namespace alterate {
 namespace math {
 
-template <size_t Count, typename T>
-struct vec: std::array<T, Count>, vector_support< vec<Count,T>, T> {
+template <typename T, size_t Count>
+struct vec: std::array<T, Count>, vector_support< vec<T, Count>, T> {
 
     typedef T                                   value_type;
-    typedef vector_support< vec<Count,T>, T >   vector_support_type;
+    typedef vector_support< vec<T, Count>, T >  vector_support_type;
     typedef std::array<T, Count>                container_type;
 
     vec() {
@@ -29,10 +29,10 @@ struct vec: std::array<T, Count>, vector_support< vec<Count,T>, T> {
 };
 
 template <typename T>
-struct vec<1,T> : alterate::iterator::random_access_iterator_support<vec<1,T>, T>, vector_support<vec<1,T>, T> {
+struct vec<T,1> : alterate::iterator::random_access_iterator_support<vec<T,1>, T>, vector_support<vec<T,1>, T> {
 
     typedef T                                   value_type;
-    typedef vector_support< vec<1,T>, T >       vector_support_type;
+    typedef vector_support< vec<T,1>, T >       vector_support_type;
 
     value_type x;
 
@@ -66,10 +66,10 @@ struct vec<1,T> : alterate::iterator::random_access_iterator_support<vec<1,T>, T
 };
 
 template <typename T>
-struct vec<2,T> : alterate::iterator::random_access_iterator_support<vec<2,T>, T>, vector_support<vec<2,T>, T> {
+struct vec<T,2> : alterate::iterator::random_access_iterator_support<vec<T,2>, T>, vector_support<vec<T,2>, T> {
 
     typedef T                                   value_type;
-    typedef vector_support< vec<2,T>, T >       vector_support_type;
+    typedef vector_support< vec<T,2>, T >       vector_support_type;
 
     value_type x;
     value_type y;
@@ -109,10 +109,10 @@ struct vec<2,T> : alterate::iterator::random_access_iterator_support<vec<2,T>, T
 };
 
 template <typename T>
-struct vec<3,T> : alterate::iterator::random_access_iterator_support<vec<3,T>, T>, vector_support<vec<3,T>, T> {
+struct vec<T,3> : alterate::iterator::random_access_iterator_support<vec<T,3>, T>, vector_support<vec<T,3>, T> {
 
     typedef T                                   value_type;
-    typedef vector_support< vec<3,T>, T >       vector_support_type;
+    typedef vector_support< vec<T,3>, T >       vector_support_type;
 
     value_type x;
     value_type y;
@@ -159,10 +159,10 @@ struct vec<3,T> : alterate::iterator::random_access_iterator_support<vec<3,T>, T
 };
 
 template <typename T>
-struct vec<4,T> : alterate::iterator::random_access_iterator_support<vec<4,T>, T>, vector_support<vec<4,T>, T> {
+struct vec<T,4> : alterate::iterator::random_access_iterator_support<vec<T,4>, T>, vector_support<vec<T,4>, T> {
 
     typedef T                                   value_type;
-    typedef vector_support< vec<4,T>, T >       vector_support_type;
+    typedef vector_support< vec<T,4>, T >       vector_support_type;
 
     value_type x;
     value_type y;

@@ -4,7 +4,7 @@
 #include <alterate/print.h>
 
 template <size_t Count>
-using test_vec = alterate::math::vec<Count, int>;
+using test_vec = alterate::math::vec<int, Count>;
 
 TEST(vec_test, check_constructors) {
 
