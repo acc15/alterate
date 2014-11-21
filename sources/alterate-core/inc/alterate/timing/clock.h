@@ -1,7 +1,7 @@
 #pragma once
 
 #include <boost/predef.h>
-#include <stdint.h>
+#include <cstdint>
 
 #if BOOST_OS_WINDOWS
 

@@ -15,7 +15,7 @@ context& context::clear() {
 
 void context::on_size(const dimension& size) {
     _size = size;
-    glViewport(0, 0, _size.cx, _size.cy);
+    glViewport(0, 0, _size.x, _size.y);
 }
 
 

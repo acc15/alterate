@@ -50,17 +50,11 @@ struct vec<T,1> : alterate::iterator::random_access_iterator_support<vec<T,1>, T
     size_t size() const { return 1; }
 
     value_type& operator[](size_t i) {
-        switch (i) {
-        case 0: return x;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 
     const value_type& operator[](size_t i) const {
-        switch (i) {
-        case 0: return x;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 
 };
@@ -92,19 +86,11 @@ struct vec<T,2> : alterate::iterator::random_access_iterator_support<vec<T,2>, T
     size_t size() const { return 2; }
 
     value_type& operator[](size_t i) {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 
     const value_type& operator[](size_t i) const {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 };
 
@@ -140,21 +126,11 @@ struct vec<T,3> : alterate::iterator::random_access_iterator_support<vec<T,3>, T
     size_t size() const { return 3; }
 
     value_type& operator[](size_t i) {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        case 2: return z;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 
     const value_type& operator[](size_t i) const {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        case 2: return z;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 };
 
@@ -195,23 +171,11 @@ struct vec<T,4> : alterate::iterator::random_access_iterator_support<vec<T,4>, T
     size_t size() const { return 4; }
 
     value_type& operator[](size_t i) {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        case 2: return z;
-        case 3: return w;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 
     const value_type& operator[](size_t i) const {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        case 2: return z;
-        case 3: return w;
-        default: throw make_out_of_range_error();
-        }
+        return (&x)[i];
     }
 };
 

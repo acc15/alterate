@@ -22,10 +22,6 @@ public:
     }
 
     template <typename U>
-    vector_support(std::initializer_list<U> const& l) : generic_vector_support_type(l) {
-    }
-
-    template <typename U>
     value_type dot(U const& v) const {
         return accumulate(v, alterate::math::multiply(), value_type());
     }
@@ -36,7 +32,7 @@ public:
     }
 
     value_type length_square() const {
-        return dot(generic_vector_support_type::vector());
+        return dot(generic_vector_support_type::get_this());
     }
 
     value_type length() const {
@@ -44,12 +40,12 @@ public:
     }
 
     vector_type& normalize() {
-        return generic_vector_support_type::vector() /= length();
+        return generic_vector_support_type::get_this() /= length();
     }
 
     template <typename U>
     vector_type& resize(U const& to_length) {
-        return generic_vector_support_type::vector() *= (to_length / length());
+        return generic_vector_support_type::get_this() *= (to_length / length());
     }
 
 };

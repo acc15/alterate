@@ -1,13 +1,10 @@
 #pragma once
 
 #include <cstdint>
+#include <alterate/math/vec.h>
 
 namespace alterate {
 
-struct dimension {
-    uint32_t cx, cy;
-    dimension();
-    dimension(uint32_t cx, uint32_t cy);
-};
+typedef alterate::math::vec<uint32_t, 2> dimension;
 
 }
