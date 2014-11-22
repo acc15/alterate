@@ -146,6 +146,7 @@ TEST(matrix_test, is_default_constructible) {
     std::cout<<"scale * translate * rotate: " <<std::endl;
     alterate::print_matrix(m, std::cout);
 
+    std::cout << "det(m) = " << m.compute_determinant() << std::endl;
 
     alterate::math::matrix<float, 3,2> m3x2;// = m;
     //m3x2 *= m3x2;
