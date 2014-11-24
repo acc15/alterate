@@ -5,6 +5,9 @@
 #include <alterate/print.h>
 
 #include <alterate/timing/timer.h>
+
+#include "test_utils.h"
+
 using alterate::math::matrix_support;
 
 typedef alterate::math::matrix<float, 3, 3> mat3x3;
@@ -18,6 +21,58 @@ typedef alterate::math::matrix<float, 3, 3> mat3x3;
 //};
 
 //TYPED_TEST_CASE_P(generic_vector_support_test);
+
+template <typename Expected, typename Actual>
+void assert_matrix(const Expected& expected, const Actual& actual) {
+    for (size_t i=0; i<expected.rows(); i++) {
+        for (size_t j=0; j<expected.cols(); j++) {
+            ASSERT_EQ(expected(i,j), actual(i,j)) <<
+                "Elements at [" << i << "][" << j << "] differs. Expected: " << expected(i,j) << ", but was: " << actual(i,j);
+        }
+    }
+}
+
+template <typename T, size_t N>
+size_t array_length(const T (&)[N]) { return N; }
+
+TEST(matrix_test, assign_vector_test) {
+
+    float vec[] = {3,5,7,4,6,8,1,2,3};
+    mat3x3 m = vec;
+    alterate::test::assert_has_equal_elements<float*, float*>(m.data, m.data + array_length(vec), vec, vec+ array_length(vec));
+
+}
+
+TEST(matrix_test, assign_matrix_test) {
+    mat3x3 m = {3,5,7,4,6,8,1,2,3};
+
+    alterate::math::matrix<float, 3,3, alterate::math::column_major_order> a;
+    a = m;
+    assert_matrix(m, a);
+}
+
+TEST(matrix_test, swap_row) {
+    mat3x3 m = {3,5,7,4,6,8,1,2,3};
+
+    m.swap_row(0,2);
+
+    mat3x3 e = {1,2,3,4,6,8,3,5,7};
+    assert_matrix(e, m);
+}
+
+TEST(matrix_test, swap_col) {
+    mat3x3 m = {3,5,7,
+                4,6,8,
+                1,2,3};
+
+    m.swap_col(0,2);
+
+    mat3x3 e = {7,5,3,
+                8,6,4,
+                3,2,1};
+    assert_matrix(e, m);
+}
+
 
 
 TEST(matrix_test, performance_2d_vs_1d_access) {

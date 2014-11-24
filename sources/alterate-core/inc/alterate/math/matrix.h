@@ -8,14 +8,13 @@
 namespace alterate {
 namespace math {
 
-
 struct matrix_tag {};
 
 template <typename MatrixTraits>
 class matrix_support: public matrix_tag {
 private:
 
-    typedef typename MatrixTraits::type         matrix_type;
+    typedef typename MatrixTraits::matrix_type  matrix_type;
     typedef typename MatrixTraits::value_type   value_type;
 
     inline matrix_type& get_this() {
@@ -116,6 +115,20 @@ public:
         return set_col_impl(col, vec);
     }
 
+    matrix_type& swap_row(size_t row1, size_t row2) {
+        for (size_t j=0;j<cols();j++) {
+            std::swap((*this)(row1,j), (*this)(row2,j));
+        }
+        return get_this();
+    }
+
+    matrix_type& swap_col(size_t col1, size_t col2) {
+        for (size_t i=0;i<rows();i++) {
+            std::swap((*this)(i,col1), (*this)(i,col2));
+        }
+        return get_this();
+    }
+
     template <typename Vector>
     Vector& get_row(size_t row, Vector& v) const {
         for (size_t i=0; i<cols(); i++) {
@@ -148,7 +161,8 @@ public:
 
         matrix_type tmp = get_this();
 
-        size_t permutation[rows()];
+        typename MatrixTraits::permutation_column_type permutation;
+        MatrixTraits::resize_permutation_column(permutation, cols());
         for (size_t i = 0; i < rows(); i++) {
             permutation[i] = i;
         }
@@ -288,7 +302,7 @@ public:
         BOOST_ASSERT_MSG(cols() == multiplier.cols(), "matricies can't be multiplied");
 
         typename MatrixTraits::template multiplication_type<matrix_type, OtherMatrix>::type result;
-        result.resize(rows(), multiplier.cols());
+        MatrixTraits::resize(result, rows(), multiplier.cols());
         for (size_t i=0; i<result.rows(); i++) {
             for (size_t j=0; j<result.cols(); j++) {
                 value_type sum = 0;
@@ -303,7 +317,7 @@ public:
 
     template <typename OtherMatrixTraits>
     matrix_type& operator=(const matrix_support<OtherMatrixTraits>& copy) {
-        get_this().resize(copy.rows(), copy.cols());
+        MatrixTraits::resize(get_this(), copy.rows(), copy.cols());
         for (size_t i=0; i<std::min(rows(), copy.rows()); i++) {
             for (size_t j=0; j<std::min(cols(), copy.cols()); j++) {
                 (*this)(i,j) = copy(i,j);
@@ -429,12 +443,10 @@ public:
 
     container_type data;
 
-
     enum {
         row_count = Rows,
         col_count = Cols
     };
-
 
     size_t rows() const { return Rows; }
     size_t cols() const { return Cols; }
@@ -457,22 +469,30 @@ public:
         return data[order_type::compute_flat_index(row, col, Rows, Cols)];
     }
 
-    void resize(size_t /*rows*/, size_t /*cols*/) {
-        // since this matrix is static then implementation is no-op
-    }
 };
 
 template <typename T, size_t Rows, size_t Cols, typename Order>
 struct flat_container_matrix_traits {
 
-    typedef T           value_type;
+    typedef T                           value_type;
+    typedef matrix<T, Rows,Cols, Order> matrix_type;
 
     template <typename Multiplicand, typename Multiplier>
     struct multiplication_type {
         typedef matrix<typename Multiplicand::value_type, Multiplicand::row_count, Multiplier::col_count> type;
     };
 
-    typedef matrix<T, Rows,Cols, Order> type;
+    typedef size_t permutation_column_type[Cols];
+
+    static void resize_permutation_column(permutation_column_type& /*permutation*/, size_t size) {
+        BOOST_ASSERT_MSG(size == Cols, "Static permutation columns can't be resized");
+    }
+
+    static void resize(matrix_type& matrix, size_t rows, size_t cols) {
+        BOOST_ASSERT_MSG(matrix.rows() == rows && matrix.cols() == cols, "Static matrix can't be resized");
+    }
+
+
 };
 
 }
