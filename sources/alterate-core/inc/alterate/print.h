@@ -21,8 +21,8 @@ namespace alterate {
 
     template <typename Stream, typename Matrix>
     Stream& print_matrix(const Matrix& matrix, Stream& stream) {
-        for (size_t i=0; i<Matrix::row_count; i++) {
-            for (size_t j=0; j<Matrix::col_count; j++) {
+        for (size_t i=0; i<matrix.rows(); i++) {
+            for (size_t j=0; j<matrix.cols(); j++) {
                 stream << std::fixed << std::setprecision(4) << '[' << matrix.cell(i, j) << ']';
             }
             stream << std::endl;

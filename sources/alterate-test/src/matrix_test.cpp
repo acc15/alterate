@@ -1,3 +1,4 @@
+#include <time.h>
 #include <array>
 
 #include <gtest/gtest.h>
@@ -11,16 +12,6 @@
 using alterate::math::matrix_support;
 
 typedef alterate::math::matrix<float, 3, 3> mat3x3;
-
-
-//template <typename T>
-//struct matrix_test : public ::testing::Test {
-//    typedef T                           vector_type;
-//    typedef typename T::const_iterator  const_iterator;
-//    typedef typename T::value_type      value_type;
-//};
-
-//TYPED_TEST_CASE_P(generic_vector_support_test);
 
 template <typename Expected, typename Actual>
 void assert_matrix(const Expected& expected, const Actual& actual) {
@@ -73,7 +64,181 @@ TEST(matrix_test, swap_col) {
     assert_matrix(e, m);
 }
 
+TEST(matrix_test, transpose) {
+    mat3x3 m = {3,5,7,
+                4,6,8,
+                1,2,3};
+    m.transpose();
 
+    mat3x3 e = {3,4,1,
+                5,6,2,
+                7,8,3};
+    assert_matrix(e, m);
+}
+
+TEST(matrix_test, get_transposed) {
+    alterate::math::matrix<float, 2,3> m = {1,2,3,
+                                            4,5,6};
+    alterate::math::matrix<float, 3,2> t = m.compute_transposed();
+    alterate::math::matrix<float, 3,2> e = {1,4,
+                                            2,5,
+                                            3,6};
+    assert_matrix(e, t);
+
+}
+
+TEST(matrix_test, multiply) {
+
+    mat3x3 m1 ={1,2,3,
+                4,5,6,
+                7,8,9};
+
+    mat3x3 m2 = {9,8,7,
+                 6,5,4,
+                 3,2,1};
+
+    m1.multiply(m2);
+
+    mat3x3 e = { 30, 24, 18,
+                 84, 69, 54,
+                 138,114,90 };
+    assert_matrix(e,m1);
+}
+
+
+TEST(matrix_test, compute_determinant) {
+
+    mat3x3 m1 ={0,2,3,
+                4,5,6,
+                7,8,9};
+    EXPECT_EQ(3, m1.compute_determinant());
+
+    mat3x3 m2 ={
+        60,	4,  83,
+        75,	5,  60,
+        48,	40,	35
+    };
+    EXPECT_EQ(96600, m2.compute_determinant());
+}
+
+
+template <typename M, typename P>
+void split_lu(const M& lu, const P& p, M& l, M& u) {
+    for (size_t i=0; i<l.rows(); i++) {
+        for (size_t j=0; j<l.cols(); j++) {
+            l(i,j) = (j<i) ? lu(p[i],j) : (i==j) ? 1 : 0;
+            u(i,j) = (j>=i) ? lu(p[i],j) : 0;
+        }
+    }
+}
+
+template <typename P, typename M>
+void make_permutation(const P& p, M& l) {
+    for (size_t i=0; i<l.rows(); i++) {
+        for (size_t j=0; j<l.cols(); j++) {
+            l(i,j) = (p[i] == j) ? 1 : 0;
+        }
+    }
+}
+
+void test_invert(size_t iter, const mat3x3& m) {
+
+    mat3x3 inv;
+    if (!m.compute_inverse(inv)) {
+        std::cout << "Not invertible!!!" << std::endl;
+        return;
+    }
+
+    mat3x3 mul = m * inv;
+    for (size_t i=0; i<mul.rows(); i++) {
+        for (size_t j=0; j<mul.cols(); j++) {
+            ASSERT_NEAR(mul(i,j), i == j ? 1 : 0, 0.001f) <<
+                "[" << iter << "] M*inv(M)[" << i << "][" << j << "] is not equal to identity. " <<
+                "M: " << std::endl << m <<
+                "inv(M): " << std::endl << inv <<
+                "M*inv(M): " << std::endl << mul;
+        }
+    }
+
+
+}
+
+TEST(matrix_test, compute_inverse) {
+
+    mat3x3 m = {
+        60.00000000,	4.00000000,     83.00000000,
+        75.00000000,	5.00000000,     60.00000000,
+        48.00000000,	40.00000000,	35.00000000,
+        };
+    test_invert(0, m);
+
+    test_invert(1, {
+                    23.00000000,	82.00000000,	41.00000000,
+                    99.00000000,	15.00000000,	26.00000000,
+                    81.00000000,	97.00000000,	59.00000000
+                });
+    /*
+
+13.00000000	61.00000000	95.00000000
+26.00000000	37.00000000	33.00000000
+56.00000000	71.00000000	55.00000000
+
+60.00000000	4.00000000	83.00000000
+75.00000000	5.00000000	60.00000000
+48.00000000	40.00000000	35.00000000
+
+69.00000000	78.00000000	43.00000000
+58.00000000	64.00000000	47.00000000
+23.00000000	20.00000000	56.00000000
+
+48.00000000	62.00000000	58.00000000
+74.00000000	20.00000000	61.00000000
+38.00000000	28.00000000	38.00000000
+*/
+
+//    srand( time(nullptr) );
+//    for (size_t iter=0; iter < 100000; iter++) {
+//        for (size_t i=0;i<m.rows(); i++) {
+//            for (size_t j=0;j<m.cols(); j++) {
+//                m(i,j) = static_cast<float>(rand() % 100);
+//            }
+//        }
+//        test_invert(iter, m);
+//    }
+
+}
+
+TEST(matrix_test, compute_lup_decomposition) {
+
+    mat3x3 m = {0, 1, 2,
+                3, 4, 5,
+                6, 7, 8};
+
+    mat3x3 lu;
+    size_t p[3];
+    EXPECT_TRUE(m.compute_lup_decomposition(lu, p));
+
+    mat3x3 l,u,mp;
+    split_lu(lu,p, l,u);
+
+    make_permutation(p,mp);
+
+    std::cout << "L: " << std::endl;
+    alterate::print_matrix(l, std::cout);
+
+    std::cout << "U: " << std::endl;
+    alterate::print_matrix(u, std::cout);
+
+    std::cout << "P: " << std::endl;
+    alterate::print_matrix(mp, std::cout);
+
+    mat3x3 lu_m = mp * l * u;
+    std::cout << "LUP: " << std::endl;
+    alterate::print_matrix(lu_m, std::cout);
+
+    assert_matrix(m, lu_m);
+
+}
 
 TEST(matrix_test, performance_2d_vs_1d_access) {
 
@@ -127,29 +292,6 @@ TEST(matrix_test, performance_2d_vs_1d_access) {
 
 }
 
-TEST(matrix_test, compute_determinant) {
-
-    alterate::math::matrix<float, 3, 3> mat = {
-        0,      23,     43,
-        54,     5,      75,
-        0,      6,      63
-    };
-    alterate::print_matrix(mat, std::cout);
-
-    float det1 = mat.compute_determinant();
-    std::cout << "Determinant: " << det1 << std::endl;
-
-
-
-    alterate::math::matrix<float, 50, 50> mat2 = alterate::math::matrix<float, 50, 50>::identity();
-
-
-    alterate::print_matrix(mat2, std::cout);
-
-    float det2 = mat2.compute_determinant();
-    std::cout << "Determinant: " << det2 << std::endl;
-
-}
 
 TEST(matrix_test, is_default_constructible) {
 

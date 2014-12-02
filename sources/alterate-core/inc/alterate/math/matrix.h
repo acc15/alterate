@@ -5,6 +5,9 @@
 #include <boost/assert.hpp>
 #include <alterate/iterator/iterator_factory.h>
 
+#include <iostream>
+#include <iomanip>
+
 namespace alterate {
 namespace math {
 
@@ -12,11 +15,13 @@ struct matrix_tag {};
 
 template <typename MatrixTraits>
 class matrix_support: public matrix_tag {
+public:
+    typedef MatrixTraits matrix_traits;
+    typedef typename matrix_traits::matrix_type                 matrix_type;
+    typedef typename matrix_traits::value_type                  value_type;
+    typedef typename matrix_traits::permutation_column_type     permutation_vector_type;
+
 private:
-
-    typedef typename MatrixTraits::matrix_type  matrix_type;
-    typedef typename MatrixTraits::value_type   value_type;
-
     inline matrix_type& get_this() {
         return *static_cast<matrix_type*>(this);
     }
@@ -24,6 +29,26 @@ private:
     inline const matrix_type& get_this() const {
         return *static_cast<const matrix_type*>(this);
     }
+
+public:
+    size_t rows() const {
+        return get_this().rows();
+    }
+
+    size_t cols() const {
+        return get_this().cols();
+    }
+
+    value_type& cell(size_t i, size_t j) {
+        return get_this().cell(i,j);
+    }
+
+    const value_type& cell(size_t i, size_t j) const {
+        return get_this().cell(i,j);
+    }
+
+
+private:
 
     template <typename Vector>
     matrix_type& set_row_impl(size_t row, const Vector& vec) {
@@ -33,7 +58,7 @@ private:
         iterator iter = iterator_factory::begin(vec);
         const iterator iter_end = iterator_factory::end(vec, cols());
         for (int j=0; j<cols() && iter != iter_end; j++, iter++) {
-            (*this)(row, j) = (*iter);
+            cell(row, j) = (*iter);
         }
         return get_this();
     }
@@ -46,7 +71,7 @@ private:
         iterator iter = iterator_factory::begin(vec);
         const iterator iter_end = iterator_factory::end(vec, cols());
         for (int j=0; j<rows() && iter != iter_end; j++, iter++) {
-            (*this)(j, col) = (*iter);
+            cell(j, col) = (*iter);
         }
         return get_this();
     }
@@ -67,10 +92,10 @@ private:
             for (iterator iter = iterator_factory::begin(vec);
                  iter != iter_end && k < cols();
                  iter++, k++) {
-                sum += (*this)(i,k) * (*iter);
+                sum += cell(i,k) * (*iter);
             }
             for (;k<cols();k++) {
-                sum += (*this)(i,k);
+                sum += cell(i,k);
             }
             result[i] = sum;
         }
@@ -79,15 +104,6 @@ private:
     }
 
 public:
-
-    size_t rows() const {
-        return get_this().rows();
-    }
-
-    size_t cols() const {
-        return get_this().cols();
-    }
-
     matrix_support() {}
 
     template <typename Init>
@@ -117,14 +133,14 @@ public:
 
     matrix_type& swap_row(size_t row1, size_t row2) {
         for (size_t j=0;j<cols();j++) {
-            std::swap((*this)(row1,j), (*this)(row2,j));
+            std::swap(cell(row1,j), cell(row2,j));
         }
         return get_this();
     }
 
     matrix_type& swap_col(size_t col1, size_t col2) {
         for (size_t i=0;i<rows();i++) {
-            std::swap((*this)(i,col1), (*this)(i,col2));
+            std::swap(cell(i,col1), cell(i,col2));
         }
         return get_this();
     }
@@ -132,7 +148,7 @@ public:
     template <typename Vector>
     Vector& get_row(size_t row, Vector& v) const {
         for (size_t i=0; i<cols(); i++) {
-            v[i] = (*this)(row, i);
+            v[i] = cell(row, i);
         }
         return v;
     }
@@ -140,7 +156,7 @@ public:
     template <typename Vector>
     Vector& get_col(size_t col, Vector& v) const {
         for (size_t i=0; i<rows(); i++) {
-            v[i] = (*this)(i, col);
+            v[i] = cell(i, col);
         }
         return v;
     }
@@ -157,48 +173,141 @@ public:
         return get_col(col, v);
     }
 
-    value_type compute_determinant() const {
-
-        matrix_type tmp = get_this();
-
-        typename MatrixTraits::permutation_column_type permutation;
-        MatrixTraits::resize_permutation_column(permutation, cols());
-        for (size_t i = 0; i < rows(); i++) {
-            permutation[i] = i;
+    typename matrix_traits::transposed_matrix_type compute_transposed() const {
+        typedef typename matrix_traits::transposed_matrix_type result_type;
+        result_type result;
+        result_type::matrix_traits::resize(result, cols(), rows());
+        for (size_t i=0; i<rows(); i++) {
+            for (size_t j=0; j<cols(); j++) {
+                result(j,i) = cell(i,j);
+            }
         }
+        return result;
+    }
 
-        value_type det = 1;
+    matrix_type& transpose() {
+        return get_this() = compute_transposed();
+    }
+
+    bool compute_lup_decomposition(matrix_type& lu, permutation_vector_type& p) const {
+        return (lu = get_this()).lup_decomposition(p);
+    }
+
+    bool lup_decomposition(permutation_vector_type& p) {
+        if (rows() != cols()) {
+            BOOST_ASSERT_MSG(false, "LUP decomposition availaible only for square matricies");
+            return false;
+        }
+        matrix_traits::resize_permutation(p, rows());
+        for (size_t i = 0; i < rows(); i++) {
+            p[i] = i;
+        }
         for (size_t i = 0; i < rows()-1; i++) {
             size_t pivot = i;
-            while (pivot < rows() && tmp(i, permutation[pivot]) == 0) {
+            while (pivot < rows() && cell(p[pivot], i) == 0) {
                 pivot++;
             }
             if (pivot == rows()) {
-                return 0;
+                return false;
             }
             if (pivot != i) {
-                std::swap(permutation[i], permutation[pivot]);
-                det = -det;
+                std::swap(p[i], p[pivot]);
             }
-            det *= tmp(i, permutation[i]);
-            for (int j = i + 1; j < rows(); j++) {
-                value_type num = tmp(j, permutation[i]);
-                if (num != 0) {
-                    value_type multiplier = num / tmp(i, permutation[i]);
-                    for (int k = i + 1; k < cols(); k++) {
-                        tmp(j, permutation[k]) -= tmp(i, permutation[k]) * multiplier;
+
+            for (size_t k = i + 1; k < rows(); k++) {
+                for (size_t j = i + 1; j < cols(); j++) {
+                    cell(p[k], j) -= cell(p[i], j) * cell(p[k],i) / cell(p[i], i);
+                }
+                cell(p[k], i) = cell(p[k],i) / cell(p[i], i);
+            }
+        }
+        return true;
+    }
+
+    bool compute_inverse(matrix_type& i) const {
+        return (i = get_this()).invert();
+    }
+
+    bool invert() {
+        matrix_type lu;
+        permutation_vector_type p;
+        if (!compute_lup_decomposition(lu, p)) {
+            return false;
+        }
+        for (size_t j=0; j<cols(); j++) {
+            if (lu.cell(p[j],j) == 0) {
+                return false;
+            }
+            for (size_t i=0; i<rows();i++) {
+                value_type& c = cell(i,p[j]);
+                c = (i == j ? 1 : 0);
+                for (size_t k=0; k<i; k++) {
+                    c -= lu.cell(p[i], k) * cell(k, p[j]);
+                }
+            }
+            for (size_t i=rows()-1; i != static_cast<size_t>(-1); i--) {
+                value_type& c = cell(i,p[j]);
+                //c /= lu.cell(p[i], i);
+                for (size_t k=cols()-1; k > i; k--) {
+                    c -= lu.cell(p[i], k) * cell(k, p[j]);
+                }
+                c /= lu.cell(p[i], i);
+            }
+        }
+        return true;
+    }
+
+    matrix_type operator~() {
+        matrix_type inv = get_this();
+        inv.invert();
+        return inv;
+    }
+
+    bool guassian_elimination(permutation_vector_type& p) {
+        matrix_traits::resize_permutation(p, cols());
+        for (size_t i=0; i<cols(); i++) {
+            p[i] = i;
+        }
+        for (size_t i=0; i<rows(); i++) {
+            if (cell(i,p[i]) == 0) {
+                size_t pivot = i;
+                do {
+                    ++pivot;
+                    if (pivot >= cols()) {
+                        return false;
                     }
+                } while (cell(i,p[pivot]) == 0);
+                std::swap(p[pivot], p[i]);
+            }
+            for (size_t m=i+1; m<rows(); m++) {
+                for (size_t k=i+1; k<cols(); k++) {
+                    cell(m,p[k]) -= cell(i,p[k])*cell(m,p[i])/cell(i,p[i]);
                 }
             }
         }
-        det *= tmp(rows()-1, permutation[rows()-1]);
+        return true;
+    }
+
+    value_type compute_determinant() const {
+        permutation_vector_type p;
+        matrix_type tmp = get_this();
+        if (!tmp.guassian_elimination(p)) {
+            return 0;
+        }
+        value_type det = 1;
+        for (size_t i=0; i<rows(); i++) {
+            if (p[i] > i) {
+                det = -det;
+            }
+            det *= tmp.cell(i, p[i]);
+        }
         return det;
     }
 
     matrix_type& set_to_identity() {
         for (size_t i=0; i<rows(); i++) {
             for (size_t j=0; j<cols(); j++) {
-                (*this)(i,j) = (i==j ? 1 : 0);
+                cell(i,j) = (i==j ? 1 : 0);
             }
         }
         return get_this();
@@ -214,12 +323,12 @@ public:
         const iterator iter_end = iterator_factory::end(vec, rows());
         for (size_t i=0; i<rows(); i++) {
             for (size_t j=0; j<cols(); j++) {
-                value_type& cell = (*this)(i,j);
+                value_type& c = cell(i,j);
                 if (j == (cols()-1) && iter != iter_end) {
-                    cell = (*iter);
+                    c = (*iter);
                     ++iter;
                 } else {
-                    cell = (i == j ? 1 : 0);
+                    c = (i == j ? 1 : 0);
                 }
             }
         }
@@ -236,16 +345,16 @@ public:
         const iterator iter_end = iterator_factory::end(vec, std::min(rows(), cols()));
         for (size_t i=0; i<rows(); i++) {
             for (size_t j=0; j<cols(); j++) {
-                value_type& cell = (*this)(i,j);
+                value_type& c = cell(i,j);
                 if (i != j) {
-                    cell = 0;
+                    c = 0;
                     continue;
                 }
                 if (iter == iter_end) {
-                    cell = 1;
+                    c = 1;
                     continue;
                 }
-                cell = static_cast<value_type>(*iter);
+                c = static_cast<value_type>(*iter);
                 ++iter;
             }
         }
@@ -261,25 +370,25 @@ public:
     matrix_type& set_to_rotate_z(const ScalarType& cos, const ScalarType& sin) {
         for (size_t i=0; i<rows(); i++) {
             for (size_t j=0; j<cols(); j++) {
-                value_type& cell = (*this)(i,j);
+                value_type& c = cell(i,j);
                 if (i == 0) {
                     if (j == 0) {
-                        cell = cos;
+                        c = cos;
                     } else if (j == 1) {
-                        cell = -sin;
+                        c = -sin;
                     } else {
-                        cell = 0;
+                        c = 0;
                     }
                 } else if (i == 1) {
                     if (j == 0) {
-                        cell = sin;
+                        c = sin;
                     } else if (j == 1) {
-                        cell = cos;
+                        c = cos;
                     } else {
-                        cell = 0;
+                        c = 0;
                     }
                 } else {
-                    cell = (i == j ? 1 : 0);
+                    c = (i == j ? 1 : 0);
                 }
             }
         }
@@ -288,26 +397,28 @@ public:
     
     template <typename OtherMatrix>
     matrix_type& multiply(const OtherMatrix& multiplier) {
-        return get_this() = get_this() * multiplier;
+        return get_this() *= multiplier;
     }
 
     template <typename OtherMatrix>
     matrix_type& operator*=(const OtherMatrix& multiplier) {
-        return multiply(multiplier);
+        return get_this() = get_this() * multiplier;
     }
 
-    template <typename OtherMatrix>
-    typename MatrixTraits::template multiplication_type<matrix_type, OtherMatrix>::type operator*(
-            const OtherMatrix& multiplier) const {
+    template <typename OtherMatrixTraits>
+    typename matrix_traits::template multiplication_type<OtherMatrixTraits>::type operator*(
+            const matrix_support<OtherMatrixTraits>& multiplier) const {
         BOOST_ASSERT_MSG(cols() == multiplier.cols(), "matricies can't be multiplied");
 
-        typename MatrixTraits::template multiplication_type<matrix_type, OtherMatrix>::type result;
-        MatrixTraits::resize(result, rows(), multiplier.cols());
+        typedef typename matrix_traits::template multiplication_type<OtherMatrixTraits>::type result_type;
+
+        result_type result;
+        result_type::matrix_traits::resize(result, rows(), multiplier.cols());
         for (size_t i=0; i<result.rows(); i++) {
             for (size_t j=0; j<result.cols(); j++) {
                 value_type sum = 0;
                 for (size_t k=0; k<cols(); k++) {
-                    sum += (*this)(i, k) * multiplier(k, j);
+                    sum += cell(i, k) * multiplier(k, j);
                 }
                 result(i,j) = sum;
             }
@@ -320,7 +431,7 @@ public:
         MatrixTraits::resize(get_this(), copy.rows(), copy.cols());
         for (size_t i=0; i<std::min(rows(), copy.rows()); i++) {
             for (size_t j=0; j<std::min(cols(), copy.cols()); j++) {
-                (*this)(i,j) = copy(i,j);
+                cell(i,j) = copy(i,j);
             }
         }
         return get_this();
@@ -339,7 +450,7 @@ public:
         if (iter != iter_end) {
             for (size_t i=0; i<rows(); i++) {
                 for (size_t j=0; j<cols(); j++) {
-                    (*this)(i,j) = *iter;
+                    cell(i,j) = *iter;
                     ++iter;
                     if (iter == iter_end) {
                         break;
@@ -416,6 +527,24 @@ public:
 
 };
 
+template <typename Stream, typename Traits>
+Stream& operator<<(Stream& stream, const matrix_support<Traits>& matrix) {
+    std::ios::fmtflags f( stream.flags() );
+
+    stream << std::fixed << std::setprecision(8);
+    for (size_t i=0; i<matrix.rows(); i++) {
+        for (size_t j=0; j<matrix.cols(); j++) {
+            if (j > 0) {
+                stream << '\t';
+            }
+            stream << matrix.cell(i, j);
+        }
+        stream << std::endl;
+    }
+    stream.flags( f );
+    return stream;
+}
+
 struct row_major_order {
     static size_t compute_flat_index(size_t row, size_t col, size_t /*rows*/, size_t cols) {
         return row * cols + col;
@@ -443,11 +572,6 @@ public:
 
     container_type data;
 
-    enum {
-        row_count = Rows,
-        col_count = Cols
-    };
-
     size_t rows() const { return Rows; }
     size_t cols() const { return Cols; }
 
@@ -474,18 +598,24 @@ public:
 template <typename T, size_t Rows, size_t Cols, typename Order>
 struct flat_container_matrix_traits {
 
-    typedef T                           value_type;
-    typedef matrix<T, Rows,Cols, Order> matrix_type;
-
-    template <typename Multiplicand, typename Multiplier>
-    struct multiplication_type {
-        typedef matrix<typename Multiplicand::value_type, Multiplicand::row_count, Multiplier::col_count> type;
+    enum {
+        row_count = Rows,
+        col_count = Cols
     };
 
-    typedef size_t permutation_column_type[Cols];
+    typedef T                         value_type;
+    typedef matrix<T,Rows,Cols,Order> matrix_type;
+    typedef matrix<T,Cols,Rows,Order> transposed_matrix_type;
 
-    static void resize_permutation_column(permutation_column_type& /*permutation*/, size_t size) {
-        BOOST_ASSERT_MSG(size == Cols, "Static permutation columns can't be resized");
+    template <typename OtherMatrixTraits>
+    struct multiplication_type {
+        typedef matrix<value_type, row_count, OtherMatrixTraits::col_count> type;
+    };
+
+    typedef size_t permutation_column_type[Rows];
+
+    static void resize_permutation(permutation_column_type& /*permutation*/, size_t size) {
+        BOOST_ASSERT_MSG(size == Rows && size == Cols, "Static permutation columns can't be resized");
     }
 
     static void resize(matrix_type& matrix, size_t rows, size_t cols) {
