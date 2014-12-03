@@ -19,7 +19,7 @@ public:
     typedef MatrixTraits matrix_traits;
     typedef typename matrix_traits::matrix_type                 matrix_type;
     typedef typename matrix_traits::value_type                  value_type;
-    typedef typename matrix_traits::permutation_column_type     permutation_vector_type;
+    typedef typename matrix_traits::permutation_vector_type     permutation_vector_type;
 
 private:
     inline matrix_type& get_this() {
@@ -263,43 +263,33 @@ public:
         return inv;
     }
 
-    bool guassian_elimination(permutation_vector_type& p) {
+
+    value_type compute_determinant() const {
+        value_type det = 1;
+        matrix_type m = get_this();
+        permutation_vector_type p;
         matrix_traits::resize_permutation(p, cols());
         for (size_t i=0; i<cols(); i++) {
             p[i] = i;
         }
-        for (size_t i=0; i<rows(); i++) {
-            if (cell(i,p[i]) == 0) {
+        for (size_t i=0; i<m.rows(); i++) {
+            if (m(i,p[i]) == 0) {
                 size_t pivot = i;
                 do {
                     ++pivot;
                     if (pivot >= cols()) {
-                        return false;
+                        return 0;
                     }
-                } while (cell(i,p[pivot]) == 0);
+                } while (m(i,p[pivot]) == 0);
                 std::swap(p[pivot], p[i]);
-            }
-            for (size_t m=i+1; m<rows(); m++) {
-                for (size_t k=i+1; k<cols(); k++) {
-                    cell(m,p[k]) -= cell(i,p[k])*cell(m,p[i])/cell(i,p[i]);
-                }
-            }
-        }
-        return true;
-    }
-
-    value_type compute_determinant() const {
-        permutation_vector_type p;
-        matrix_type tmp = get_this();
-        if (!tmp.guassian_elimination(p)) {
-            return 0;
-        }
-        value_type det = 1;
-        for (size_t i=0; i<rows(); i++) {
-            if (p[i] > i) {
                 det = -det;
             }
-            det *= tmp.cell(i, p[i]);
+            det *= m(i,p[i]);
+            for (size_t n=i+1; n<m.rows(); n++) {
+                for (size_t k=i+1; k<m.cols(); k++) {
+                    m(n,p[k]) -= m(i,p[k])*m(n,p[i])/m(i,p[i]);
+                }
+            }
         }
         return det;
     }
@@ -612,10 +602,10 @@ struct flat_container_matrix_traits {
         typedef matrix<value_type, row_count, OtherMatrixTraits::col_count> type;
     };
 
-    typedef size_t permutation_column_type[Rows];
+    typedef size_t permutation_vector_type[Rows];
 
-    static void resize_permutation(permutation_column_type& /*permutation*/, size_t size) {
-        BOOST_ASSERT_MSG(size == Rows && size == Cols, "Static permutation columns can't be resized");
+    static void resize_permutation(permutation_vector_type& /*permutation*/, size_t size) {
+        BOOST_ASSERT_MSG(size == Rows, "Static permutation vector can't be resized");
     }
 
     static void resize(matrix_type& matrix, size_t rows, size_t cols) {
