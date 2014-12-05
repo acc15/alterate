@@ -9,6 +9,7 @@
 
 #include "test_utils.h"
 
+
 using alterate::math::matrix_support;
 
 typedef alterate::math::matrix<float, 3, 3> mat3x3;
@@ -126,17 +127,17 @@ template <typename M, typename P>
 void split_lu(const M& lu, const P& p, M& l, M& u) {
     for (size_t i=0; i<l.rows(); i++) {
         for (size_t j=0; j<l.cols(); j++) {
-            l(i,j) = (j<i) ? lu(p[i],j) : (i==j) ? 1 : 0;
-            u(i,j) = (j>=i) ? lu(p[i],j) : 0;
+            l(i,j) = (j<i) ? lu(i,p[j]) : (i==j) ? 1 : 0;
+            u(i,j) = (j>=i) ? lu(i,p[j]) : 0;
         }
     }
 }
 
 template <typename P, typename M>
-void make_permutation(const P& p, M& l) {
+void make_permutation_matrix(const P& p, M& l) {
     for (size_t i=0; i<l.rows(); i++) {
         for (size_t j=0; j<l.cols(); j++) {
-            l(i,j) = (p[i] == j) ? 1 : 0;
+            l(i,j) = (i == p[j]) ? 1 : 0;
         }
     }
 }
@@ -150,9 +151,11 @@ void test_invert(size_t iter, const mat3x3& m) {
     }
 
     mat3x3 mul = m * inv;
+    //std::cout << mul << std::endl;
+
     for (size_t i=0; i<mul.rows(); i++) {
         for (size_t j=0; j<mul.cols(); j++) {
-            ASSERT_NEAR(mul(i,j), i == j ? 1 : 0, 0.001f) <<
+            ASSERT_NEAR(mul(i,j), i == j ? 1 : 0, 0.01f) <<
                 "[" << iter << "] M*inv(M)[" << i << "][" << j << "] is not equal to identity. " <<
                 "M: " << std::endl << m <<
                 "inv(M): " << std::endl << inv <<
@@ -165,17 +168,22 @@ void test_invert(size_t iter, const mat3x3& m) {
 
 TEST(matrix_test, compute_inverse) {
 
-    mat3x3 m = {
-        60.00000000,	4.00000000,     83.00000000,
-        75.00000000,	5.00000000,     60.00000000,
-        48.00000000,	40.00000000,	35.00000000,
-        };
-    test_invert(0, m);
+    test_invert(0, {
+            60.00000000,	4.00000000,     83.00000000,
+            75.00000000,	5.00000000,     60.00000000,
+            48.00000000,	40.00000000,	35.00000000,
+            });
 
     test_invert(1, {
                     23.00000000,	82.00000000,	41.00000000,
                     99.00000000,	15.00000000,	26.00000000,
                     81.00000000,	97.00000000,	59.00000000
+                });
+
+    test_invert(2, {
+                    72.00000000,	54.00000000,	71.00000000,
+                    84.00000000,	63.00000000,	4.00000000,
+                    26.00000000,	45.00000000,	26.00000000
                 });
     /*
 
@@ -196,32 +204,36 @@ TEST(matrix_test, compute_inverse) {
 38.00000000	28.00000000	38.00000000
 */
 
-//    srand( time(nullptr) );
-//    for (size_t iter=0; iter < 100000; iter++) {
-//        for (size_t i=0;i<m.rows(); i++) {
-//            for (size_t j=0;j<m.cols(); j++) {
-//                m(i,j) = static_cast<float>(rand() % 100);
-//            }
-//        }
-//        test_invert(iter, m);
-//    }
+    mat3x3 m;
+
+    srand( time(nullptr) );
+    for (size_t iter=0; iter < 1000; iter++) {
+        for (size_t i=0;i<m.rows(); i++) {
+            for (size_t j=0;j<m.cols(); j++) {
+                m(i,j) = static_cast<float>(rand() % 10000) / 100.f;
+            }
+        }
+        test_invert(iter, m);
+    }
 
 }
 
 TEST(matrix_test, compute_lup_decomposition) {
 
-    mat3x3 m = {0, 1, 2,
-                3, 4, 5,
-                6, 7, 8};
+    mat3x3 m = {
+        60,	4,  83,
+        75,	5,  60,
+        48,	40,	35
+    };
 
     mat3x3 lu;
     size_t p[3];
-    EXPECT_TRUE(m.compute_lup_decomposition(lu, p));
+    EXPECT_TRUE(m.compute_lu_decomposition(lu, p));
 
     mat3x3 l,u,mp;
     split_lu(lu,p, l,u);
 
-    make_permutation(p,mp);
+    make_permutation_matrix(p,mp);
 
     std::cout << "L: " << std::endl;
     alterate::print_matrix(l, std::cout);
@@ -232,12 +244,87 @@ TEST(matrix_test, compute_lup_decomposition) {
     std::cout << "P: " << std::endl;
     alterate::print_matrix(mp, std::cout);
 
-    mat3x3 lu_m = mp * l * u;
+    mat3x3 lu_m = l * u * mp;
     std::cout << "LUP: " << std::endl;
     alterate::print_matrix(lu_m, std::cout);
 
     assert_matrix(m, lu_m);
 
+}
+
+
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/lu.hpp>
+#include <boost/numeric/ublas/io.hpp>
+
+using namespace boost::numeric::ublas;
+using namespace std;
+
+ /* Matrix inversion routine.
+ Uses lu_factorize and lu_substitute in uBLAS to invert a matrix */
+template<class T>
+bool InvertMatrix(matrix<T>& input)
+{
+    typedef permutation_matrix<std::size_t> pmatrix;
+
+    // create a working copy of the input
+    matrix<T> A(input);
+
+    // create a permutation matrix for the LU-factorization
+    pmatrix pm(A.size1());
+
+    // perform LU-factorization
+    int res = lu_factorize(A, pm);
+    if (res != 0)
+        return false;
+
+    // create identity matrix of "inverse"
+    input.assign(identity_matrix<T> (A.size1()));
+
+    // backsubstitute to get the inverse
+    lu_substitute(A, pm, input);
+
+    return true;
+}
+
+
+TEST(matrix_test, invert_performance) {
+
+    typedef alterate::math::matrix<float, 4, 4> mat4x4;
+
+    alterate::timing::timer timer;
+
+    srand( time(nullptr) );
+
+    const size_t m_count = 2000;
+
+    mat4x4 m;
+    for (size_t i=0;i<m.rows(); i++) {
+        for (size_t j=0;j<m.cols(); j++) {
+            m(i,j) = static_cast<float>(rand() % 10000) / 100.f;
+        }
+    }
+
+    timer.start();
+    for (size_t t=0; t<m_count; t++) {
+        m.invert();
+    }
+    int64_t alt_nanos = timer.get_time_in_nanos();
+
+    matrix<float> boost_m(4,4);
+    for (size_t i=0;i<m.rows(); i++) {
+        for (size_t j=0;j<m.cols(); j++) {
+            boost_m(i,j) = static_cast<float>(rand() % 10000) / 100.f;
+        }
+    }
+
+    timer.start();
+    for (size_t t=0; t<m_count; t++) {
+        InvertMatrix(boost_m);
+    }
+    int64_t boost_nanos = timer.get_time_in_nanos();
+
+    std::cout << m_count << " matrix inversions took (alt: " << alt_nanos << ", boost: " << boost_nanos << ")" << std::endl;
 }
 
 TEST(matrix_test, performance_2d_vs_1d_access) {

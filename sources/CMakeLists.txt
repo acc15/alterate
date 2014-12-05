@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 enable_testing()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAG} -std=c++11 -Wall -Wextra -Werror -Wno-error=unused-parameter")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAG} -std=c++11")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 set(BOOST_ROOT "" CACHE PATH "Boost library")

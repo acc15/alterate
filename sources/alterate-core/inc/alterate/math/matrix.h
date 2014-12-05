@@ -19,7 +19,7 @@ public:
     typedef MatrixTraits matrix_traits;
     typedef typename matrix_traits::matrix_type                 matrix_type;
     typedef typename matrix_traits::value_type                  value_type;
-    typedef typename matrix_traits::permutation_vector_type     permutation_vector_type;
+    typedef typename matrix_traits::permutation_vector_type     permutation_matrix_type;
 
 private:
     inline matrix_type& get_this() {
@@ -49,6 +49,13 @@ public:
 
 
 private:
+
+    void init_permutation(permutation_matrix_type& p) const {
+        matrix_traits::resize_permutation(p, cols());
+        for (size_t i=0; i<cols(); i++) {
+            p[i] = i;
+        }
+    }
 
     template <typename Vector>
     matrix_type& set_row_impl(size_t row, const Vector& vec) {
@@ -101,6 +108,12 @@ private:
         }
         return result;
 
+    }
+
+    void add_row(const value_type& scale, const permutation_matrix_type& p, size_t source_row, size_t target_row, size_t start_column) {
+        for (size_t k=start_column; k<cols(); k++) {
+            cell(target_row,p[k]) += cell(source_row,p[k])*scale;
+        }
     }
 
 public:
@@ -189,109 +202,97 @@ public:
         return get_this() = compute_transposed();
     }
 
-    bool compute_lup_decomposition(matrix_type& lu, permutation_vector_type& p) const {
-        return (lu = get_this()).lup_decomposition(p);
+    bool compute_lu_decomposition(matrix_type& lu, permutation_matrix_type& p) const {
+        return (lu = get_this()).lu_decomposition(p);
     }
 
-    bool lup_decomposition(permutation_vector_type& p) {
+    bool lu_decomposition(permutation_matrix_type& p) {
         if (rows() != cols()) {
             BOOST_ASSERT_MSG(false, "LUP decomposition availaible only for square matricies");
             return false;
         }
-        matrix_traits::resize_permutation(p, rows());
-        for (size_t i = 0; i < rows(); i++) {
-            p[i] = i;
-        }
+        init_permutation(p);
         for (size_t i = 0; i < rows()-1; i++) {
-            size_t pivot = i;
-            while (pivot < rows() && cell(p[pivot], i) == 0) {
-                pivot++;
-            }
-            if (pivot == rows()) {
-                return false;
-            }
-            if (pivot != i) {
-                std::swap(p[i], p[pivot]);
-            }
-
-            for (size_t k = i + 1; k < rows(); k++) {
-                for (size_t j = i + 1; j < cols(); j++) {
-                    cell(p[k], j) -= cell(p[i], j) * cell(p[k],i) / cell(p[i], i);
-                }
-                cell(p[k], i) = cell(p[k],i) / cell(p[i], i);
-            }
-        }
-        return true;
-    }
-
-    bool compute_inverse(matrix_type& i) const {
-        return (i = get_this()).invert();
-    }
-
-    bool invert() {
-        matrix_type lu;
-        permutation_vector_type p;
-        if (!compute_lup_decomposition(lu, p)) {
-            return false;
-        }
-        for (size_t j=0; j<cols(); j++) {
-            if (lu.cell(p[j],j) == 0) {
-                return false;
-            }
-            for (size_t i=0; i<rows();i++) {
-                value_type& c = cell(i,p[j]);
-                c = (i == j ? 1 : 0);
-                for (size_t k=0; k<i; k++) {
-                    c -= lu.cell(p[i], k) * cell(k, p[j]);
-                }
-            }
-            for (size_t i=rows()-1; i != static_cast<size_t>(-1); i--) {
-                value_type& c = cell(i,p[j]);
-                //c /= lu.cell(p[i], i);
-                for (size_t k=cols()-1; k > i; k--) {
-                    c -= lu.cell(p[i], k) * cell(k, p[j]);
-                }
-                c /= lu.cell(p[i], i);
-            }
-        }
-        return true;
-    }
-
-    matrix_type operator~() {
-        matrix_type inv = get_this();
-        inv.invert();
-        return inv;
-    }
-
-
-    value_type compute_determinant() const {
-        value_type det = 1;
-        matrix_type m = get_this();
-        permutation_vector_type p;
-        matrix_traits::resize_permutation(p, cols());
-        for (size_t i=0; i<cols(); i++) {
-            p[i] = i;
-        }
-        for (size_t i=0; i<m.rows(); i++) {
-            if (m(i,p[i]) == 0) {
+            if (cell(i,p[i]) == 0) {
                 size_t pivot = i;
                 do {
                     ++pivot;
                     if (pivot >= cols()) {
-                        return 0;
+                        return false;
                     }
-                } while (m(i,p[pivot]) == 0);
-                std::swap(p[pivot], p[i]);
-                det = -det;
+                } while (cell(i, p[pivot]) == 0);
+                std::swap(p[i], p[pivot]);
             }
-            det *= m(i,p[i]);
-            for (size_t n=i+1; n<m.rows(); n++) {
-                for (size_t k=i+1; k<m.cols(); k++) {
-                    m(n,p[k]) -= m(i,p[k])*m(n,p[i])/m(i,p[i]);
+            for (size_t k = i + 1; k < rows(); k++) {
+                for (size_t j = i + 1; j < cols(); j++) {
+                    cell(k, p[j]) -= cell(i, p[j]) * cell(k, p[i]) / cell(i, p[i]);
                 }
+                cell(k, p[i]) /= cell(i, p[i]);
             }
         }
+        return true;
+    }
+
+    /**
+     * result matrix must have permutated rows as specified by permutation matrix [p]
+     */
+    void lu_substitute(matrix_type& result, const permutation_matrix_type& p) const {
+        for (size_t j=0; j<cols(); j++) {
+            for (size_t i=0; i<rows();i++) {
+                value_type& c = result(p[i],j);
+                for (size_t k=0; k<i; k++) {
+                    c -= cell(i, p[k]) * result(p[k],j);
+                }
+            }
+            for (size_t i=rows()-1; i != static_cast<size_t>(-1); i--) {
+                value_type& c = result(p[i],j);
+                for (size_t k=cols()-1; k > i; k--) {
+                    c -= cell(i, p[k]) * result(p[k],j);
+                }
+                c /= cell(i, p[i]);
+            }
+        }
+    }
+
+    bool invert() {
+        matrix_type lu;
+        permutation_matrix_type p;
+        if (!compute_lu_decomposition(lu, p)) {
+            return false;
+        }
+        for (size_t i=0; i<rows(); i++) {
+            for (size_t j=0; j<cols(); j++) {
+                cell(i,p[j]) = (i==j?1:0);
+            }
+        }
+        lu.lu_substitute(get_this(), p);
+        return true;
+    }
+
+    value_type compute_determinant() const {
+        matrix_type m;
+        permutation_matrix_type p;
+        if (!compute_lu_decomposition(m, p)) {
+            return 0;
+        }
+
+        value_type det = 1;
+
+        size_t swap_count = 0;
+        for (size_t i=0; i<m.rows(); i++) {
+            if (p[i] != i) {
+                ++swap_count;
+            }
+            det *= m(i, p[i]);
+        }
+        if (swap_count > 0 && ((swap_count - 1) & 1) == 1) {
+            return -det;
+        }
         return det;
+    }
+
+    bool compute_inverse(matrix_type& i) const {
+        return (i = get_this()).invert();
     }
 
     matrix_type& set_to_identity() {
@@ -301,6 +302,12 @@ public:
             }
         }
         return get_this();
+    }
+
+    matrix_type operator~() {
+        matrix_type inv = get_this();
+        inv.invert();
+        return inv;
     }
 
     template <typename Vector>
