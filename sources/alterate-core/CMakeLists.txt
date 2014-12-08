@@ -18,6 +18,7 @@ set(SRC_LIST
     ${INC_DIR}/alterate/math/generic_vector_support.h
     ${INC_DIR}/alterate/math/vector_support.h
     ${INC_DIR}/alterate/math/vec.h
+    ${INC_DIR}/alterate/math/transform_builder.h
     ${INC_DIR}/alterate/math/matrix.h
 
     ${INC_DIR}/alterate/system.h

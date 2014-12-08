@@ -8,6 +8,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include <alterate/math/transform_builder.h>
+
 namespace alterate {
 namespace math {
 
@@ -19,7 +21,7 @@ public:
     typedef MatrixTraits matrix_traits;
     typedef typename matrix_traits::matrix_type                 matrix_type;
     typedef typename matrix_traits::value_type                  value_type;
-    typedef typename matrix_traits::permutation_vector_type     permutation_matrix_type;
+    typedef typename matrix_traits::permutation_matrix_type     permutation_matrix_type;
 
 private:
     inline matrix_type& get_this() {
@@ -85,7 +87,7 @@ private:
 
 
     template <typename Result, typename Vector>
-    Result& map_impl(const Vector& vec, Result& result) const {
+    Result& transform_impl(const Vector& vec, Result& result) const {
 
         typedef alterate::iterator::iterator_factory<Vector> iterator_factory;
         typedef typename iterator_factory::iterator iterator;
@@ -393,13 +395,18 @@ public:
     }
     
     template <typename OtherMatrix>
-    matrix_type& multiply(const OtherMatrix& multiplier) {
-        return get_this() *= multiplier;
+    matrix_type& pre_multiply(const OtherMatrix& multiplier) {
+        return get_this() = multiplier * get_this();
+    }
+
+    template <typename OtherMatrix>
+    matrix_type& post_multiply(const OtherMatrix& multiplier) {
+        return get_this() = get_this() * multiplier;
     }
 
     template <typename OtherMatrix>
     matrix_type& operator*=(const OtherMatrix& multiplier) {
-        return get_this() = get_this() * multiplier;
+        return post_multiply(multiplier);
     }
 
     template <typename OtherMatrixTraits>
@@ -467,25 +474,25 @@ public:
     }
 
     template <typename Result, typename Vector>
-    Result& map(const Vector& vector, Result& result) const {
-        return map_impl(vector, result);
+    Result& transform(const Vector& vector, Result& result) const {
+        return transform_impl(vector, result);
     }
 
     template <typename Result, typename Type>
-    Result& map(const std::initializer_list<Type>& vector, Result& result) const {
-        return map_impl(vector, result);
+    Result& transform(const std::initializer_list<Type>& vector, Result& result) const {
+        return transform_impl(vector, result);
     }
 
     template <typename Result, typename Vector>
-    Result map(const Vector& vector) const {
+    Result transform(const Vector& vector) const {
         Result result;
-        return map_impl(vector, result);
+        return transform_impl(vector, result);
     }
 
     template <typename Result, typename Type>
-    Result map(const std::initializer_list<Type>& vector) const {
+    Result transform(const std::initializer_list<Type>& vector) const {
         Result result;
-        return map_impl(vector, result);
+        return transform_impl(vector, result);
     }
 
     template <typename Type>
@@ -520,6 +527,15 @@ public:
 
     static matrix_type identity() {
         return matrix_type().set_to_identity();
+    }
+
+    static transform_builder<matrix_type> builder() {
+        return transform_builder<matrix_type>(identity());
+    }
+
+    static transform_builder<matrix_type&> builder(matrix_type& m) {
+        m.set_to_identity();
+        return transform_builder<matrix_type&>(m);
     }
 
 };
@@ -609,7 +625,7 @@ struct flat_container_matrix_traits {
         typedef matrix<value_type, row_count, OtherMatrixTraits::col_count> type;
     };
 
-    typedef size_t permutation_vector_type[Rows];
+    typedef size_t permutation_matrix_type[Rows];
 
     static void resize_permutation(permutation_vector_type& /*permutation*/, size_t size) {
         BOOST_ASSERT_MSG(size == Rows, "Static permutation vector can't be resized");

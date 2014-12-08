@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <alterate/math/matrix.h>
+#include <alterate/math/vec.h>
 #include <alterate/print.h>
 
 #include <alterate/timing/timer.h>
@@ -98,7 +99,7 @@ TEST(matrix_test, multiply) {
                  6,5,4,
                  3,2,1};
 
-    m1.multiply(m2);
+    m1.post_multiply(m2);
 
     mat3x3 e = { 30, 24, 18,
                  84, 69, 54,
@@ -218,6 +219,26 @@ TEST(matrix_test, compute_inverse) {
 
 }
 
+TEST(matrix_test, transform) {
+
+    mat3x3 m = mat3x3::builder().
+            scale({1024.f/2, -768.f/2}).
+            translate({512.f, 384.f}).
+            local_to_world();
+
+
+    alterate::math::vec<float, 2> v;
+    m.transform({1, 1}, v);
+
+    alterate::test::assert_has_equal_elements({1024.f,0.f}, v);
+
+    m.invert();
+
+    m.transform({1024.f,768.f}, v);
+    alterate::test::assert_has_equal_elements({1.f,-1.f}, v);
+
+}
+
 TEST(matrix_test, compute_lup_decomposition) {
 
     mat3x3 m = {
@@ -253,79 +274,79 @@ TEST(matrix_test, compute_lup_decomposition) {
 }
 
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/lu.hpp>
-#include <boost/numeric/ublas/io.hpp>
+//#include <boost/numeric/ublas/matrix.hpp>
+//#include <boost/numeric/ublas/lu.hpp>
+//#include <boost/numeric/ublas/io.hpp>
 
-using namespace boost::numeric::ublas;
-using namespace std;
+//using namespace boost::numeric::ublas;
+//using namespace std;
 
- /* Matrix inversion routine.
- Uses lu_factorize and lu_substitute in uBLAS to invert a matrix */
-template<class T>
-bool InvertMatrix(matrix<T>& input)
-{
-    typedef permutation_matrix<std::size_t> pmatrix;
+// /* Matrix inversion routine.
+// Uses lu_factorize and lu_substitute in uBLAS to invert a matrix */
+//template<class T>
+//bool InvertMatrix(matrix<T>& input)
+//{
+//    typedef permutation_matrix<std::size_t> pmatrix;
 
-    // create a working copy of the input
-    matrix<T> A(input);
+//    // create a working copy of the input
+//    matrix<T> A(input);
 
-    // create a permutation matrix for the LU-factorization
-    pmatrix pm(A.size1());
+//    // create a permutation matrix for the LU-factorization
+//    pmatrix pm(A.size1());
 
-    // perform LU-factorization
-    int res = lu_factorize(A, pm);
-    if (res != 0)
-        return false;
+//    // perform LU-factorization
+//    int res = lu_factorize(A, pm);
+//    if (res != 0)
+//        return false;
 
-    // create identity matrix of "inverse"
-    input.assign(identity_matrix<T> (A.size1()));
+//    // create identity matrix of "inverse"
+//    input.assign(identity_matrix<T> (A.size1()));
 
-    // backsubstitute to get the inverse
-    lu_substitute(A, pm, input);
+//    // backsubstitute to get the inverse
+//    lu_substitute(A, pm, input);
 
-    return true;
-}
+//    return true;
+//}
 
 
-TEST(matrix_test, invert_performance) {
+//TEST(matrix_test, invert_performance) {
 
-    typedef alterate::math::matrix<float, 4, 4> mat4x4;
+//    typedef alterate::math::matrix<float, 4, 4> mat4x4;
 
-    alterate::timing::timer timer;
+//    alterate::timing::timer timer;
 
-    srand( time(nullptr) );
+//    srand( time(nullptr) );
 
-    const size_t m_count = 2000;
+//    const size_t m_count = 2000;
 
-    mat4x4 m;
-    for (size_t i=0;i<m.rows(); i++) {
-        for (size_t j=0;j<m.cols(); j++) {
-            m(i,j) = static_cast<float>(rand() % 10000) / 100.f;
-        }
-    }
+//    mat4x4 m;
+//    for (size_t i=0;i<m.rows(); i++) {
+//        for (size_t j=0;j<m.cols(); j++) {
+//            m(i,j) = static_cast<float>(rand() % 10000) / 100.f;
+//        }
+//    }
 
-    timer.start();
-    for (size_t t=0; t<m_count; t++) {
-        m.invert();
-    }
-    int64_t alt_nanos = timer.get_time_in_nanos();
+//    timer.start();
+//    for (size_t t=0; t<m_count; t++) {
+//        m.invert();
+//    }
+//    int64_t alt_nanos = timer.get_time_in_nanos();
 
-    matrix<float> boost_m(4,4);
-    for (size_t i=0;i<m.rows(); i++) {
-        for (size_t j=0;j<m.cols(); j++) {
-            boost_m(i,j) = static_cast<float>(rand() % 10000) / 100.f;
-        }
-    }
+//    matrix<float> boost_m(4,4);
+//    for (size_t i=0;i<m.rows(); i++) {
+//        for (size_t j=0;j<m.cols(); j++) {
+//            boost_m(i,j) = static_cast<float>(rand() % 10000) / 100.f;
+//        }
+//    }
 
-    timer.start();
-    for (size_t t=0; t<m_count; t++) {
-        InvertMatrix(boost_m);
-    }
-    int64_t boost_nanos = timer.get_time_in_nanos();
+//    timer.start();
+//    for (size_t t=0; t<m_count; t++) {
+//        InvertMatrix(boost_m);
+//    }
+//    int64_t boost_nanos = timer.get_time_in_nanos();
 
-    std::cout << m_count << " matrix inversions took (alt: " << alt_nanos << ", boost: " << boost_nanos << ")" << std::endl;
-}
+//    std::cout << m_count << " matrix inversions took (alt: " << alt_nanos << ", boost: " << boost_nanos << ")" << std::endl;
+//}
 
 TEST(matrix_test, performance_2d_vs_1d_access) {
 
