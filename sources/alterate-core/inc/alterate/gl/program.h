@@ -9,24 +9,28 @@ namespace gl {
 
 class program {
 private:
+    GLuint                              _id = 0;
 
-    std::vector<shader*> _shaders;
-    GLuint               _id;
+    std::vector<alterate::gl::shader*>  _shaders;
 
-    std::vector<const GLchar*> _attributes;
-    std::vector<const GLchar*> _uniforms;
-
-    std::vector<GLint> _uniform_locations;
+    std::vector<const GLchar*>          _attributes;
+    std::vector<const GLchar*>          _uniforms;
+    std::vector<GLint>                  _uniform_locations;
 
     GLuint cleanup();
 
 public:
 
-    program& add_shader(shader& shader);
-    program& add_attribute(const GLchar* attribute_name);
-    program& add_uniform(const GLchar* uniform_name);
+    ~program();
+
+    program& shader(alterate::gl::shader& s);
+    program& attribute(const GLchar* attribute_name);
+    program& uniform(const GLchar* uniform_name);
 
     GLuint create();
+    void remove();
+
+    GLint get_uniform_location(size_t index) const;
 
 };
 

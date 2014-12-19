@@ -8,52 +8,58 @@ extern void alterate_init();
 
 namespace alterate {
 
-engine_object::~engine_object() {
+engine_handler::~engine_handler() {
 }
 
-void engine_object::on_update(float /*seconds*/) {
-
-}
-
-void engine_object::on_draw(gl::context& /*context*/) {
+void engine_handler::on_update(float /*seconds*/) {
 
 }
 
-void engine_object::on_attach(engine& /*engine*/) {
+void engine_handler::on_draw(gl::context& /*context*/) {
 
 }
 
-void engine_object::on_detach(engine& /*engine*/) {
+void engine_handler::on_attach() {
 
 }
 
-void engine_object::on_size(const dimension& /*size*/) {
+void engine_handler::on_detach() {
+
+}
+
+void engine_handler::on_size(const dimension& /*size*/) {
 
 }
 
 
+engine engine::_instance;
 
-engine::engine() {
+
+engine::engine() : _handler(nullptr) {
 }
 
+engine::~engine() {
+    if (_handler != nullptr) {
+        delete _handler;
+    }
+}
 
 void engine::on_initial_size(const dimension &size) {
-    _context.on_size(size);
+    glViewport(0, 0, _size.x, _size.y);
 }
 
 void engine::on_update() {
     float seconds = _timer.reset();
-    _root->on_update(seconds);
+    _handler->on_update(seconds);
 }
 
 void engine::on_draw() {
-    _root->on_draw(_context);
+    _handler->on_draw(_context);
 }
 
 void engine::on_size(const dimension& size) {
-    BOOST_ASSERT_MSG(_root != nullptr, "Root object not set");
-    _context.on_size(size);
-    _root->on_size(size);
+    on_initial_size(size);
+    _handler->on_size(size);
 }
 
 void engine::on_frame() {
@@ -61,21 +67,20 @@ void engine::on_frame() {
     on_draw();
 }
 
+void engine::terminate() {
+    BOOST_ASSERT_MSG(_handler != nullptr, "Engine handler not set");
+    _handler->on_detach();
+    delete _handler;
+    _handler = nullptr;
+}
+
 gl::context& engine::get_context() {
     return _context;
 }
 
-void engine::set_root(std::unique_ptr<engine_object>& obj) {
-    if (_root) {
-        _root->on_detach(*this); // even if on_detach throws exception engine dctor will be called and it will delete an object
-    }
-    _root = std::move(obj);
-    if (_root) {
-        _root->on_attach(*this);
-    }
+bool engine::is_initialized() const {
+    return _handler != nullptr;
 }
-
-engine engine::_instance;
 
 engine& engine::get() {
     return _instance;

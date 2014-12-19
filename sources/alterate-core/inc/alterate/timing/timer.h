@@ -1,34 +1,59 @@
 #pragma once
 
-#include <alterate/timing/clock.h>
+// it's better to use boost instead of std::chrono until Microsoft find time
+// https://connect.microsoft.com/VisualStudio/feedback/details/719443/
+
+#include <boost/chrono.hpp>
 
 namespace alterate {
 namespace timing {
 
+template <typename T, typename Clock = boost::chrono::high_resolution_clock>
 class timer {
+public:
+    typedef Clock clock;
+
 private:
-    bool            _started = false;
-    clock           _clock;
-    clock::instant  _last_time;
+
+    typedef typename clock::time_point time_point;
+
+    bool       _started = false;
+    time_point _last_time;
 
 public:
 
-    bool is_started() const;
-    void start();
-    float reset();
+    bool started() const {
+        return _started;
+    }
 
-    int64_t get_time_in_nanos() const;
+    void start() {
+        _started = true;
+        _last_time = clock::now();
+    }
 
-    // if (!is_started()) {
-    //     start();
-    //     return 0;
-    // }
-    // current_time = now();
-    // result = current_time - last_time;
-    // last_time = current_time;
-    // return result;
+    template <typename Ratio = boost::ratio<1>, typename Rep = T>
+    Rep elapsed() const {
+        typedef boost::chrono::duration<Rep, Ratio> duration;
+        duration diff = clock::now() - _last_time;
+        return diff.count();
+    }
 
-    void stop();
+    template <typename Ratio = boost::ratio<1>, typename Rep = T>
+    Rep reset() {
+        typedef boost::chrono::duration<Rep, Ratio> duration;
+        if (!_started) {
+            start();
+            return 0;
+        }
+        time_point now = clock::now();
+        duration diff = now - _last_time;
+        _last_time = now;
+        return diff.count();
+    }
+
+    void stop() {
+        _started = false;
+    }
 
 };
 

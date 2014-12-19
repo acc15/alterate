@@ -627,7 +627,7 @@ struct flat_container_matrix_traits {
 
     typedef size_t permutation_matrix_type[Rows];
 
-    static void resize_permutation(permutation_vector_type& /*permutation*/, size_t size) {
+    static void resize_permutation(permutation_matrix_type& /*permutation*/, size_t size) {
         BOOST_ASSERT_MSG(size == Rows, "Static permutation vector can't be resized");
     }
 

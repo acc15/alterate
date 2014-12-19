@@ -44,11 +44,7 @@ set(SRC_LIST
     ${INC_DIR}/alterate/gl/context.h
     ${SRC_DIR}/alterate/gl/context.cpp
 
-    ${INC_DIR}/alterate/timing/clock.h
-    ${SRC_DIR}/alterate/timing/clock.cpp
-
     ${INC_DIR}/alterate/timing/timer.h
-    ${SRC_DIR}/alterate/timing/timer.cpp
 
     ${INC_DIR}/alterate/engine.h
     ${SRC_DIR}/alterate/engine.cpp
@@ -56,4 +52,4 @@ set(SRC_LIST
 
 
 add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
-target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARY} ${Boost_LIBRARIES})

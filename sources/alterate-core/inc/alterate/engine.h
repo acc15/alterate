@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <alterate/dimension.h>
 #include <alterate/timing/timer.h>
 #include <alterate/gl/context.h>
 
@@ -10,14 +11,14 @@ namespace alterate
 
 class engine;
 
-class engine_object {
+class engine_handler {
 public:
-    virtual ~engine_object();
+    virtual ~engine_handler();
 
     virtual void on_update(float seconds);
     virtual void on_draw(gl::context& context);
-    virtual void on_attach(engine& engine);
-    virtual void on_detach(engine& engine);
+    virtual void on_attach();
+    virtual void on_detach();
     virtual void on_size(const dimension& size);
 
 };
@@ -25,26 +26,40 @@ public:
 
 class engine {
 private:
-    static engine       _instance;
+    static engine           _instance;
 
-    gl::context         _context;
-    timing::timer       _timer;
+    gl::context             _context;
+    timing::timer<float>    _timer;
+    dimension               _size;
 
-    std::unique_ptr<engine_object> _root;
+    engine_handler*          _handler;
 
     engine();
+    virtual ~engine();
+
     void on_update();
     void on_draw();
 
 public:
 
-    void set_root(std::unique_ptr<engine_object>& obj);
+    template <typename T, typename... Args>
+    T* init(Args... args) {
+        BOOST_ASSERT_MSG(_handler == nullptr, "Handler already set");
+        T* h = new T(std::forward<Args>(args)...);
+        _handler = h;
+        _handler->on_attach();
+        return h;
+    }
+
+    void terminate();
 
     void on_initial_size(const dimension& size);
     void on_size(const dimension& size);
     void on_frame();
 
     gl::context& get_context();
+
+    bool is_initialized() const;
 
     static engine& get();
 };

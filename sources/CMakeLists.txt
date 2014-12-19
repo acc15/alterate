@@ -8,7 +8,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 set(BOOST_ROOT "" CACHE PATH "Boost library")
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS chrono system)
 include_directories(${Boost_INCLUDE_DIR})
 
 find_package(GLEW REQUIRED)

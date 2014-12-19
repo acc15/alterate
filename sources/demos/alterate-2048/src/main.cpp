@@ -3,7 +3,7 @@
 
 #include <alterate/engine.h>
 
-class alterate2048: public alterate::engine_object {
+class alterate2048: public alterate::engine_handler {
 
 public:
     virtual void on_update(float seconds) {
@@ -25,13 +25,11 @@ public:
 };
 
 
-std::unique_ptr<alterate::engine_object> alterate_init(alterate::engine& e) {
+void alterate_init(alterate::engine& e) {
 
-    std::unique_ptr<alterate::engine_object> root(new alterate2048());
-
+    alterate2048* root = e.init<alterate2048>();
     std::cout << "in alterate-2048" << std::endl;
 
-    return root;
 }
 
 

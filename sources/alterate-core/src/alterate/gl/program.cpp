@@ -7,35 +7,50 @@
 namespace alterate {
 namespace gl {
 
+program::~program() {
+    remove();
+}
 
-program& program::add_shader(shader& shader) {
+program& program::shader(alterate::gl::shader& shader) {
     _shaders.push_back(&shader);
     return *this;
 }
 
-program& program::add_attribute(const GLchar* attribute_name) {
+program& program::attribute(const GLchar* attribute_name) {
     _attributes.push_back(attribute_name);
     return *this;
 }
 
-program& program::add_uniform(const GLchar* uniform_name) {
+program& program::uniform(const GLchar* uniform_name) {
     _uniforms.push_back(uniform_name);
     return *this;
 }
 
+GLint program::get_uniform_location(size_t index) const {
+    return _uniform_locations[index];
+}
+
 GLuint program::cleanup() {
     _uniform_locations.clear();
-    glDeleteProgram(_id);
-    return _id = 0;
-    for (shader* shader: _shaders) {
+    for (alterate::gl::shader* shader: _shaders) {
         shader->remove();
     }
+    // Its assumed that
+    // if _id is zero or even
+    // if OpenGL wasnt initialized then nothing bad will happen.
+    if (_id != 0) {
+        glDeleteProgram(_id);
+    }
+    return _id = 0;
+}
 
+void program::remove() {
+    cleanup();
 }
 
 GLuint program::create() {
 
-    if (alterate::engine::get().get_context().is_live(this)) {
+    if (glIsProgram(_id)) {
         return _id;
     }
 
@@ -45,7 +60,7 @@ GLuint program::create() {
         return 0;
     }
 
-    for (shader* shader: _shaders) {
+    for (alterate::gl::shader* shader: _shaders) {
         const GLuint shader_id = shader->create();
         if (shader_id == 0) {
             std::cerr << "Unable to compile one of program shader" << std::endl;
@@ -94,8 +109,6 @@ GLuint program::create() {
         }
         _uniform_locations.push_back(location);
     }
-
-    alterate::engine::get().get_context().mark_live(this);
     return _id;
 }
 

@@ -6,7 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
-extern std::unique_ptr<alterate::engine_object>  alterate_init(alterate::engine& e);
+extern void alterate_init(alterate::engine& e);
 
 
 void on_size_callback(GLFWwindow*, int w, int h) {
@@ -68,21 +68,23 @@ int main()
         return -1;
     }
 
-    alterate::engine::get().on_initial_size(get_window_size(window));
+    alterate::engine& engine = alterate::engine::get();
+
+    engine.on_initial_size(get_window_size(window));
     glfwSetWindowSizeCallback(window, &on_size_callback);
 
-    std::unique_ptr<alterate::engine_object> root = alterate_init(alterate::engine::get());
-    if (!root) {
+    alterate_init(engine);
+    if (!engine.is_initialized()) {
         glfwTerminate();
         return -1;
     }
 
-    alterate::engine::get().set_root(root);
     while (!glfwWindowShouldClose(window)) {
-        alterate::engine::get().on_frame();
+        engine.on_frame();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    engine.terminate();
     glfwTerminate();
     return 0;
 }

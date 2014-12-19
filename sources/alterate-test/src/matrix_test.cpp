@@ -350,7 +350,7 @@ TEST(matrix_test, compute_lup_decomposition) {
 
 TEST(matrix_test, performance_2d_vs_1d_access) {
 
-    alterate::timing::timer timer;
+    alterate::timing::timer<int64_t> timer;
 
     int array1d[1000 *1000];
     int array2d[1000][1000];
@@ -363,7 +363,7 @@ TEST(matrix_test, performance_2d_vs_1d_access) {
                 array2d[i][j] = i+j;
             }
         }
-        int64_t time2d = timer.get_time_in_nanos();
+        int64_t time2d = timer.elapsed<boost::nano>();
         if (c == 0) {
             min_time2d = max_time2d = time2d;
         } else if (time2d > max_time2d) {
@@ -382,7 +382,7 @@ TEST(matrix_test, performance_2d_vs_1d_access) {
                 array1d[i*1000+j] = i+j;
             }
         }
-        int64_t time1d = timer.get_time_in_nanos();
+        int64_t time1d = timer.elapsed<boost::nano>();
         if (c == 0) {
             min_time1d = max_time1d = time1d;
         } else if (time1d > max_time1d) {

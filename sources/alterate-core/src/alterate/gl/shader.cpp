@@ -11,15 +11,22 @@ namespace gl {
 
 shader::shader(int type, const char* source) : _source(source), _type(type) {}
 
+shader::~shader() {
+    remove();
+}
+
 void shader::remove() {
-    BOOST_ASSERT_MSG(_id != 0, "Attempt to delete shader which wasn't created");
-    glDeleteShader(_id);
+    // Its assumed that
+    // if _id is zero or even
+    // if OpenGL wasnt initialized then nothing bad will happen.
+    if (_id != 0) {
+        glDeleteShader(_id);
+    }
     _id = 0;
 }
 
 GLuint shader::create() {
-
-    if (alterate::engine::get().get_context().is_live(this)) {
+    if (glIsShader(_id)) {
         return _id;
     }
 
@@ -39,8 +46,6 @@ GLuint shader::create() {
         glDeleteShader(_id);
         return _id = 0;
     }
-
-    alterate::engine::get().get_context().mark_live(this);
     return _id;
 }
 
