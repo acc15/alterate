@@ -78,29 +78,17 @@ std::string get_executable_name() {
 
     std::string executable_path = get_executable_path();
 
-    size_t current_pos = executable_path.length();
-    if (current_pos == 0) {
-        return std::string();
-    }
-
-    size_t end_pos = std::string::npos;
-    size_t start_pos = 0;
-    while (true) {
-        --current_pos;
-
-        char ch = executable_path[current_pos];
+    size_t end_pos = std::string::npos, start_pos = executable_path.length();
+    for (std::string::reverse_iterator iter = executable_path.rbegin(); iter != executable_path.rend(); iter++) {
+        char ch = (*iter);
         if (ch == '/' || ch == '\\') {
-            start_pos = current_pos+1;
             break;
         }
+        --start_pos;
         if (ch == '.' && end_pos == std::string::npos) {
-            end_pos = current_pos;
-        }
-        if (current_pos == 0) {
-           break;
+            end_pos = start_pos;
         }
     }
-
     return executable_path.substr(start_pos, end_pos);
 }
 

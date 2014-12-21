@@ -21,6 +21,8 @@ set(SRC_LIST
     ${SRC_DIR}/generic_vector_support_test.cpp
     ${SRC_DIR}/scalar_iterator_test.cpp
     ${SRC_DIR}/random_access_iterator_support_test.cpp
+    ${SRC_DIR}/vertex_buffer_layout_test.cpp
+    ${SRC_DIR}/vertex_buffer_test.cpp
 )
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 

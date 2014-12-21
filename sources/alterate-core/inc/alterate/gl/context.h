@@ -16,6 +16,45 @@ namespace gl {
 template <size_t Size>
 using matrix = math::matrix< GLfloat, Size, Size, math::column_major_order >;
 
+// template <typename Vector, typename Layout>
+// class vertex_buffer {
+//    vertex_buffer_attribute get_attribute(size_t index);
+//    template <typename T>
+//    vertex_buffer& put(const T& value) {
+//      _buffer.resize(_buffer.size() + sizeof(T));
+//      *static_cast<T*>(&_buffer[_offset]) = value;
+//    }
+//    size_t size() const { return _buffer.size(); }
+//    size_t count() const { _buffer.size() / _layout.stride(); }
+// }
+
+// class vertex_buffer_attribute
+
+//template <size_t Count>
+//class vertex_buffer_layout {
+
+//  attribute(GLenum type = GL_FLOAT, GLint size = 4, GLboolean normalize = GL_FALSE);
+
+//  const attribute_layout& get_attribute_layout(size_t index) const;
+//  size_t stride() const;
+//
+//
+//};
+
+//vertex_buffer_layout<
+//    layout_attribute<GL_FLOAT, 4,
+//    layout_attribute<GL_INT, 4,
+//    layout_attribute<GL_INT, 2
+//    > > > layout;
+
+
+//vertex_buffer_layout<
+//    layout_attribute<GL_FLOAT, 4,
+//    layout_attribute<GL_INT, 4,
+//    layout_attribute<GL_INT, 2
+//    > > > layout;
+
+
 class context {
 public:
 

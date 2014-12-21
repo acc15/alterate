@@ -30,7 +30,7 @@ private:
 
     gl::context             _context;
     timing::timer<float>    _timer;
-    dimension               _size;
+    dimension               _screen_size;
 
     engine_handler*          _handler;
 
@@ -60,6 +60,7 @@ public:
     gl::context& get_context();
 
     bool is_initialized() const;
+    const dimension& get_screen_size() const;
 
     static engine& get();
 };

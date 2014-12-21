@@ -45,7 +45,8 @@ engine::~engine() {
 }
 
 void engine::on_initial_size(const dimension &size) {
-    glViewport(0, 0, _size.x, _size.y);
+    _screen_size = size;
+    glViewport(0, 0, size.x, size.y);
 }
 
 void engine::on_update() {
@@ -76,6 +77,10 @@ void engine::terminate() {
 
 gl::context& engine::get_context() {
     return _context;
+}
+
+const dimension& engine::get_screen_size() const {
+    return _screen_size;
 }
 
 bool engine::is_initialized() const {
