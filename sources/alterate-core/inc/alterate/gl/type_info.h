@@ -46,5 +46,7 @@ template <> struct type_info<GLdouble> {
     static bool is_compatible(GLenum type) { return type == GL_DOUBLE; }
 };
 
+size_t get_type_size(GLenum type);
+
 }
 }

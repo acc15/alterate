@@ -16,15 +16,15 @@ TEST(vertex_buffer_layout_test, correctly_computes_offsets) {
     ASSERT_EQ(sizeof(GLfloat) * 4, vbl.offset(1));
     ASSERT_EQ(sizeof(GLfloat) * 4 + sizeof(GLint) * 2, vbl.offset(2));
 
-    ASSERT_EQ(4, vbl.count(0));
-    ASSERT_EQ(2, vbl.count(1));
-    ASSERT_EQ(1, vbl.count(2));
-    ASSERT_EQ(1, vbl.count(3));
+    ASSERT_EQ(4, vbl.element_count(0));
+    ASSERT_EQ(2, vbl.element_count(1));
+    ASSERT_EQ(1, vbl.element_count(2));
+    ASSERT_EQ(1, vbl.element_count(3));
 
-    ASSERT_EQ(GL_FLOAT, vbl.type(0));
-    ASSERT_EQ(GL_INT, vbl.type(1));
-    ASSERT_EQ(GL_SHORT, vbl.type(2));
-    ASSERT_EQ(GL_BYTE, vbl.type(3));
+    ASSERT_EQ(GL_FLOAT, vbl.attribute_type(0));
+    ASSERT_EQ(GL_INT, vbl.attribute_type(1));
+    ASSERT_EQ(GL_SHORT, vbl.attribute_type(2));
+    ASSERT_EQ(GL_BYTE, vbl.attribute_type(3));
 
 }
 
@@ -59,14 +59,14 @@ TEST(vertex_buffer_layout_test, constructible_from_initializer_list) {
     ASSERT_EQ(sizeof(GLfloat) * 4, vbl.offset(1));
     ASSERT_EQ(sizeof(GLfloat) * 4 + sizeof(GLint) * 2, vbl.offset(2));
 
-    ASSERT_EQ(4, vbl.count(0));
-    ASSERT_EQ(2, vbl.count(1));
-    ASSERT_EQ(1, vbl.count(2));
-    ASSERT_EQ(1, vbl.count(3));
+    ASSERT_EQ(4, vbl.element_count(0));
+    ASSERT_EQ(2, vbl.element_count(1));
+    ASSERT_EQ(1, vbl.element_count(2));
+    ASSERT_EQ(1, vbl.element_count(3));
 
-    ASSERT_EQ(GL_FLOAT, vbl.type(0));
-    ASSERT_EQ(GL_INT, vbl.type(1));
-    ASSERT_EQ(GL_SHORT, vbl.type(2));
-    ASSERT_EQ(GL_BYTE, vbl.type(3));
+    ASSERT_EQ(GL_FLOAT, vbl.attribute_type(0));
+    ASSERT_EQ(GL_INT, vbl.attribute_type(1));
+    ASSERT_EQ(GL_SHORT, vbl.attribute_type(2));
+    ASSERT_EQ(GL_BYTE, vbl.attribute_type(3));
 
 }

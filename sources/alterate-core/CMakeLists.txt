@@ -36,11 +36,13 @@ set(SRC_LIST
     ${SRC_DIR}/alterate/gl/program.cpp
 
     ${INC_DIR}/alterate/gl/type_info.h
+    ${SRC_DIR}/alterate/gl/type_info.cpp
 
     ${INC_DIR}/alterate/gl/vertex_buffer_layout.h
     ${SRC_DIR}/alterate/gl/vertex_buffer_layout.cpp
 
     ${INC_DIR}/alterate/gl/vertex_buffer.h
+    ${SRC_DIR}/alterate/gl/vertex_buffer.cpp
 
     ${INC_DIR}/alterate/dimension.h
 

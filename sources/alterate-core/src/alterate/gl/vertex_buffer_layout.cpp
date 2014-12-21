@@ -1,23 +1,8 @@
 #include <alterate/gl/vertex_buffer_layout.h>
+#include <alterate/gl/type_info.h>
 
 namespace alterate {
 namespace gl {
-
-size_t vertex_buffer_layout::get_type_size(GLenum type) {
-    switch (type) {
-    case GL_FLOAT:          return sizeof(GLfloat);
-    case GL_BYTE:           return sizeof(GLbyte);
-    case GL_UNSIGNED_BYTE:  return sizeof(GLubyte);
-
-    case GL_SHORT:          return sizeof(GLshort);
-    case GL_UNSIGNED_SHORT: return sizeof(GLushort);
-
-    case GL_INT:            return sizeof(GLint);
-    case GL_UNSIGNED_INT:   return sizeof(GLuint);
-
-    case GL_FIXED:          return sizeof(GLfixed);
-    }
-}
 
 vertex_buffer_layout::vertex_buffer_layout() {
 }
@@ -34,7 +19,7 @@ vertex_buffer_layout& vertex_buffer_layout::attribute(GLenum type, size_t size) 
     return *this;
 }
 
-size_t vertex_buffer_layout::size(size_t attr) const {
+size_t vertex_buffer_layout::attribute_size(size_t attr) const {
     check_attr(attr);
     size_t offset_diff = _attrs[attr].next_offset;
     if (attr > 0) {
@@ -43,12 +28,12 @@ size_t vertex_buffer_layout::size(size_t attr) const {
     return offset_diff;
 }
 
-size_t vertex_buffer_layout::count(size_t attr) const {
+size_t vertex_buffer_layout::element_count(size_t attr) const {
     check_attr(attr);
-    return size(attr) / get_type_size(_attrs[attr].type);
+    return attribute_size(attr) / get_type_size(_attrs[attr].type);
 }
 
-GLenum vertex_buffer_layout::type(size_t attr) const {
+GLenum vertex_buffer_layout::attribute_type(size_t attr) const {
     check_attr(attr);
     return _attrs[attr].type;
 }
@@ -66,6 +51,10 @@ size_t vertex_buffer_layout::offset(size_t attr, size_t index) const {
 
 size_t vertex_buffer_layout::stride() const {
     return _attrs.empty() ? 0 : _attrs.back().next_offset;
+}
+
+size_t vertex_buffer_layout::attribute_count() const {
+    return _attrs.size();
 }
 
 size_t vertex_buffer_layout::attribute_by_offset(size_t offset) const {

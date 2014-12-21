@@ -27,33 +27,31 @@ private:
 
 public:
 
-    static size_t get_type_size(GLenum type);
-
     vertex_buffer_layout();
     vertex_buffer_layout(const std::initializer_list<layout_attribute>& attrs);
 
-    vertex_buffer_layout& attribute(GLenum type, size_t count);
+    vertex_buffer_layout& attribute(GLenum attribute_type, size_t element_count);
 
     /**
      * Computes total size in bytes of attribute
      * @param attr attribute index
      * @return total size in bytes of attribute
      */
-    size_t size(size_t attr) const;
+    size_t attribute_size(size_t attr) const;
     
     /**
      * Computes count of elements in attribute
      * @param attr attribute index
      * @return count of elements of attribute
      */
-    size_t count(size_t attr) const;
+    size_t element_count(size_t attr) const;
     
     /**
      * Returns type of attribute
      * @param attr attribute index
      * @return type of attribute
      */
-    GLenum type(size_t attr) const;
+    GLenum attribute_type(size_t attr) const;
     
     /**
      * Returns total offset in bytes for specified attribute
@@ -75,6 +73,12 @@ public:
      * @return stride of buffer
      */
     size_t stride() const;
+
+    /**
+     * Returns count of attribute
+     * @return count of attribute
+     */
+    size_t attribute_count() const;
 
     /**
      * Computes attribute index by offset

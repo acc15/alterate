@@ -8,35 +8,40 @@ namespace gl {
 
 class grow_strategy {
 public:
-    size_t compute_capacity(size_t current, size_t required) {
-        return current < required ? required * 2 : current;
-    }
+    size_t compute_capacity(size_t current, size_t required);
 };
 
+class vertex_buffer_data: public vertex_buffer_layout {
+protected:
+    unsigned char*              _data;
+
+    vertex_buffer_data(const vertex_buffer_layout& layout);
+
+public:
+    const void* data(size_t attr, size_t item = 0) const;
+    void* data(size_t attr, size_t item = 0);
+};
 
 template <typename Strategy = grow_strategy, typename Allocator = std::allocator<unsigned char> >
-class vertex_buffer {
+class vertex_buffer: public vertex_buffer_data {
 public:
     typedef Strategy                            strategy;
     typedef Allocator                           allocator;
-    typedef typename allocator::pointer    pointer;
 
 private:
-    vertex_buffer_layout    _layout;
-    strategy                _strategy;
-    allocator               _allocator;
+    strategy                    _strategy;
+    allocator                   _allocator;
 
-    pointer                 _data;
-    size_t                  _capacity;
-    size_t                  _position;
+    size_t                      _capacity;
+    size_t                      _position;
 
     void resize(size_t new_size) {
-        size_t computed_capacity = _strategy.compute_capacity(_capacity, new_size);
+        size_t computed_capacity = std::max(_strategy.compute_capacity(_capacity, new_size), new_size);
         if (computed_capacity == _capacity) {
             return;
         }
 
-        pointer new_data = _allocator.allocate(computed_capacity);
+        unsigned char* new_data = computed_capacity > 0 ? _allocator.allocate(computed_capacity) : nullptr;
         if (_data != nullptr) {
             if (new_data != nullptr) {
                 std::copy(_data, _data + std::min(_capacity, computed_capacity), new_data);
@@ -49,7 +54,7 @@ private:
     }
 
 public:
-    vertex_buffer(const vertex_buffer_layout& layout) : _layout(layout), _position(0), _capacity(0), _data(nullptr) {
+    vertex_buffer(const vertex_buffer_layout& layout) : vertex_buffer_data(layout), _position(0), _capacity(0) {
     }
 
     ~vertex_buffer() {
@@ -58,21 +63,9 @@ public:
         }
     }
 
-    const void* data() const {
-        return _data;
-    }
-
-    void* data() {
-        return _data;
-    }
-
-    const vertex_buffer_layout& layout() const {
-        return _layout;
-    }
-
     template <typename T>
     vertex_buffer& put(const T& value) {
-        BOOST_ASSERT_MSG(type_info<T>::is_compatible(_layout.type(_layout.attribute_by_offset(_position))),
+        BOOST_ASSERT_MSG(type_info<T>::is_compatible(attribute_type(attribute_by_offset(_position))),
                          "Specified type of value didn't match buffer layout");
         resize(_position + sizeof(T));
         *reinterpret_cast<T*>(_data + _position) = value;
@@ -81,29 +74,19 @@ public:
     }
 
     size_t attribute_index() const {
-        return _layout.attribute_by_offset(_position);
+        return attribute_by_offset(_position);
     }
 
-    template <typename T>
-    T* attribute(size_t attr, size_t index) {
-        return reinterpret_cast<T*>(_data + _layout.offset(attr, index));
-    }
-
-    template <typename T>
-    const T* attribute(size_t attr, size_t index) const {
-        return reinterpret_cast<const T*>(_data + _layout.offset(attr, index));
-    }
-
-    vertex_buffer& clear() {
-        resize(0);
+    vertex_buffer& clear(size_t reserve_count = 0) {
         _position = 0;
+        resize(reserve_count * stride());
     }
 
-    size_t count() const {
-        return _position / _layout.stride();
+    size_t element_count() const {
+        return _position / stride();
     }
 
-    size_t size() const {
+    size_t attribute_size() const {
         return _position;
     }
 

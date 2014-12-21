@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include <boost/assert.hpp>
 
 #include <alterate/gl/context.h>
@@ -12,6 +14,12 @@ GLint context::binder::next_uniform_location() {
     GLint loc = _prg.get_uniform_location(_uniform_index);
     ++_uniform_index;
     return loc;
+}
+
+GLint context::binder::next_attribute() {
+    GLint attr_index = _attr_index;
+    ++_attr_index;
+    return attr_index;
 }
 
 context::binder& context::binder::uniform(GLfloat v0) {
@@ -60,10 +68,7 @@ context::binder& context::binder::uniform(GLsizei size, GLsizei count, const GLf
     case 2: glUniform2fv(next_uniform_location(), count, value); break;
     case 3: glUniform3fv(next_uniform_location(), count, value); break;
     case 4: glUniform4fv(next_uniform_location(), count, value); break;
-    default:
-        // print assertion failure
-        BOOST_ASSERT_MSG(size >= 1 && size <= 4, "glUniformXfv called with incorrect size. Only 1,2,3,4 is allowed");
-        break;
+    default: throw std::invalid_argument("size");
     }
     return *this;
 }
@@ -74,26 +79,74 @@ context::binder& context::binder::uniform(GLsizei size, GLsizei count, const GLi
     case 2: glUniform2iv(next_uniform_location(), count, value); break;
     case 3: glUniform3iv(next_uniform_location(), count, value); break;
     case 4: glUniform4iv(next_uniform_location(), count, value); break;
-    default:
-        // print assertion failure
-        BOOST_ASSERT_MSG(size >= 1 && size <= 4, "glUniformXiv called with incorrect size. Only 1,2,3,4 is allowed");
-        break;
+    default: throw std::invalid_argument("size");
     }
     return *this;
 }
 
-context::binder& context::binder::uniform(const matrix<2>& m) {
+context::binder& context::binder::uniform(const mat2x2& m) {
     glUniformMatrix2fv(next_uniform_location(), 1, GL_FALSE, m.data);
     return *this;
 }
 
-context::binder& context::binder::uniform(const matrix<3>& m) {
+context::binder& context::binder::uniform(const mat3x3& m) {
     glUniformMatrix3fv(next_uniform_location(), 1, GL_FALSE, m.data);
     return *this;
 }
 
-context::binder& context::binder::uniform(const matrix<4>& m) {
+context::binder& context::binder::uniform(const mat4x4& m) {
     glUniformMatrix4fv(next_uniform_location(), 1, GL_FALSE, m.data);
+    return *this;
+}
+
+context::binder& context::binder::attribute(GLfloat v0) {
+    glDisableVertexAttribArray(_attr_index);
+    glVertexAttrib1f(_attr_index, v0);
+    ++_attr_index;
+    return *this;
+}
+
+context::binder& context::binder::attribute(GLfloat v0, GLfloat v1) {
+    glDisableVertexAttribArray(_attr_index);
+    glVertexAttrib2f(_attr_index, v0, v1);
+    ++_attr_index;
+    return *this;
+}
+
+context::binder& context::binder::attribute(GLfloat v0, GLfloat v1, GLfloat v2) {
+    glDisableVertexAttribArray(_attr_index);
+    glVertexAttrib3f(_attr_index, v0, v1, v2);
+    ++_attr_index;
+    return *this;
+}
+
+context::binder& context::binder::attribute(GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) {
+    glDisableVertexAttribArray(_attr_index);
+    glVertexAttrib4f(_attr_index, v0, v1, v2, v3);
+    ++_attr_index;
+    return *this;
+}
+
+context::binder& context::binder::attribute(const vertex_buffer_data& buf, size_t item) {
+    return attribute(buf, _attr_index, item);
+}
+
+context::binder& context::binder::attribute(const vertex_buffer_data& buf, size_t attr, size_t item) {
+    glEnableVertexAttribArray(_attr_index);
+    glVertexAttribPointer(_attr_index,
+                          buf.element_count(attr),
+                          buf.attribute_type(attr),
+                          false,
+                          buf.stride(),
+                          buf.data(attr, item));
+    ++_attr_index;
+    return *this;
+}
+
+context::binder& context::binder::attributes(const vertex_buffer_data& buf, size_t item) {
+    for (size_t i=0; i<buf.attribute_count(); i++) {
+        attribute(buf, i, item);
+    }
     return *this;
 }
 
