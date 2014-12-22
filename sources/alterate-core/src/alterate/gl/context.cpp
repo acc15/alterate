@@ -7,7 +7,7 @@
 namespace alterate {
 namespace gl {
 
-context::binder::binder(program &prg) : _prg(prg), _uniform_index(0), _attr_index(0), _vertex_count(-1) {
+context::binder::binder(program &prg) : _prg(prg), _uniform_index(0), _attr_index(0), _vertex_count(no_value) {
 }
 
 GLint context::binder::next_uniform_location() {
@@ -158,8 +158,8 @@ context::binder& context::binder::attributes(const vertex_buffer_data& buf, size
 }
 
 void context::binder::draw(GLenum what, size_t start, size_t count) {
-    if (count == no_value()) {
-        count = _vertex_count != no_value() ? _vertex_count : 0;
+    if (count == no_value) {
+        count = _vertex_count != no_value ? _vertex_count : 0;
     }
     glDrawArrays(what, start, count);
 }

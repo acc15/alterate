@@ -17,8 +17,11 @@ public:
     alterate::gl::shader fragment_shader;
     alterate::gl::program program;
 
-    alterate::gl::mat4 tx;
+    alterate::gl::mat4 world_tx;
+    alterate::gl::mat4 local_tx;
     alterate::gl::vertex_buffer<> vb;
+
+    float rot = 0;
 
     pong() : vertex_shader(GL_VERTEX_SHADER,
                            "uniform mat4 u_MVPMatrix;"
@@ -36,7 +39,6 @@ public:
                              "{"
                                  "gl_FragColor = v_Color;"
                              "}"),
-             tx(alterate::gl::mat4::identity()),
              vb({{GL_FLOAT, 2}, {GL_FLOAT, 3}})
     {
         program.shader(vertex_shader).
@@ -46,16 +48,38 @@ public:
                 uniform("u_MVPMatrix");
     }
 
+    // 0,   0
+    //
+    //          sx, sy
+
+    // 0,   0
+    //
+    //          2,  2
+
+    // -1,  1
+    //
+    //          1,  -1
+
     virtual void on_update(float seconds) {
         vb.clear(3).
-           put(0.f).put(1.f).put(1.f).put(0.f).put(0.f).
-           put(-1.f).put(-1.f).put(0.f).put(1.f).put(0.f).
-           put(1.f).put(-1.f).put(0.f).put(0.f).put(1.f);
+           put(0.f).put(-50.f).put(1.f).put(0.f).put(0.f).
+           put(-50.f).put(50.f).put(0.f).put(1.f).put(0.f).
+           put(50.f).put(50.f).put(0.f).put(0.f).put(1.f);
+
+        rot += 2*3.1415f*seconds;
+
+        local_tx.build().identity().rotate_z(rot).local_to_world();
+    }
+
+    virtual void on_size(const alterate::dimension& size) {
+        world_tx.build().identity().scale({size.x/2.f, -(size.y/2.f)}).world_to_local();
     }
 
     virtual void on_draw(alterate::gl::context& context) {
-        context.use(program).
-                uniform(tx).
+        alterate::gl::mat4 m = world_tx * local_tx;
+        context.clear().
+                use(program).
+                uniform(m).
                 attributes(vb).
                 draw(GL_TRIANGLES);
     }

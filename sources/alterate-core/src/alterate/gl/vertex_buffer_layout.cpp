@@ -59,7 +59,7 @@ size_t vertex_buffer_layout::attribute_count() const {
 
 size_t vertex_buffer_layout::attribute_by_offset(size_t offset) const {
     if (_attrs.empty()) {
-        return -1;
+        return no_value;
     }
     offset %= stride();
     for (size_t i=0; i<_attrs.size(); i++) {
@@ -67,7 +67,7 @@ size_t vertex_buffer_layout::attribute_by_offset(size_t offset) const {
             return i;
         }
     }
-    return -1;
+    return no_value;
 }
 
 }

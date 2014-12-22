@@ -9,9 +9,11 @@
 
 namespace alterate {
 
-    inline size_t no_value() {
-        return static_cast<size_t>(-1);
-    }
+const size_t no_value = -1;
+
+//    inline size_t no_value() {
+//        return static_cast<size_t>(-1);
+//    }
 
 // Use size_t to represent counts, unsigned indexes and so on
 // Use standardized (in C99) bool primitive

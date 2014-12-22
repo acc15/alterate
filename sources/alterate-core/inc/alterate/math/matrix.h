@@ -495,6 +495,10 @@ public:
         return transform_impl(vector, result);
     }
 
+    transform_builder<matrix_type&> build() {
+        return transform_builder<matrix_type&>(get_this());
+    }
+
     template <typename Type>
     static matrix_type scale(const std::initializer_list<Type>& vec) {
         return matrix_type().set_to_scale(vec);
@@ -534,7 +538,6 @@ public:
     }
 
     static transform_builder<matrix_type&> builder(matrix_type& m) {
-        m.set_to_identity();
         return transform_builder<matrix_type&>(m);
     }
 

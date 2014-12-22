@@ -26,10 +26,7 @@ public:
 
 
 void alterate_init(alterate::engine& e) {
-
-    alterate2048* root = e.init<alterate2048>();
-    std::cout << "in alterate-2048" << std::endl;
-
+    e.init<alterate2048>();
 }
 
 

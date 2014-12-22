@@ -62,7 +62,7 @@ public:
         binder& attribute(const vertex_buffer_data& buf, size_t attr, size_t vertex = 0);
         binder& attributes(const vertex_buffer_data& buf, size_t vertex = 0);
 
-        void draw(GLenum what, size_t start = 0, size_t count = -1);
+        void draw(GLenum what, size_t start = 0, size_t count = no_value);
 
     };
 

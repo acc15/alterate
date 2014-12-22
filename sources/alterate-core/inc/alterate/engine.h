@@ -48,6 +48,7 @@ public:
         T* h = new T(std::forward<Args>(args)...);
         _handler = h;
         _handler->on_attach();
+        _handler->on_size(_screen_size);
         return h;
     }
 
