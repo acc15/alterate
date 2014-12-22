@@ -7,13 +7,13 @@ namespace gl {
 vertex_buffer_layout::vertex_buffer_layout() {
 }
 
-vertex_buffer_layout::vertex_buffer_layout(const std::initializer_list<vertex_buffer_layout::layout_attribute>& attrs) {
-    for (const vertex_buffer_layout::layout_attribute& attr: attrs) {
-        attribute(attr.type, attr.next_offset);
+vertex_buffer_layout::vertex_buffer_layout(const std::initializer_list<layout_attribute>& attrs) {
+    for (const layout_attribute& attr: attrs) {
+        register_attribute(attr.type, attr.next_offset);
     }
 }
 
-vertex_buffer_layout& vertex_buffer_layout::attribute(GLenum type, size_t size) {
+vertex_buffer_layout& vertex_buffer_layout::register_attribute(GLenum type, size_t size) {
     size_t prev_offset = _attrs.empty() ? 0 : _attrs.back().next_offset;
     _attrs.push_back({ type, prev_offset + get_type_size(type) * size });
     return *this;
@@ -38,15 +38,15 @@ GLenum vertex_buffer_layout::attribute_type(size_t attr) const {
     return _attrs[attr].type;
 }
 
-size_t vertex_buffer_layout::offset(size_t attr) const {
+size_t vertex_buffer_layout::attribute_offset(size_t attr) const {
     if (attr == 0) {
         return 0;
     }
     return _attrs[attr-1].next_offset;
 }
 
-size_t vertex_buffer_layout::offset(size_t attr, size_t index) const {
-    return stride() * index + offset(attr);
+size_t vertex_buffer_layout::attribute_offset(size_t attr, size_t vertex) const {
+    return stride() * vertex + attribute_offset(attr);
 }
 
 size_t vertex_buffer_layout::stride() const {
@@ -67,6 +67,7 @@ size_t vertex_buffer_layout::attribute_by_offset(size_t offset) const {
             return i;
         }
     }
+    return -1;
 }
 
 }

@@ -7,8 +7,11 @@
 // To make size_t and ptrdiff_t defined
 #include <cstddef>
 
-//namespace alterate
-//{
+namespace alterate {
+
+    inline size_t no_value() {
+        return static_cast<size_t>(-1);
+    }
 
 // Use size_t to represent counts, unsigned indexes and so on
 // Use standardized (in C99) bool primitive
@@ -28,5 +31,5 @@
 //    typedef double          fp_t;
 //#endif
 
-//}
+}
 

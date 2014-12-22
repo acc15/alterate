@@ -7,7 +7,7 @@
 namespace alterate {
 namespace gl {
 
-context::binder::binder(program &prg) : _prg(prg), _uniform_index(0) {
+context::binder::binder(program &prg) : _prg(prg), _uniform_index(0), _attr_index(0), _vertex_count(-1) {
 }
 
 GLint context::binder::next_uniform_location() {
@@ -20,6 +20,12 @@ GLint context::binder::next_attribute() {
     GLint attr_index = _attr_index;
     ++_attr_index;
     return attr_index;
+}
+
+void context::binder::adjust_vertex_count(size_t count) {
+    if (_vertex_count > count) {
+        _vertex_count = count;
+    }
 }
 
 context::binder& context::binder::uniform(GLfloat v0) {
@@ -84,17 +90,17 @@ context::binder& context::binder::uniform(GLsizei size, GLsizei count, const GLi
     return *this;
 }
 
-context::binder& context::binder::uniform(const mat2x2& m) {
+context::binder& context::binder::uniform(const mat2& m) {
     glUniformMatrix2fv(next_uniform_location(), 1, GL_FALSE, m.data);
     return *this;
 }
 
-context::binder& context::binder::uniform(const mat3x3& m) {
+context::binder& context::binder::uniform(const mat3& m) {
     glUniformMatrix3fv(next_uniform_location(), 1, GL_FALSE, m.data);
     return *this;
 }
 
-context::binder& context::binder::uniform(const mat4x4& m) {
+context::binder& context::binder::uniform(const mat4& m) {
     glUniformMatrix4fv(next_uniform_location(), 1, GL_FALSE, m.data);
     return *this;
 }
@@ -127,27 +133,35 @@ context::binder& context::binder::attribute(GLfloat v0, GLfloat v1, GLfloat v2, 
     return *this;
 }
 
-context::binder& context::binder::attribute(const vertex_buffer_data& buf, size_t item) {
-    return attribute(buf, _attr_index, item);
+context::binder& context::binder::attribute(const vertex_buffer_data& buf, size_t vertex) {
+    return attribute(buf, _attr_index, vertex);
 }
 
-context::binder& context::binder::attribute(const vertex_buffer_data& buf, size_t attr, size_t item) {
+context::binder& context::binder::attribute(const vertex_buffer_data& buf, size_t attr, size_t vertex) {
     glEnableVertexAttribArray(_attr_index);
     glVertexAttribPointer(_attr_index,
                           buf.element_count(attr),
                           buf.attribute_type(attr),
                           false,
                           buf.stride(),
-                          buf.data(attr, item));
+                          buf.data(attr, vertex));
     ++_attr_index;
+    adjust_vertex_count(buf.count() - vertex);
     return *this;
 }
 
-context::binder& context::binder::attributes(const vertex_buffer_data& buf, size_t item) {
+context::binder& context::binder::attributes(const vertex_buffer_data& buf, size_t vertex) {
     for (size_t i=0; i<buf.attribute_count(); i++) {
-        attribute(buf, i, item);
+        attribute(buf, i, vertex);
     }
     return *this;
+}
+
+void context::binder::draw(GLenum what, size_t start, size_t count) {
+    if (count == no_value()) {
+        count = _vertex_count != no_value() ? _vertex_count : 0;
+    }
+    glDrawArrays(what, start, count);
 }
 
 context& context::clear_color(const color& color) {

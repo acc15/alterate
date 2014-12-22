@@ -4,7 +4,7 @@
 
 TEST(vertex_buffer_test, initializes_correctly) {
     alterate::gl::vertex_buffer<> vb({{ GL_FLOAT, 4 }, { GL_INT, 2 }});
-    ASSERT_EQ(16, vb.offset(1));
+    ASSERT_EQ(16, vb.attribute_offset(1));
 }
 
 TEST(vertex_buffer_test, put_works_correctly) {
@@ -12,7 +12,7 @@ TEST(vertex_buffer_test, put_works_correctly) {
     alterate::gl::vertex_buffer<> vb({{ GL_FLOAT, 4 }, { GL_INT, 2 }});
 
     vb.put(5.0f).put(6.0f).put(7.0f).put(8.0f).put(1).put(2);
-    ASSERT_EQ(sizeof(GLfloat) * 4 + sizeof(GLint) * 2, vb.attribute_size());
+    ASSERT_EQ(sizeof(GLfloat) * 4 + sizeof(GLint) * 2, vb.size());
 
     float* first = static_cast<float*>(vb.data(0, 0));
     ASSERT_EQ(first[0], 5.0f);
