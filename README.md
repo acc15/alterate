@@ -1,16 +1,51 @@
-
 ![alterate](https://raw.githubusercontent.com/acc15/alterate/master/images/logo.png)
 
-### Install instructions
+### Prerequisites
+#### Windows
+##### Supported compilers
+MSVC 2013
 
 #### Ubuntu
-
 ##### Required libraries
 1. sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev libxi-dev libglew-dev
 
-Pure C++ OpenGL game engine
+##### Supported compilers
+GNU C++ or clang with C++11 support
 
-### What to use
+### Dependencies
+#### CMake
+http://www.cmake.org/
+
+#### Boost
+http://www.boost.org/
+
+Compile with:
+    ./bootstrap
+	./b2
+
+#### GLFW
+http://www.glfw.org/
+
+#### GLEW
+http://glew.sourceforge.net/
+### Windows install
+Copy headers to "C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include\gl"
+Copy libs to "C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Lib"
+### Ubuntu
+sudo apt-get install libglew-dev
+
+
+#### Google Test
+https://code.google.com/p/googletest/
+
+### Building
+In top-level project directory type:
+
+    mkdir build
+    cd build
+	cmake ../sources -DCMAKE_BUILD_TYPE=Debug "-DBOOST_ROOT=<path/to/boost>" "-DGLFW_ROOT=</path/to/glfw>" "-DGTEST_ROOT=</path/to/gtest>" "-DGLEW_ROOT=</path/to/glew>"
+
+### Programming tips
 #### Silence unused variable/parameter warning:
 
 Just wrap unused parameter in comment. Example: 

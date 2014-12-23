@@ -7,6 +7,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAG} -std=c++11 -Wall -pedantic -Werror=return-type")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
+set(Boost_USE_STATIC_LIBS ON) # only find static libs
 set(BOOST_ROOT "" CACHE PATH "Boost library")
 find_package(Boost REQUIRED COMPONENTS chrono system)
 include_directories(${Boost_INCLUDE_DIR})
