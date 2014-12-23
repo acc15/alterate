@@ -43,7 +43,7 @@ In top-level project directory type:
 
     mkdir build
     cd build
-	cmake ../sources -DCMAKE_BUILD_TYPE=Debug "-DBOOST_ROOT=<path/to/boost>" "-DGLFW_ROOT=</path/to/glfw>" "-DGTEST_ROOT=</path/to/gtest>" "-DGLEW_ROOT=</path/to/glew>"
+	cmake ../sources -DCMAKE_BUILD_TYPE=Debug "-DBOOST_ROOT=<path/to/boost>" "-DGLFW_ROOT=</path/to/glfw>" "-DGTEST_ROOT=</path/to/gtest>"
 
 ### Programming tips
 #### Silence unused variable/parameter warning:
