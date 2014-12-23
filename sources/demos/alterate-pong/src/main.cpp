@@ -61,18 +61,22 @@ public:
     //          1,  -1
 
     virtual void on_update(float seconds) {
-        vb.clear(3).
-           put(0.f).put(-50.f).put(1.f).put(0.f).put(0.f).
+        vb.clear(4).
+           put(-50.f).put(-50.f).put(1.f).put(0.f).put(0.f).
            put(-50.f).put(50.f).put(0.f).put(1.f).put(0.f).
+           put(50.f).put(-50.f).put(0.f).put(0.f).put(1.f).
            put(50.f).put(50.f).put(0.f).put(0.f).put(1.f);
 
         rot += 2*3.1415f*seconds;
 
-        local_tx.build().identity().rotate_z(rot).local_to_world();
+        local_tx.build().rotate_z(rot).local_to_world();
     }
 
     virtual void on_size(const alterate::dimension& size) {
-        world_tx.build().identity().scale({size.x/2.f, -(size.y/2.f)}).world_to_local();
+        world_tx.build().
+                scale({size.x/2.f, -(size.y/2.f)}).
+                //translate({(size.x/2.f), (size.y/2.f)}).
+                world_to_local();
     }
 
     virtual void on_draw(alterate::gl::context& context) {
@@ -81,7 +85,7 @@ public:
                 use(program).
                 uniform(m).
                 attributes(vb).
-                draw(GL_TRIANGLES);
+                draw(GL_TRIANGLE_STRIP);
     }
 
 };

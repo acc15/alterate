@@ -221,7 +221,7 @@ TEST(matrix_test, compute_inverse) {
 
 TEST(matrix_test, transform) {
 
-    mat3x3 m = mat3x3::builder().
+    mat3x3 m = mat3x3().build().
             scale({1024.f/2, -768.f/2}).
             translate({512.f, 384.f}).
             local_to_world();
@@ -347,6 +347,32 @@ TEST(matrix_test, compute_lup_decomposition) {
 
 //    std::cout << m_count << " matrix inversions took (alt: " << alt_nanos << ", boost: " << boost_nanos << ")" << std::endl;
 //}
+
+TEST(matrix_test, multiply_performance) {
+
+    mat3x3 m1, m2;
+
+    for (size_t i=0; i<m1.rows(); i++) {
+        for (size_t j=0; j<m1.cols(); j++) {
+            m1(i,j) = (rand() % 10000) / 100.f - 50.f;
+            m2(i,j) = (rand() % 10000) / 100.f - 50.f;
+        }
+    }
+
+    alterate::timing::timer<int64_t> timer;
+
+    timer.start();
+    for (size_t i=0; i<50000; i++) {
+        m1 *= m2;// * m1;
+        m2 *= m1;// * m2;
+    }
+    int64_t t = timer.elapsed<boost::nano>();
+
+
+    std::cout << "100k multiplications took: " << t << "ns" << std::endl;
+
+
+}
 
 TEST(matrix_test, performance_2d_vs_1d_access) {
 

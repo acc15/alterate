@@ -1,5 +1,7 @@
 #pragma once
 
+#include <alterate/iterator/iterator_factory.h>
+
 #include <alterate/gl/type_info.h>
 #include <alterate/gl/vertex_buffer_layout.h>
 
@@ -73,6 +75,16 @@ public:
         resize(_position + sizeof(T));
         *reinterpret_cast<T*>(_data + _position) = value;
         _position += sizeof(T);
+        return *this;
+    }
+
+    template <typename Vector>
+    vertex_buffer& put_all(const Vector& vec) {
+        typedef typename Vector::value_type value_type;
+        size_t new_position = _position + sizeof(value_type) * vec.size();
+        resize(new_position);
+        std::copy(vec.begin(), vec.end(), reinterpret_cast<value_type*>(_data + _position));
+        _position = new_position;
         return *this;
     }
 

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include <alterate/math/transform_builder.h>
+#include <alterate/math/matrix_builder.h>
 
 namespace alterate {
 namespace math {
@@ -297,6 +297,12 @@ public:
         return (i = get_this()).invert();
     }
 
+    matrix_type operator~() const {
+        matrix_type inv = get_this();
+        inv.invert();
+        return inv;
+    }
+
     matrix_type& set_to_identity() {
         for (size_t i=0; i<rows(); i++) {
             for (size_t j=0; j<cols(); j++) {
@@ -304,12 +310,6 @@ public:
             }
         }
         return get_this();
-    }
-
-    matrix_type operator~() {
-        matrix_type inv = get_this();
-        inv.invert();
-        return inv;
     }
 
     template <typename Vector>
@@ -371,21 +371,9 @@ public:
             for (size_t j=0; j<cols(); j++) {
                 value_type& c = cell(i,j);
                 if (i == 0) {
-                    if (j == 0) {
-                        c = cos;
-                    } else if (j == 1) {
-                        c = -sin;
-                    } else {
-                        c = 0;
-                    }
+                    c = (j == 0) ? cos : (j == 1) ? -sin : 0;
                 } else if (i == 1) {
-                    if (j == 0) {
-                        c = sin;
-                    } else if (j == 1) {
-                        c = cos;
-                    } else {
-                        c = 0;
-                    }
+                    c = (j == 0) ? sin : (j == 1) ? cos : 0;
                 } else {
                     c = (i == j ? 1 : 0);
                 }
@@ -432,7 +420,7 @@ public:
 
     template <typename OtherMatrixTraits>
     matrix_type& operator=(const matrix_support<OtherMatrixTraits>& copy) {
-        MatrixTraits::resize(get_this(), copy.rows(), copy.cols());
+        matrix_traits::resize(get_this(), copy.rows(), copy.cols());
         for (size_t i=0; i<std::min(rows(), copy.rows()); i++) {
             for (size_t j=0; j<std::min(cols(), copy.cols()); j++) {
                 cell(i,j) = copy(i,j);
@@ -495,8 +483,8 @@ public:
         return transform_impl(vector, result);
     }
 
-    transform_builder<matrix_type&> build() {
-        return transform_builder<matrix_type&>(get_this());
+    matrix_builder<matrix_type> build() {
+        return matrix_builder<matrix_type>(get_this());
     }
 
     template <typename Type>
@@ -531,14 +519,6 @@ public:
 
     static matrix_type identity() {
         return matrix_type().set_to_identity();
-    }
-
-    static transform_builder<matrix_type> builder() {
-        return transform_builder<matrix_type>(identity());
-    }
-
-    static transform_builder<matrix_type&> builder(matrix_type& m) {
-        return transform_builder<matrix_type&>(m);
     }
 
 };
