@@ -2,9 +2,8 @@
 
 #include <boost/predef.h>
 
-#if BOOST_OS_LINUX
-#   include <GL/glew.h>
-#endif
+
+#include <GL/glew.h>
 
 #if BOOST_OS_WINDOWS
 #   include <windows.h>

@@ -44,7 +44,7 @@ std::string get_program_info_log(GLuint program_id) {
         return "";
     }
 
-    std::string message(0, info_length);
+	std::string message(info_length, 0);
     glGetProgramInfoLog(program_id, info_length, NULL, &message[0]);
 
     message.resize(message.length()-1);

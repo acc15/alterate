@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #include <alterate/iterator/iterator_factory.h>
 
 #include <alterate/gl/type_info.h>

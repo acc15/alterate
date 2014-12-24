@@ -264,7 +264,7 @@ public:
         }
         for (size_t i=0; i<rows(); i++) {
             for (size_t j=0; j<cols(); j++) {
-                cell(i,p[j]) = (i==j?1:0);
+                cell(i,p[j]) = static_cast<value_type>(i==j?1:0);
             }
         }
         lu.lu_substitute(get_this(), p);
@@ -461,19 +461,14 @@ public:
         return get_this().cell(row, col);
     }
 
+	template <typename Result, typename Vector>
+	Result transform(const Vector& vector) const {
+		Result result;
+		return transform_impl(vector, result);
+	}
+
     template <typename Result, typename Vector>
     Result& transform(const Vector& vector, Result& result) const {
-        return transform_impl(vector, result);
-    }
-
-    template <typename Result, typename Type>
-    Result& transform(const std::initializer_list<Type>& vector, Result& result) const {
-        return transform_impl(vector, result);
-    }
-
-    template <typename Result, typename Vector>
-    Result transform(const Vector& vector) const {
-        Result result;
         return transform_impl(vector, result);
     }
 
@@ -482,6 +477,11 @@ public:
         Result result;
         return transform_impl(vector, result);
     }
+
+	template <typename Result, typename Type>
+	Result& transform(const std::initializer_list<Type>& vector, Result& result) const {
+		return transform_impl(vector, result);
+	}
 
     matrix_builder<matrix_type> build() {
         return matrix_builder<matrix_type>(get_this());
