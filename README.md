@@ -43,7 +43,10 @@ In top-level project directory type:
 
     mkdir build
     cd build
-	cmake ../sources -DCMAKE_BUILD_TYPE=Debug "-DBOOST_ROOT=<path/to/boost>" "-DGLFW_ROOT=</path/to/glfw>" "-DGTEST_ROOT=</path/to/gtest>"
+	cmake ../sources -DCMAKE_BUILD_TYPE=Debug "-DBOOST_ROOT=<path/to/boost>" "-DGLFW_ROOT=</path/to/glfw>" "-DGTEST_ROOT=</path/to/gtest>" 
+
+Additionally you may specify path to GLEW (if cmake can't found it):
+	"-DCMAKE_INCLUDE_PATH=$CMAKE_INCLUDE_PATH;</path/to/glew>/include"
 
 ### Programming tips
 #### Silence unused variable/parameter warning:
