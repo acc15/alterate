@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 2.8)
 set(GTEST_ROOT "" CACHE PATH "Google Test library")
 add_subdirectory(${GTEST_ROOT} gtest)
 include_directories(${GTEST_ROOT}/include)
-include_directories(${ALTERATE_ROOT}/inc)
 
 ### To link using static runtime libraries
 if(MSVC)

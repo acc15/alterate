@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 set(INC_DIR inc)
 set(SRC_DIR src)
-include_directories(${INC_DIR})
+##include_directories(${INC_DIR})
 
 set(SRC_LIST
 
