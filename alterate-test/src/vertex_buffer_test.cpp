@@ -4,7 +4,7 @@
 
 TEST(vertex_buffer_test, initializes_correctly) {
     alterate::gl::vertex_buffer<> vb({{ GL_FLOAT, 4 }, { GL_INT, 2 }});
-    ASSERT_EQ(16, vb.attribute_offset(1));
+    ASSERT_EQ(16u, vb.attribute_offset(1));
 }
 
 TEST(vertex_buffer_test, put_works_correctly) {

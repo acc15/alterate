@@ -66,7 +66,7 @@ private:
 
         iterator iter = iterator_factory::begin(vec);
         const iterator iter_end = iterator_factory::end(vec, cols());
-        for (int j=0; j<cols() && iter != iter_end; j++, iter++) {
+        for (size_t j=0; j<cols() && iter != iter_end; j++, iter++) {
             cell(row, j) = (*iter);
         }
         return get_this();
@@ -79,7 +79,7 @@ private:
 
         iterator iter = iterator_factory::begin(vec);
         const iterator iter_end = iterator_factory::end(vec, cols());
-        for (int j=0; j<rows() && iter != iter_end; j++, iter++) {
+        for (size_t j=0; j<rows() && iter != iter_end; j++, iter++) {
             cell(j, col) = (*iter);
         }
         return get_this();
@@ -110,12 +110,6 @@ private:
         }
         return result;
 
-    }
-
-    void add_row(const value_type& scale, const permutation_matrix_type& p, size_t source_row, size_t target_row, size_t start_column) {
-        for (size_t k=start_column; k<cols(); k++) {
-            cell(target_row,p[k]) += cell(source_row,p[k])*scale;
-        }
     }
 
 public:
