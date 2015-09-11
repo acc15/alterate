@@ -1,7 +1,7 @@
 project(alterate-main)
 cmake_minimum_required(VERSION 2.8)
 
-set(GLFW_ROOT "" CACHE PATH "GLFW library root directory")
+set(GLFW_ROOT "$ENV{GLFW_ROOT}" CACHE PATH "GLFW library root directory")
 add_subdirectory(${GLFW_ROOT} glfw)
 include_directories(${GLFW_ROOT}/include)
 

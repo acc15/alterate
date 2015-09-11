@@ -8,6 +8,7 @@ MSVC 2013
 #### Ubuntu
 ##### Required libraries
 1. sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev libxi-dev libglew-dev
+1. sudo apt-get install libxinerama-dev libxcursor-dev
 
 ##### Supported compilers
 GNU C++ or clang with C++11 support
