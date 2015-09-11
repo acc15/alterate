@@ -25,11 +25,11 @@ public:
         program& _prg;
 
         size_t _uniform_index;
-        size_t _attr_index;
+        GLuint _attr_index;
         size_t _vertex_count;
 
         GLint next_uniform_location();
-        GLint next_attribute();
+        GLuint next_attribute();
 
         void adjust_vertex_count(size_t count);
 

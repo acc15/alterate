@@ -16,8 +16,8 @@ GLint context::binder::next_uniform_location() {
     return loc;
 }
 
-GLint context::binder::next_attribute() {
-    GLint attr_index = _attr_index;
+GLuint context::binder::next_attribute() {
+    GLuint attr_index = _attr_index;
     ++_attr_index;
     return attr_index;
 }
