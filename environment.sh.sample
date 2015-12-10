@@ -1,3 +1,0 @@
-
-export GLFW_ROOT="/home/acc15/MyProgs/libs/cpp/glfw-3.1.1"
-export GTEST_ROOT="/home/acc15/MyProgs/libs/cpp/googletest"
