@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 project(alterate-math-test CXX)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -Wall -Wextra -Wconversion -pedantic -Werror -pthread")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -Wall -Wextra -Wconversion -pedantic -Werror")
+    if (NOT MINGW)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+    endif()
 endif()
 
 set(INCLUDE_DIR "../include")
