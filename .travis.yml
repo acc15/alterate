@@ -7,7 +7,7 @@ compiler:
 install:
   - sudo apt-get update
   - sudo apt-get install libgtest-dev
-  - pushd
+  - pushd .
   - cd /usr/src/gtest
   - sudo cmake -DCMAKE_BUILD_TYPE=DEBUG .
   - sudo cmake --build .
