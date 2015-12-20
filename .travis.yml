@@ -37,6 +37,7 @@ addons:
       - g++-4.8
       - clang
       - libgtest-dev
+      - libboost-all-dev
 
 notifications:
   email:
