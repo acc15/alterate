@@ -25,8 +25,8 @@ public:
     typedef typename iterator_facade_type::reference           reference;
 
 private:
-    value_type  _value;
-    size_t      _position;
+    value_type      _value;
+    difference_type _position;
 
 public:
     scalar_iterator(const value_type& value = value_type(), size_t position = 0) : _value(value), _position(position) {
@@ -36,7 +36,7 @@ private:
     friend class boost::iterator_core_access;
 
     reference dereference() const {
-        return const_cast<reference>(_value);
+        return _value;
     }
 
     bool equal(scalar_iterator const& other) const {
@@ -70,7 +70,7 @@ struct container_iterator_factory {
         return container.begin();
     }
 
-    static const_iterator end(const T& container, size_t size) {
+    static const_iterator end(const T& container, size_t /*size*/) {
         return container.end();
     }
 
