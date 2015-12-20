@@ -10,12 +10,12 @@ install:
   - cd /usr/src/gtest
   - sudo cmake -DCMAKE_BUILD_TYPE=DEBUG .
   - sudo cmake --build .
-  - sudo mv libgtest.so /usr/local/lib/libgtestd.so
-  - sudo mv libgtest_main.so /usr/local/lib/libgtest_maind.so
+  - sudo mv libgtest.a /usr/local/lib/libgtestd.a
+  - sudo mv libgtest_main.a /usr/local/lib/libgtest_maind.a
   - sudo cmake -DCMAKE_BUILD_TYPE=RELEASE .
   - sudo cmake --build .
-  - sudo mv libgtest.so /usr/local/lib/libgtest.so
-  - sudo mv libgtest_main.so /usr/local/lib/libgtest_main.so
+  - sudo mv libgtest.a /usr/local/lib/libgtest.a
+  - sudo mv libgtest_main.a /usr/local/lib/libgtest_main.a
 
 before_script:
   - mkdir build
