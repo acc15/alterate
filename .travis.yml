@@ -7,8 +7,6 @@ before_install:
   - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 install:
-  - sudo apt-get install libgtest-dev
-  - pushd .
   - cd /usr/src/gtest
   - sudo cmake -DCMAKE_BUILD_TYPE=DEBUG .
   - sudo cmake --build .
@@ -18,7 +16,7 @@ install:
   - sudo cmake --build .
   - sudo mv libgtest.a /usr/local/lib/libgtest.a
   - sudo mv libgtest_main.a /usr/local/lib/libgtest_main.a
-  - popd
+  - cd -
 
 before_script:
   - mkdir build
@@ -32,9 +30,9 @@ script:
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.8
-    - g++-4.8
-    - clang
-    - libgtest-dev
+      - gcc-4.8
+      - g++-4.8
+      - clang
+      - libgtest-dev
