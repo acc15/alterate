@@ -1,5 +1,7 @@
 ![alterate](https://raw.githubusercontent.com/acc15/alterate/master/images/logo.png)
 
+![build](https://travis-ci.org/acc15/alterate.svg?branch=master)
+
 ### Prerequisites
 #### Windows
 ##### Supported compilers
