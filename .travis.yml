@@ -8,12 +8,10 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install libgtest-dev
   - cd /usr/src/gtest
-  - mkdir build
-  - cd build
-  - sudo cmake -DCMAKE_BUILD_TYPE=DEBUG
+  - sudo cmake -DCMAKE_BUILD_TYPE=DEBUG .
   - sudo mv libgtest.a /usr/local/lib/libgtestd.a
   - sudo mv libgtest_main.a /usr/local/lib/libgtest_maind.a
-  - sudo cmake -DCMAKE_BUILD_TYPE=RELEASE
+  - sudo cmake -DCMAKE_BUILD_TYPE=RELEASE .
   - sudo mv libgtest.a /usr/local/lib/libgtest.a
   - sudo mv libgtest_main.a /usr/local/lib/libgtest_main.a
 
