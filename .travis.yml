@@ -9,11 +9,11 @@ install:
   - sudo apt-get install libgtest-dev
   - cd /usr/src/gtest
   - sudo cmake -DCMAKE_BUILD_TYPE=DEBUG .
-  - sudo make
+  - sudo cmake --build .
   - sudo mv libgtest.so /usr/local/lib/libgtestd.so
   - sudo mv libgtest_main.so /usr/local/lib/libgtest_maind.so
   - sudo cmake -DCMAKE_BUILD_TYPE=RELEASE .
-  - sudo make
+  - sudo cmake --build .
   - sudo mv libgtest.so /usr/local/lib/libgtest.so
   - sudo mv libgtest_main.so /usr/local/lib/libgtest_main.so
 
