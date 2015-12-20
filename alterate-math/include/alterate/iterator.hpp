@@ -36,7 +36,7 @@ private:
     friend class boost::iterator_core_access;
 
     reference dereference() const {
-        return _value;
+        return const_cast<reference>(_value);
     }
 
     bool equal(scalar_iterator const& other) const {
