@@ -29,7 +29,10 @@ private:
     difference_type _position;
 
 public:
-    scalar_iterator(const value_type& value = value_type(), size_t position = 0) : _value(value), _position(position) {
+    scalar_iterator(const value_type& value = value_type(), difference_type position = 0) :
+            _value(value),
+            _position(position)
+    {
     }
 
 private:
