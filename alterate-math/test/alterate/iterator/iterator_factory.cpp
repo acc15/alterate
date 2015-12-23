@@ -14,7 +14,7 @@ TEST(iterator_test, array_iterator_factory_test) {
     const_iterator begin = factory_type::begin(test_array);
     const_iterator end = factory_type::end(test_array, 0);
 
-    int dist = std::distance(begin, end);
+    ptrdiff_t dist = std::distance(begin, end);
     ASSERT_EQ(10, dist);
     ASSERT_EQ(1, *begin);
 
