@@ -6,7 +6,17 @@ enable_testing()
 find_package(Boost REQUIRED)
 
 set(GMOCK_ROOT "" CACHE PATH "Path to googlemock source tree (it should include gtest)")
-add_subdirectory(${GMOCK_ROOT} gmock)
+
+include(ExternalProject)
+ExternalProject_Add(googlemock PREFIX gmock SOURCE_DIR "${GMOCK_ROOT}" INSTALL_COMMAND "")
+ExternalProject_Get_Property(googlemock binary_dir)
+add_library(gmock UNKNOWN IMPORTED)
+add_library(gmock_main UNKNOWN IMPORTED)
+set_target_properties(gmock PROPERTIES IMPORTED_LOCATION ${binary_dir}/libgmock.a)
+set_target_properties(gmock_main PROPERTIES IMPORTED_LOCATION ${binary_dir}/libgmock_main.a)
+add_dependencies(gmock googlemock)
+add_dependencies(gmock_main googlemock)
+
 
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Wextra -pedantic -Werror -Wno-missing-braces")
