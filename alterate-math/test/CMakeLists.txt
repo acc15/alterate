@@ -5,18 +5,22 @@ enable_testing()
 
 find_package(Boost REQUIRED)
 
-set(GMOCK_ROOT "" CACHE PATH "Path to googlemock source tree (it should include gtest)")
+find_path(GMOCK_ROOT src/gmock-all.cc DOC "Path to googlemock source tree (it should include gtest)")
+if (NOT GMOCK_ROOT)
+    message(FATAL_ERROR "googlemock ${GMOCK_ROOT} not found. Set GMOCK_ROOT variable")
+endif()
 
-include(ExternalProject)
-ExternalProject_Add(googlemock PREFIX gmock SOURCE_DIR "${GMOCK_ROOT}" INSTALL_COMMAND "")
-ExternalProject_Get_Property(googlemock binary_dir)
-add_library(gmock UNKNOWN IMPORTED)
-add_library(gmock_main UNKNOWN IMPORTED)
-set_target_properties(gmock PROPERTIES IMPORTED_LOCATION ${binary_dir}/libgmock.a)
-set_target_properties(gmock_main PROPERTIES IMPORTED_LOCATION ${binary_dir}/libgmock_main.a)
-add_dependencies(gmock googlemock)
-add_dependencies(gmock_main googlemock)
+find_path(GMOCK_INCLUDE_DIR NAMES gmock/gmock.h PATHS "${GMOCK_ROOT}/include")
+if (NOT GMOCK_INCLUDE_DIR)
+    message(FATAL_ERROR "googlemock headers not found. Set GMOCK_INCLUDE_DIR variable")
+endif()
 
+find_path(GTEST_INCLUDE_DIR NAMES gtest/gtest.h PATHS "${GMOCK_ROOT}/gtest/include")
+if (NOT GTEST_INCLUDE_DIR)
+    message(FATAL_ERROR "googletest headers not found. Set GTEST_INCLUDE_DIR variable")
+endif()
+
+add_subdirectory(${GMOCK_ROOT} gmock)
 
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Wextra -pedantic -Werror -Wno-missing-braces")
@@ -28,8 +32,8 @@ endif()
 set(INCLUDE_DIR "../include")
 
 include_directories(${Boost_INCLUDE_DIR}
-        ${GMOCK_ROOT}/include
-        ${GMOCK_ROOT}/gtest/include
+        ${GMOCK_INCLUDE_DIR}
+        ${GTEST_INCLUDE_DIR}
         ${INCLUDE_DIR})
 
 set(INCLUDE_FILES
