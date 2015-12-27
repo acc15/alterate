@@ -22,7 +22,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake -DGMOCK_ROOT=/usr/src/gmock ..
 
 script:
   - cmake --build .
