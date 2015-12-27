@@ -5,9 +5,9 @@ enable_testing()
 
 find_package(Boost REQUIRED)
 
-find_path(GMOCK_ROOT src/gmock-all.cc DOC "Path to googlemock source tree (it should include gtest)")
+find_path(GMOCK_ROOT src/gmock-all.cc PATHS /usr/src/gmock DOC "Path to googlemock source tree (it should include gtest)")
 if (NOT GMOCK_ROOT)
-    message(FATAL_ERROR "googlemock ${GMOCK_ROOT} not found. Set GMOCK_ROOT variable")
+    message(FATAL_ERROR "googlemock not found. Set GMOCK_ROOT variable")
 endif()
 
 find_path(GMOCK_INCLUDE_DIR NAMES gmock/gmock.h PATHS "${GMOCK_ROOT}/include")
