@@ -10,14 +10,12 @@ include(ExternalProject)
 ExternalProject_Add(googletest
         PREFIX gmock
         URL "https://github.com/google/googletest/archive/release-1.7.0.zip"
-        DOWNLOAD_NAME "gtest-1.7.0.zip"
         INSTALL_COMMAND "")
 
 ExternalProject_Add(googlemock
         DEPENDS googletest
         PREFIX gmock
         URL "https://github.com/google/googlemock/archive/release-1.7.0.zip"
-        DOWNLOAD_NAME "gmock-1.7.0.zip"
         INSTALL_COMMAND "")
 
 ExternalProject_Get_Property(googletest source_dir)
