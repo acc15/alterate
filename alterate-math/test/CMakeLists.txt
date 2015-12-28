@@ -24,12 +24,8 @@ ExternalProject_Get_Property(googletest source_dir)
 set(GTEST_INCLUDE_DIR ${source_dir}/include)
 ExternalProject_Get_Property(googlemock source_dir binary_dir)
 set(GMOCK_INCLUDE_DIR ${source_dir}/include)
-
-add_library(gmock STATIC IMPORTED)
-set_target_properties(gmock PROPERTIES IMPORTED_LOCATION ${binary_dir}/${CMAKE_STATIC_LIBRARY_PREFIX}gmock${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-add_library(gmock_main STATIC IMPORTED)
-set_target_properties(gmock_main PROPERTIES IMPORTED_LOCATION ${binary_dir}/${CMAKE_STATIC_LIBRARY_PREFIX}gmock_main${CMAKE_STATIC_LIBRARY_SUFFIX})
+set(GMOCK_LIBRARIES ${binary_dir}/${CMAKE_STATIC_LIBRARY_PREFIX}gmock${CMAKE_STATIC_LIBRARY_SUFFIX})
+set(GMOCK_MAIN_LIBRARIES ${binary_dir}/${CMAKE_STATIC_LIBRARY_PREFIX}gmock_main${CMAKE_STATIC_LIBRARY_SUFFIX})
 
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -Wextra -pedantic -Werror -Wno-missing-braces")
@@ -58,6 +54,6 @@ add_executable(alterate-math-test ${SRC_FILES} ${INCLUDE_FILES})
 add_dependencies(alterate-math-test googlemock)
 
 ## Link test executable against gtest & gtest_main
-target_link_libraries(alterate-math-test gmock gmock_main)
+target_link_libraries(alterate-math-test ${GMOCK_LIBRARIES} ${GMOCK_MAIN_LIBRARIES})
 #
 add_test(NAME alterate-math-test COMMAND alterate-math-test)
